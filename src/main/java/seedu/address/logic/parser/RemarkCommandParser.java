@@ -13,6 +13,9 @@ import seedu.address.model.person.Remark;
  */
 public class RemarkCommandParser implements Parser<RemarkCommand> {
 
+    /**
+     * Parses arguments and creates a RemarkCommand.
+     */
     public RemarkCommand parse(String args) throws ParseException {
 
         ArgumentMultimap argMultimap =
