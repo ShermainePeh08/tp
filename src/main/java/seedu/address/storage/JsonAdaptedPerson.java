@@ -46,7 +46,7 @@ class JsonAdaptedPerson {
         if (tags != null) {
             this.tags.addAll(tags);
         }
-        this.remark = ""; 
+        this.remark = "";
     }
 
     /**
