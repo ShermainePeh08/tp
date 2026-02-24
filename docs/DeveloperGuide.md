@@ -307,32 +307,44 @@ See our full list on [GitHub](https://github.com/AY2526S2-CS2103T-W08-2/user-sto
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **VV** is the `VendorVault` application and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: UC1 - Add a Vendor Contact**
+
+**Preconditions: User has installed the app**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
-
-    Use case ends.
+1. User enters the add command.
+2. VV requests for details for the vendor contact.
+3. User enters the requested details.
+4. VV requests for confirmation.
+5. User confirms.
+6. VV adds contact and displays a list of vendor contacts.
+Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
+* 3a. VV detects error in entered data (eg. missing compulsory fields, invalid data format)
+  * 3a1. VV requests for the correct data. 
+  * 3a2. User enters new data. 
+  
+    Steps 3a1-3a2 are repeated until all fields are correct. 
+  
+    Use case resumes from step 4.
+  
+* 3b. VV detects duplicate vendor contact.
+  * 3b1. VV requests for correct data that’s not a duplicate.
+  * 3b2. User enters new data.
+
+  Steps 3a1-3a2 are repeated until all fields are correct.
+
+  Use case resumes from step 4.
+* *a. At any time, User chooses to cancel adding the contact.
+    * *a1. VV requests to confirm cancellation.
+  * *a2. User confirms cancellation.
 
   Use case ends.
-
-* 3a. The given index is invalid.
-
-    * 3a1. AddressBook shows an error message.
-
-      Use case resumes at step 2.
-
-*{More to be added}*
 
 ### Non-Functional Requirements
 
