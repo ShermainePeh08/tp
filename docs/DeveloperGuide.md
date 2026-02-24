@@ -309,6 +309,40 @@ See our full list on [GitHub](https://github.com/AY2526S2-CS2103T-W08-2/user-sto
 
 (For all use cases below, the **VV** is the `VendorVault` application and the **Actor** is the `user`, unless specified otherwise)
 
+**Use Case: View Vendor Contact**
+
+Preconditions: Application is running, user is at main screen
+
+**MSS**
+
+1. User chooses to view vendor contact.
+2. VV shows the contact information for all vendors
+
+**Extensions**
+
+* 2a. VV detects there is no contact found.
+
+    * 2a1. VV will create a new contact file with preloaded information.
+
+      Use case resumes from step 2.
+
+**Use Case: View Stock**
+
+Preconditions: Application is running, user is at main screen
+
+**MSS**
+1. User chooses to view stock count.
+2. VV shows the stock count for all stocks.
+
+**Extensions**
+
+* 2a. VV detects there is no stocks found
+
+    * 2a1. VV will create a new file with preloaded stocks information.
+
+      Use case resumes from step 2.
+
+
 **Use case: UC1 - Add a Vendor Contact**
 
 **Preconditions: User has installed the app**
