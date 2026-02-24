@@ -456,13 +456,12 @@ Use case ends.
 
 ### Non-Functional Requirements
 
-A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
-
 Usability:
 1. The system shall use consistent command formats and prefixes across all features.
 
 Reliability:
 1. The system shall not lose existing data when an invalid command is entered.
+2. The system should respond to invalid commands with clear errors.
 
 Portability:
 1. The system shall run on Windows, Mac and Linux as long as it has Java `17` or above installed.
@@ -471,14 +470,21 @@ Performance:
 1. The system shall display the vendor list or stock list within 2 seconds when the total number of entries does not exceed expected usage limits (1,000 vendors and 5,000 stock items).
 2. The system should respond to any valid command within 2 seconds under normal usage (≤ 1,000 contacts and ≤ 5,000 stock items).
 
+Persistence:
+1. The system must save app data locally as JSON and load it when launched.
+
 Documentation:
 1. The system should provide a developer guide for future contributors with code accompanied by Javadoc comments and a user guide for users.
 
 Security:
 1. The system should store data locally on the user’s device and should not transmit data over the network.
 
+Testability:
+1. At least 75% of the source code should be covered by tests.
+
 Accessibility:
 1. The system should allow users to complete all core tasks using commands without requiring mouse interaction.
+2. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
 
 ### Glossary
 
