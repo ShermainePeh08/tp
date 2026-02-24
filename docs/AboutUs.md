@@ -22,15 +22,14 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 * Role: Team Lead, Integration
 * Responsibilities: Logic
 
-### Jane Doe
+### Aw Ming Xuan
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/icyyolo.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/jolenechong.md)]
+[[github](https://github.com/icyyolo)]
 
-* Role: Team Lead
-* Responsibilities: UI
+* Role: Deliverables and deadlines
+* Responsibilities: Model
 
 ### Le Hua
 
