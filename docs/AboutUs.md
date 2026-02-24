@@ -11,15 +11,16 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
-### John Doe
+### Jolene
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/jolenechong.png" width="200px">
 
-[[homepage](http://www.comp.nus.edu.sg/~damithch)]
-[[github](https://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[homepage](https://jolenechong.pages.dev/)]
+[[github](https://github.com/github.com/jolenechong/)]
+[[portfolio](team/jolenechong.md)]
 
-* Role: Project Advisor
+* Role: Team Lead, Integration
+* Responsibilities: Logic
 
 ### Aw Ming Xuan
 
@@ -34,7 +35,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 <img src="images/johndoe.png" width="200px">
 
-[[github](http://github.com/johndoe)] [[portfolio](team/johndoe.md)]
+[[github](http://github.com/johndoe)] [[portfolio](team/jolenechong.md)]
 
 * Role: Developer
 * Responsibilities: Data
@@ -44,7 +45,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 <img src="images/johndoe.png" width="200px">
 
 [[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[portfolio](team/jolenechong.md)]
 
 * Role: Developer
 * Responsibilities: Dev Ops + Threading
@@ -54,7 +55,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 <img src="images/johndoe.png" width="200px">
 
 [[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[portfolio](team/jolenechong.md)]
 
 * Role: Developer
 * Responsibilities: UI
