@@ -483,7 +483,11 @@ Accessibility:
 ### Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Vendor Contact**: A stored record containing a vendor’s name, phone number, email, address, and optional tags.
+* **Stock/Inventory Item**: A product entry tracked by the system, identified by a unique product ID, name, and quantity.
+* **Product ID**: A non-negative integer that uniquely identifies a stock item in the inventory.
+* **Command**: A user input instruction entered into the CLI to perform an action (e.g. add, delete, list).
+* **Prefix**: A keyword used to identify parameters in a command (e.g. n/, p/, e/, q/).
 
 --------------------------------------------------------------------------------------------------------------------
 
