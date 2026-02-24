@@ -456,11 +456,19 @@ Use case ends.
 
 ### Non-Functional Requirements
 
-1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
 3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
 
-*{More to be added}*
+Usability:
+1. The system shall use consistent command formats and prefixes across all features.
+
+Reliability:
+1. The system shall not lose existing data when an invalid command is entered.
+
+Portability:
+1. The system shall run on Windows, Mac and Linux as long as it has Java `17` or above installed.
+
+Performance:
+1. The system shall display the vendor list or stock list within 2 seconds when the total number of entries does not exceed expected usage limits (1,000 vendors and 5,000 stock items).
 
 ### Glossary
 
