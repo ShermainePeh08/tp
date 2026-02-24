@@ -11,41 +11,41 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
-### John Doe
+### Jolene
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/jolenechong.png" width="200px">
 
-[[homepage](http://www.comp.nus.edu.sg/~damithch)]
-[[github](https://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[homepage](https://jolenechong.pages.dev/)]
+[[github](https://github.com/github.com/jolenechong/)]
+[[portfolio](team/jolenechong.md)]
 
-* Role: Project Advisor
+* Role: Team Lead, Integration
+* Responsibilities: Logic
 
-### Jane Doe
+### Aw Ming Xuan
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/icyyolo.png" width="200px">
 
-[[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[github](https://github.com/icyyolo)]
 
-* Role: Team Lead
-* Responsibilities: UI
+* Role: Deliverables and deadlines
+* Responsibilities: Model
 
-### Johnny Doe
+### Le Hua
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/l3hu4l1.png" width="200px">
 
-[[github](http://github.com/johndoe)] [[portfolio](team/johndoe.md)]
+[[github](http://github.com/l3hu4l1)] [[portfolio](team/l3hu4l1.md)]
 
-* Role: Developer
-* Responsibilities: Data
+* Role: Developer, Testing
+* Responsibilities: Storage
 
 ### Jean Doe
 
 <img src="images/johndoe.png" width="200px">
 
 [[github](http://github.com/johndoe)]
-[[portfolio](team/johndoe.md)]
+[[portfolio](team/jolenechong.md)]
 
 * Role: Developer
 * Responsibilities: Dev Ops + Threading
