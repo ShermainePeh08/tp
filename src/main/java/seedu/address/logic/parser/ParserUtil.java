@@ -47,6 +47,10 @@ public class ParserUtil {
             throw new ParseException(Name.MESSAGE_CONSTRAINTS);
         }
 
+        if (name.length() > Name.MAX_LENGTH) {
+            throw new ParseException(Name.MESSAGE_LENGTH_CONSTRAINTS);
+        }
+
         if (!Name.isValidNameWarn(name)) {
             return Optional.of(Name.MESSAGE_WARN);
         }
@@ -101,7 +105,10 @@ public class ParserUtil {
     public static Address parseAddress(String address) throws ParseException {
         requireNonNull(address);
         String trimmedAddress = address.trim();
-        if (!Address.isValidAddress(trimmedAddress)) {
+        if (trimmedAddress.length() > Address.MAX_LENGTH) {
+            throw new ParseException(Address.MESSAGE_LENGTH_CONSTRAINTS);
+        }
+        if (!Address.isValidAddress(trimmedAddress) || trimmedAddress.isBlank()) {
             throw new ParseException(Address.MESSAGE_CONSTRAINTS);
         }
         return new Address(trimmedAddress);
