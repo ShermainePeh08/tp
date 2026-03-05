@@ -89,25 +89,25 @@ public interface Model {
      * Commits the current state of the address book to the vendor vault. This should be called after any operation
      * that modifies the address book, such as adding, deleting, or editing a person.
      */
-    void commitVendorVault();
+    void commitAddressBook();
 
     /**
      * Undoes the last committed state in the vendor vault, reverting the address book to the previous state.
      */
-    void undoVendorVault();
+    void undoAddressBook();
 
     /**
      * Redoes the last undone state in the vendor vault, restoring the address book to the state before the undo.
      * TODO: TO BE IMPLEMENTED AFTER UNDO FUNCTIONALITY IS IMPLEMENTED
      */
-    void redoVendorVault();
+    void redoAddressBook();
 
     /**
      * Returns true if there are states in the vendor vault that can be undone.
      *
      * @return true if there are states in the vendor vault that can be undone, false otherwise.
      */
-    boolean canUndoVendorVault();
+    boolean canUndoAddressBook();
 
     /**
      * Returns true if there are states in the vendor vault that can be redone.
@@ -115,6 +115,6 @@ public interface Model {
      *
      * @return true if there are states in the vendor vault that can be redone, false otherwise.
      */
-    boolean canRedoVendorVault();
+    boolean canRedoAddressBook();
 
 }

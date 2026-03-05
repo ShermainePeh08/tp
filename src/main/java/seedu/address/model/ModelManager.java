@@ -131,29 +131,29 @@ public class ModelManager implements Model {
         filteredPersons.setPredicate(predicate);
     }
 
-    //=========== VendorVaultVersionControl  =================================================================================
+    //=========== VendorVaultVersionControl  ===================================================================
     @Override
-    public void commitVendorVault() {
+    public void commitAddressBook() {
         versionedVendorVault.commit(addressBook);
     }
 
     @Override
-    public void undoVendorVault() {
+    public void undoAddressBook() {
         versionedVendorVault.undo(addressBook);
     }
 
     @Override
-    public void redoVendorVault() {
+    public void redoAddressBook() {
         versionedVendorVault.redo(addressBook);
     }
 
     @Override
-    public boolean canUndoVendorVault() {
+    public boolean canUndoAddressBook() {
         return versionedVendorVault.canUndo();
     }
 
     @Override
-    public boolean canRedoVendorVault() {
+    public boolean canRedoAddressBook() {
         return versionedVendorVault.canRedo();
     }
 
