@@ -75,6 +75,31 @@ public class Person {
     }
 
     /**
+     * Returns true if this person is archived.
+     */
+    public boolean isArchived() {
+        return tags.contains(new Tag("archived"));
+    }
+
+    /**
+     * Returns a new Person with the archived tag added.
+     */
+    public Person archive() {
+        Set<Tag> newTags = new HashSet<>(tags);
+        newTags.add(new Tag("archived"));
+        return new Person(name, phone, email, address, newTags);
+    }
+
+    /**
+     * Returns a new Person with the archived tag removed.
+     */
+    public Person restore() {
+        Set<Tag> newTags = new HashSet<>(tags);
+        newTags.remove(new Tag("archived"));
+        return new Person(name, phone, email, address, newTags);
+    }
+
+    /**
      * Returns true if both persons have the same identity and data fields.
      * This defines a stronger notion of equality between two persons.
      */

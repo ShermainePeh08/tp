@@ -36,6 +36,7 @@ public class ModelManager implements Model {
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
+        filteredPersons.setPredicate(Model.PREDICATE_SHOW_ACTIVE_PERSONS);
         versionedVendorVault = new VersionedVendorVault(addressBook);
     }
 
@@ -104,7 +105,7 @@ public class ModelManager implements Model {
     @Override
     public void addPerson(Person person) {
         addressBook.addPerson(person);
-        updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
     }
 
     @Override
@@ -112,6 +113,26 @@ public class ModelManager implements Model {
         requireAllNonNull(target, editedPerson);
 
         addressBook.setPerson(target, editedPerson);
+    }
+
+    @Override
+    public void archivePerson(Person person) {
+        requireNonNull(person);
+
+        Person archivedPerson = person.archive();
+        addressBook.setPerson(person, archivedPerson);
+
+        updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
+    }
+
+    @Override
+    public void restorePerson(Person person) {
+        requireNonNull(person);
+
+        Person restoredPerson = person.restore();
+        addressBook.setPerson(person, restoredPerson);
+
+        updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
     }
     //=========== Filtered Person List Accessors =============================================================
 

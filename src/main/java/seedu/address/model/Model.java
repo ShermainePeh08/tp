@@ -15,6 +15,11 @@ public interface Model {
     Predicate<Person> PREDICATE_SHOW_ALL_PERSONS = unused -> true;
 
     /**
+     * {@code Predicate} that shows only active vendors (not archived).
+     */
+    Predicate<Person> PREDICATE_SHOW_ACTIVE_PERSONS = person -> !person.isArchived();
+
+    /**
      * Replaces user prefs data with the data in {@code userPrefs}.
      */
     void setUserPrefs(ReadOnlyUserPrefs userPrefs);
@@ -78,6 +83,10 @@ public interface Model {
 
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();
+
+    void archivePerson(Person person);
+
+    void restorePerson(Person person);
 
     /**
      * Updates the filter of the filtered person list to filter by the given {@code predicate}.

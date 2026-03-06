@@ -6,6 +6,10 @@ import java.util.List;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.logic.commands.ArchiveCommand;
+import seedu.address.logic.parser.ArchiveCommandParser;
+import seedu.address.logic.commands.RestoreCommand;
+import seedu.address.logic.parser.RestoreCommandParser;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.UniquePersonList;
 
@@ -94,6 +98,15 @@ public class AddressBook implements ReadOnlyAddressBook {
         persons.remove(key);
     }
 
+    public void archivePerson(Person person) {
+        Person archivedPerson = person.archive();
+        persons.setPerson(person, archivedPerson);
+    }
+
+    public void restorePerson(Person person) {
+        Person restoredPerson = person.restore();
+        persons.setPerson(person, restoredPerson);
+    }
     //// util methods
 
     @Override
