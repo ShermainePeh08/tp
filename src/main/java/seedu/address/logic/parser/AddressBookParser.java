@@ -21,7 +21,6 @@ import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.RestoreCommand;
 import seedu.address.logic.commands.UndoCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.logic.parser.RestoreCommandParser;
 
 /**
  * Parses user input.
