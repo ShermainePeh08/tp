@@ -4,6 +4,11 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_EMAIL_WARN;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_WARN;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_PHONE_WARN;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
+import static seedu.address.logic.parser.ParserUtil.NEWLINE;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 
@@ -22,7 +27,10 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.person.Email;
+import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Phone;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
@@ -51,6 +59,33 @@ public class AddCommandTest {
         ModelStub modelStub = new ModelStubWithPerson(validPerson);
 
         assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_withWarnings_success() throws Exception {
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+
+        Person validPersonWithWarnings = new PersonBuilder()
+                .withName(INVALID_NAME_WARN)
+                .withPhone(INVALID_PHONE_WARN)
+                .withEmail(INVALID_EMAIL_WARN)
+                .withAddress(VALID_ADDRESS_BOB)
+                .build();
+
+        String warnings =
+                Name.MESSAGE_WARN + NEWLINE
+                        + Phone.MESSAGE_WARN + NEWLINE
+                        + Email.MESSAGE_WARN;
+        AddCommand addCommand = new AddCommand(validPersonWithWarnings, warnings);
+
+        CommandResult result = addCommand.execute(modelStub);
+
+
+        String expectedMessage = String.format(
+                AddCommand.MESSAGE_SUCCESS + NEWLINE + warnings,
+                Messages.format(validPersonWithWarnings));
+
+        assertEquals(expectedMessage, result.getFeedbackToUser());
     }
 
     @Test

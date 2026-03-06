@@ -151,6 +151,16 @@ public class ParserUtilTest {
     }
 
     @Test
+    public void parseAddress_blankAddress_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseAddress("   "));
+    }
+
+    @Test
+    public void parseAddress_emptyString_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseAddress(""));
+    }
+
+    @Test
     public void parseAddress_invalidLongAddress_throwsParseException() {
         assertThrows(ParseException.class, () -> ParserUtil.parseAddress(INVALID_LONG_ADDRESS));
     }

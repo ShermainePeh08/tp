@@ -108,9 +108,11 @@ public class ParserUtil {
         if (trimmedAddress.length() > Address.MAX_LENGTH) {
             throw new ParseException(Address.MESSAGE_LENGTH_CONSTRAINTS);
         }
-        if (!Address.isValidAddress(trimmedAddress) || trimmedAddress.isBlank()) {
+
+        if (trimmedAddress.isBlank()) {
             throw new ParseException(Address.MESSAGE_CONSTRAINTS);
         }
+
         return new Address(trimmedAddress);
     }
 
