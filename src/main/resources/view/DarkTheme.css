@@ -157,7 +157,7 @@
 .result-display {
     -fx-background-color: transparent;
     -fx-font-family: "Consolas";
-    -fx-font-size: 12pt;
+    -fx-font-size: 10pt;
     -fx-text-fill: #E1E1E1;
 }
 
@@ -356,7 +356,6 @@
 #resultDisplay .content {
     -fx-background-color: transparent;
     -fx-font-family: "Consolas";
-    -fx-font-size: 12px;
     -fx-text-fill: #E1E1E1;
 }
 
