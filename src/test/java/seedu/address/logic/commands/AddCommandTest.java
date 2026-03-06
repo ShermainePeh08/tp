@@ -49,6 +49,7 @@ public class AddCommandTest {
 
         assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
                 commandResult.getFeedbackToUser());
+        assertEquals(CommandResult.FEEDBACK_TYPE_SUCCESS, commandResult.getFeedbackType());
         assertEquals(Arrays.asList(validPerson), modelStub.personsAdded);
     }
 
@@ -86,6 +87,7 @@ public class AddCommandTest {
                 Messages.format(validPersonWithWarnings));
 
         assertEquals(expectedMessage, result.getFeedbackToUser());
+        assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
     }
 
     @Test

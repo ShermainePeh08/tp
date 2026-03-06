@@ -73,9 +73,13 @@ public class AddCommand extends Command {
         model.commitVendorVault();
 
         String formattedWarnings = warnings.isEmpty() ? "" : NEWLINE + warnings;
+        String feedbackType = warnings.isEmpty()
+                ? CommandResult.FEEDBACK_TYPE_SUCCESS
+                : CommandResult.FEEDBACK_TYPE_WARN;
 
         return new CommandResult(
-                String.format(MESSAGE_SUCCESS + formattedWarnings, Messages.format(toAdd)));
+                String.format(MESSAGE_SUCCESS + formattedWarnings, Messages.format(toAdd)),
+                feedbackType);
 
     }
 

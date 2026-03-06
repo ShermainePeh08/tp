@@ -11,7 +11,12 @@ import seedu.address.commons.util.ToStringBuilder;
  */
 public class CommandResult {
 
+    public static final String FEEDBACK_TYPE_SUCCESS = "success";
+    public static final String FEEDBACK_TYPE_WARN = "warn";
+    public static final String FEEDBACK_TYPE_ERROR = "error";
+
     private final String feedbackToUser;
+    private final String feedbackType;
 
     /** Help information should be shown to the user. */
     private final boolean showHelp;
@@ -23,9 +28,17 @@ public class CommandResult {
      * Constructs a {@code CommandResult} with the specified fields.
      */
     public CommandResult(String feedbackToUser, boolean showHelp, boolean exit) {
+        this(feedbackToUser, showHelp, exit, FEEDBACK_TYPE_SUCCESS);
+    }
+
+    /**
+     * Constructs a {@code CommandResult} with the specified fields and feedback type.
+     */
+    public CommandResult(String feedbackToUser, boolean showHelp, boolean exit, String feedbackType) {
         this.feedbackToUser = requireNonNull(feedbackToUser);
         this.showHelp = showHelp;
         this.exit = exit;
+        this.feedbackType = requireNonNull(feedbackType);
     }
 
     /**
@@ -33,11 +46,22 @@ public class CommandResult {
      * and other fields set to their default value.
      */
     public CommandResult(String feedbackToUser) {
-        this(feedbackToUser, false, false);
+        this(feedbackToUser, false, false, FEEDBACK_TYPE_SUCCESS);
+    }
+
+    /**
+     * Constructs a {@code CommandResult} with feedback text and feedback type.
+     */
+    public CommandResult(String feedbackToUser, String feedbackType) {
+        this(feedbackToUser, false, false, feedbackType);
     }
 
     public String getFeedbackToUser() {
         return feedbackToUser;
+    }
+
+    public String getFeedbackType() {
+        return feedbackType;
     }
 
     public boolean isShowHelp() {
