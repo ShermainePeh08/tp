@@ -9,7 +9,10 @@ import seedu.address.logic.parser.exceptions.ParseException;
  *
  * Expected format: archive vendor INDEX
  */
-public class ArchiveCommandParser implements Parser<ArchiveCommand> {
+public class ArchiveCommandParser implements Parser {
+
+    private static final String MESSAGE_INVALID_FORMAT = "Usage: archive vendor INDEX";
+    private static final String MESSAGE_INVALID_INDEX = "Index must be a positive integer.";
 
     /**
      * Parses the given {@code String} of arguments in the context of the ArchiveCommand
@@ -23,14 +26,21 @@ public class ArchiveCommandParser implements Parser<ArchiveCommand> {
 
         String trimmedArgs = args.trim();
 
-        if (!trimmedArgs.startsWith("vendor")) {
-            throw new ParseException("Usage: archive vendor INDEX");
+        if (!trimmedArgs.startsWith("vendor ")) {
+            throw new ParseException(MESSAGE_INVALID_FORMAT);
         }
 
-        String indexPart = trimmedArgs.substring(6).trim();
+        String indexPart = trimmedArgs.substring(7).trim();
 
-        Index index = ParserUtil.parseIndex(indexPart);
+        if (indexPart.isEmpty()) {
+            throw new ParseException(MESSAGE_INVALID_FORMAT);
+        }
 
-        return new ArchiveCommand(index);
+        try {
+            Index index = ParserUtil.parseIndex(indexPart);
+            return new ArchiveCommand(index);
+        } catch (ParseException e) {
+            throw new ParseException(MESSAGE_INVALID_INDEX);
+        }
     }
 }

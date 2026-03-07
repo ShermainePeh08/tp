@@ -9,7 +9,10 @@ import seedu.address.logic.parser.exceptions.ParseException;
  *
  * Expected format: restore vendor INDEX
  */
-public class RestoreCommandParser implements Parser<RestoreCommand> {
+public class RestoreCommandParser implements Parser {
+
+    private static final String MESSAGE_INVALID_FORMAT = "Usage: restore vendor INDEX";
+    private static final String MESSAGE_INVALID_INDEX = "Index must be a positive integer.";
 
     /**
      * Parses the given {@code String} of arguments in the context of the RestoreCommand
@@ -23,14 +26,21 @@ public class RestoreCommandParser implements Parser<RestoreCommand> {
 
         String trimmedArgs = args.trim();
 
-        if (!trimmedArgs.startsWith("vendor")) {
-            throw new ParseException("Usage: restore vendor INDEX");
+        if (!trimmedArgs.startsWith("vendor ")) {
+            throw new ParseException(MESSAGE_INVALID_FORMAT);
         }
 
-        String indexPart = trimmedArgs.substring(6).trim();
+        String indexPart = trimmedArgs.substring(7).trim();
 
-        Index index = ParserUtil.parseIndex(indexPart);
+        if (indexPart.isEmpty()) {
+            throw new ParseException(MESSAGE_INVALID_FORMAT);
+        }
 
-        return new RestoreCommand(index);
+        try {
+            Index index = ParserUtil.parseIndex(indexPart);
+            return new RestoreCommand(index);
+        } catch (ParseException e) {
+            throw new ParseException(MESSAGE_INVALID_INDEX);
+        }
     }
 }
