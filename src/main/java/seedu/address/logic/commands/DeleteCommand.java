@@ -9,6 +9,7 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.person.NameEqualsKeywordsPredicate;
 import seedu.address.model.person.Person;
 
 /**
@@ -28,6 +29,9 @@ public class DeleteCommand extends Command {
     public static final String CONTACT_IS_EMPTY = "\nThere is no contact to delete. Consider adding some contacts.";
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
+
+    public static final String CONFIRMATION_DELETE_PERSON_MESSAGE =
+            "Confirm (y) you want to delete the following person shown below:";
 
     private final Index targetIndex;
 
@@ -53,11 +57,17 @@ public class DeleteCommand extends Command {
         }
 
         Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
-        model.deletePerson(personToDelete);
+        NameEqualsKeywordsPredicate pred = new NameEqualsKeywordsPredicate(personToDelete);
+        model.updateFilteredPersonList(pred);
+        return new CommandResult(CONFIRMATION_DELETE_PERSON_MESSAGE);
 
-        model.commitVendorVault();
-
-        return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
+        //        Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
+        //        model.deletePerson(personToDelete);
+        //
+        //        model.commitVendorVault();
+        //
+        //        return new CommandResult(
+        //              String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
     }
 
     @Override

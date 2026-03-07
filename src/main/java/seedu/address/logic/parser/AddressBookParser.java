@@ -92,7 +92,7 @@ public class AddressBookParser {
 
         case ConfirmationCommand.COMMAND_WORD:
             return new ConfirmationCommand();
-            
+
         default:
             logger.finer("This user input caused a ParseException: " + userInput);
             throw new ParseException(MESSAGE_UNKNOWN_COMMAND);
