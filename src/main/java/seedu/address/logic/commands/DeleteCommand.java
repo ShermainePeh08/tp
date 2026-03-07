@@ -82,14 +82,6 @@ public class DeleteCommand extends Command {
         NameEqualsKeywordsPredicate predicate = new NameEqualsKeywordsPredicate(personToDelete);
         model.updateFilteredPersonList(predicate);
         return new CommandResult(CONFIRMATION_DELETE_PERSON_MESSAGE);
-
-        //        Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
-        //        model.deletePerson(personToDelete);
-        //
-        //        model.commitVendorVault();
-        //
-        //        return new CommandResult(
-        //              String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
     }
 
     @Override
