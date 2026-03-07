@@ -27,8 +27,6 @@ public class TypicalProducts {
     public static final Product WATER = new ProductBuilder().withIdentifier("SKU-1007")
             .withName("Bottled Water 500ml").withQuantity("120").build();
 
-    // TODO: Manually added - Product's details found in {@code CommandTestUtil}
-
     private TypicalProducts() {
     } // prevents instantiation
 

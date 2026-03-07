@@ -40,8 +40,8 @@ public class UniqueProductListTest {
     @Test
     public void contains_productWithSameIdentityFieldsInList_returnsTrue() {
         uniqueProductList.add(RICE);
-        Product editedAlice = new ProductBuilder(RICE).withName("White Rice 5kg").build();
-        assertTrue(uniqueProductList.contains(editedAlice));
+        Product editedRice = new ProductBuilder(RICE).withName("White Rice 5kg").build();
+        assertTrue(uniqueProductList.contains(editedRice));
     }
 
     @Test
