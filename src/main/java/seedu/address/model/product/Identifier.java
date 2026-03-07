@@ -8,15 +8,15 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  * Guarantees: immutable; is valid as declared in {@link #isValidIdentifier(String)}
  */
 public class Identifier {
-
-    public static final String MESSAGE_CONSTRAINTS =
-            "Identifiers should not be blank, should be at most 15 characters long, and may only contain letters, "
-                    + "numbers, hyphens (-), and slashes (/).";
-    public static final int MAX_LENGTH = 15;
+    public static final String MESSAGE_CONSTRAINTS = "Identifiers should not be blank.";
+    public static final int MAX_LENGTH = 256;
     public static final String MESSAGE_LENGTH_CONSTRAINTS =
             "Identifiers should be less than " + MAX_LENGTH + " characters.";
+    public static final String MESSAGE_WARN =
+            "⚠ Warning: Identifier contains unusual symbols, is this intentional?";
 
-    public static final String VALIDATION_REGEX = "[A-Za-z0-9][A-Za-z0-9/-]{0,14}";
+    public static final String VALIDATION_REGEX = "[A-Za-z0-9][A-Za-z0-9/-]{0,255}";
+    public static final String SOFT_VALIDATION_REGEX = "[^\\s].{0,255}";
 
     public final String value;
 
@@ -35,6 +35,19 @@ public class Identifier {
      * Returns true if a given string is a valid identifier.
      */
     public static boolean isValidIdentifier(String test) {
+        return test.matches(SOFT_VALIDATION_REGEX);
+    }
+
+    /**
+     * Returns true if a given string is a valid identifier.
+     * Stronger validation than {@link #isValidIdentifier(String)}.
+     * Used for warning users about potential issues with their input.
+     *
+     * @param test the string to test.
+     * @return true if the string is a valid identifier according to the stronger
+     *         validation criteria.
+     */
+    public static boolean isValidIdentifierWarn(String test) {
         return test.matches(VALIDATION_REGEX);
     }
 
