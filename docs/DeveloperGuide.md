@@ -415,7 +415,7 @@ Use case ends.
   Use case resumes from step 4.
 
 * 4a. VV detects duplicate product.
-  * 4a1. VV displays an error indicating that the ID must be unique.
+  * 4a1. VV displays an error.
   * 4a2. User re-provides the corrected data.
   
   Steps 4a1–4a2 are repeated until a unique ID is provided.
