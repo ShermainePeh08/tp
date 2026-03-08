@@ -1,6 +1,5 @@
 package seedu.address.ui;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
@@ -11,6 +10,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import seedu.address.model.product.Product;
 
 /**
  * Displays the inventory list in the right panel.
@@ -38,23 +38,16 @@ public class InventoryListPanel extends UiPart<Region> {
     private static final int QTY_COLUMN_WIDTH = 80;
 
     @FXML
-    private ListView<String> inventoryListView;
+    private ListView<Product> inventoryListView;
 
     /**
-     * Creates an InventoryListPanel with sample inventory data.
+     * Creates an InventoryListPanel using real product data.
      */
-    public InventoryListPanel() {
+    public InventoryListPanel(ObservableList<Product> productList) {
         super(FXML);
 
-        ObservableList<String> fakeInventory = FXCollections.observableArrayList(
-                "Product AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:001:25",
-                "Product B:002:5000",
-                "Product C:003:999999",
-                "Product D:004:3"
-        );
-
-        SortedList<String> sortedInventory =
-                new SortedList<>(fakeInventory, this::compareInventoryItems);
+        SortedList<Product> sortedInventory =
+                new SortedList<>(productList, this::compareInventoryItems);
 
         inventoryListView.setItems(sortedInventory);
         inventoryListView.setCellFactory(list -> createInventoryCell());
@@ -64,13 +57,10 @@ public class InventoryListPanel extends UiPart<Region> {
      * Comparator used to sort inventory items.
      * Low-stock items appear first, then items are sorted by quantity.
      */
-    private int compareInventoryItems(String a, String b) {
+    private int compareInventoryItems(Product a, Product b) {
 
-        String[] pa = a.split(":");
-        String[] pb = b.split(":");
-
-        int qtyA = Integer.parseInt(pa[2]);
-        int qtyB = Integer.parseInt(pb[2]);
+        int qtyA = Integer.parseInt(a.getQuantity().toString());
+        int qtyB = Integer.parseInt(b.getQuantity().toString());
 
         boolean lowA = qtyA <= LOW_STOCK_THRESHOLD;
         boolean lowB = qtyB <= LOW_STOCK_THRESHOLD;
@@ -89,11 +79,11 @@ public class InventoryListPanel extends UiPart<Region> {
     /**
      * Creates a custom cell for displaying inventory items.
      */
-    private ListCell<String> createInventoryCell() {
+    private ListCell<Product> createInventoryCell() {
         return new ListCell<>() {
 
             @Override
-            protected void updateItem(String item, boolean empty) {
+            protected void updateItem(Product item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (empty || item == null) {
@@ -102,11 +92,9 @@ public class InventoryListPanel extends UiPart<Region> {
                     return;
                 }
 
-                String[] parts = item.split(":");
-
-                String name = parts[0];
-                String id = parts[1];
-                int qty = Integer.parseInt(parts[2]);
+                String name = item.getName().toString();
+                String id = item.getIdentifier().toString();
+                int qty = Integer.parseInt(item.getQuantity().toString());
 
                 Label idLabel = new Label(id);
                 idLabel.setPrefWidth(ID_WIDTH);

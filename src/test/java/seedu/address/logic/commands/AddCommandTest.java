@@ -32,6 +32,7 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
+import seedu.address.model.product.Product;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
@@ -322,6 +323,11 @@ public class AddCommandTest {
      */
     private class ModelStub implements Model {
         @Override
+        public void setProduct(Product target, Product editedProduct) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
             throw new AssertionError("This method should not be called.");
         }
@@ -413,6 +419,16 @@ public class AddCommandTest {
 
         @Override
         public boolean canUndoVendorVault() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void updateFilteredProductList(Predicate<Product> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableList<Product> getFilteredProductList() {
             throw new AssertionError("This method should not be called.");
         }
 

@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.Person;
+import seedu.address.model.product.Product;
 
 /**
  * The API of the Model component.
@@ -113,4 +114,19 @@ public interface Model {
      */
     boolean canUndoVendorVault();
 
+
+    //=========== Inventory / Product ==========================================================================
+
+    /**
+     * Replaces the given product {@code target} with {@code editedProduct}.
+     */
+    void setProduct(Product target, Product editedProduct);
+
+    /** Returns an unmodifiable view of the filtered product list */
+    ObservableList<Product> getFilteredProductList();
+
+    /**
+     * Updates the filter of the filtered product list to filter by the given {@code predicate}.
+     */
+    void updateFilteredProductList(Predicate<Product> predicate);
 }
