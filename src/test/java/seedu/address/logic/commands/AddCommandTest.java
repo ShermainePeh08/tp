@@ -32,7 +32,6 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.Phone;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
@@ -243,8 +242,11 @@ public class AddCommandTest {
         String feedback = result.getFeedbackToUser();
 
         // Warning should appear only once
-        assertTrue(feedback.contains(String.format(MESSAGE_SIMILAR_ADDRESS, existing1.getName(), existing1.getAddress()))
-                || feedback.contains(String.format(MESSAGE_SIMILAR_ADDRESS, existing2.getName(), existing2.getAddress())));
+        assertTrue(
+                feedback.contains(
+                        String.format(MESSAGE_SIMILAR_ADDRESS, existing1.getName(), existing1.getAddress()))
+                || feedback.contains(
+                        String.format(MESSAGE_SIMILAR_ADDRESS, existing2.getName(), existing2.getAddress())));
 
         assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
     }
