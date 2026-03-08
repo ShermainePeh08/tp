@@ -37,8 +37,8 @@ import seedu.address.testutil.PersonUtil;
 public class AddressBookParserTest {
 
     private final AddressBookParser parser = new AddressBookParser();
-    private final PendingConfirmation confirmation
-            = new PendingConfirmation(() -> Optional.empty(), () -> Optional.empty());
+    private final PendingConfirmation confirmation =
+            new PendingConfirmation(() -> Optional.empty(), () -> Optional.empty());
 
     @Test
     public void parseCommand_add() throws Exception {
