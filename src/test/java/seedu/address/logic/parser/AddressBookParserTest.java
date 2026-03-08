@@ -9,12 +9,15 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.CancelCommand;
 import seedu.address.logic.commands.ClearCommand;
+import seedu.address.logic.commands.ConfirmationCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
@@ -34,6 +37,8 @@ import seedu.address.testutil.PersonUtil;
 public class AddressBookParserTest {
 
     private final AddressBookParser parser = new AddressBookParser();
+    private final PendingConfirmation confirmation
+            = new PendingConfirmation(() -> Optional.empty(), () -> Optional.empty());
 
     @Test
     public void parseCommand_add() throws Exception {
@@ -50,6 +55,15 @@ public class AddressBookParserTest {
                 new PendingConfirmation()) instanceof ClearCommand);
     }
 
+    @Test
+    public void parseCommand_confirmationCommand() throws Exception {
+        assertTrue(parser.parseCommand(ConfirmationCommand.COMMAND_WORD, confirmation) instanceof ConfirmationCommand);
+    }
+
+    @Test
+    public void parseCommand_cancelCommand() throws Exception {
+        assertTrue(parser.parseCommand("n", confirmation) instanceof CancelCommand);
+    }
     @Test
     public void parseCommand_delete() throws Exception {
         DeleteCommand command = (DeleteCommand) parser.parseCommand(
