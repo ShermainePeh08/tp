@@ -12,6 +12,7 @@ import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Person;
+import seedu.address.model.product.Product;
 
 /**
  * Represents the in-memory model of the address book data.
@@ -166,6 +167,30 @@ public class ModelManager implements Model {
     }
     //=========== Filtered Person List Accessors =============================================================
 
+    @Override
+    public boolean hasProduct(Product product) {
+        requireNonNull(product);
+        return inventory.hasProduct(product);
+    }
+
+    @Override
+    public void deleteProduct(Product target) {
+        inventory.removeProduct(target);
+    }
+
+    @Override
+    public void addProduct(Product product) {
+        inventory.addProduct(product);
+        updateFilteredProductList(PREDICATE_SHOW_ALL_PRODUCTS);
+    }
+
+    @Override
+    public void setProduct(Product target, Product editedProduct) {
+        requireAllNonNull(target, editedProduct);
+        inventory.setProduct(target, editedProduct);
+    }
+
+    // =========== Filtered Person List Accessors =============================================================
 
     /**
      * Returns an unmodifiable view of the list of {@code Person} backed by the internal list of
