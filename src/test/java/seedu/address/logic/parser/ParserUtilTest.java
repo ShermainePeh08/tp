@@ -129,6 +129,20 @@ public class ParserUtilTest {
     }
 
     @Test
+    public void parsePhone_multiplePhonesEmpty_throwsParseException() {
+        // test for multiple phones, one missing
+        String multiplePhones = "61234567,";
+        assertThrows(ParseException.class, () -> ParserUtil.parsePhone(multiplePhones));
+    }
+
+    @Test
+    public void parsePhone_oneTooShort_throwsParseException() {
+        // test for multiple phones, one short
+        String multiplePhones = "61234567, 12";
+        assertThrows(ParseException.class, () -> ParserUtil.parsePhone(multiplePhones));
+    }
+
+    @Test
     public void parseAddress_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> ParserUtil.parseAddress((String) null));
     }

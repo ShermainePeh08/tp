@@ -2,12 +2,16 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.logic.parser.ParserUtil;
+import seedu.address.model.person.warnings.DuplicatePersonWarning;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -15,6 +19,9 @@ import seedu.address.model.tag.Tag;
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
 public class Person {
+
+    private static final String PHONE_SPECIFICATIONS_SEPARATOR = "(";
+    private static final String WHITESPACE_REGEX = "\\s+";
 
     // Identity fields
     private final Name name;
@@ -62,8 +69,10 @@ public class Person {
     }
 
     /**
-     * Returns true if both persons have the same name.
-     * This defines a weaker notion of equality between two persons.
+     * Returns true if both contacts are considered the same
+     * 1. They have the same email
+     * 2. They have the same phone number or same as at least one of comma-separated phone numbers
+     * Note: The (specification) part of the phone number is ignored when comparing phone numbers.
      */
     public boolean isSamePerson(Person otherPerson) {
         if (otherPerson == this) {
@@ -71,7 +80,78 @@ public class Person {
         }
 
         return otherPerson != null
-                && otherPerson.getName().equals(getName());
+                && (otherPerson.getEmail().equals(getEmail())
+                || hasOverlappingPhoneEntry(otherPerson));
+    }
+
+    private boolean hasOverlappingPhoneEntry(Person otherPerson) {
+        Set<String> currentPhoneEntries = getNormalizedPhoneEntries(phone.value);
+        Set<String> otherPhoneEntries = getNormalizedPhoneEntries(otherPerson.getPhone().value);
+        return currentPhoneEntries.stream().anyMatch(otherPhoneEntries::contains);
+    }
+
+    private static Set<String> getNormalizedPhoneEntries(String phoneValue) {
+        return Arrays.stream(phoneValue.split(ParserUtil.COMMA_SEPARATOR))
+                .map(String::trim)
+                .map(Person::extractPhoneNumberPart)
+                .collect(Collectors.toSet());
+    }
+
+    private static String extractPhoneNumberPart(String phoneEntry) {
+        int specificationStart = phoneEntry.indexOf(PHONE_SPECIFICATIONS_SEPARATOR);
+        if (specificationStart == -1) {
+            return phoneEntry;
+        }
+        return phoneEntry.substring(0, specificationStart).trim();
+    }
+
+    /**
+     * Returns true if both contacts have similar characteristics that warrant a warning.
+     * Checks for:
+     * 1. Similar names (case-insensitive or normalized whitespace match or overlapping name parts)
+     * 2. Similar addresses (partial substring match)
+     */
+    public DuplicatePersonWarning isSamePersonWarn(Person otherPerson) {
+        if (hasSimilarName(otherPerson)) {
+            return new DuplicatePersonWarning(true, DuplicatePersonWarning.MESSAGE_SIMILAR_NAME);
+        }
+
+        return new DuplicatePersonWarning(
+                hasSimilarAddress(otherPerson),
+                DuplicatePersonWarning.MESSAGE_SIMILAR_ADDRESS);
+    }
+
+    private boolean hasSimilarName(Person otherPerson) {
+        String thisName = normalizeName(this.name.fullName);
+        String otherName = normalizeName(otherPerson.getName().fullName);
+
+        if (thisName.equals(otherName)) {
+            return true;
+        }
+
+        String[] thisParts = thisName.split(ParserUtil.SPACE_SEPARATOR);
+        String[] otherParts = otherName.split(ParserUtil.SPACE_SEPARATOR);
+
+        Set<String> nameParts = new HashSet<>(Arrays.asList(thisParts));
+
+        for (String part : otherParts) {
+            if (nameParts.contains(part)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static String normalizeName(String name) {
+        return name.toLowerCase().trim().replaceAll(WHITESPACE_REGEX, " ");
+    }
+
+    private boolean hasSimilarAddress(Person otherPerson) {
+        String thisAddress = this.address.value.toLowerCase().trim();
+        String otherAddress = otherPerson.getAddress().value.toLowerCase().trim();
+
+        return thisAddress.contains(otherAddress) || otherAddress.contains(thisAddress);
     }
 
     /**
