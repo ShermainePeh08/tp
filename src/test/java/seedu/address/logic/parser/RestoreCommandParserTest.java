@@ -24,6 +24,11 @@ public class RestoreCommandParserTest {
     }
 
     @Test
+    public void parse_emptyArgs_throwsParseException() {
+        assertThrows(ParseException.class, () -> parser.parse(""));
+    }
+
+    @Test
     public void parse_invalidIndex_throwsParseException() {
         assertThrows(ParseException.class, () -> parser.parse("x"));
     }
