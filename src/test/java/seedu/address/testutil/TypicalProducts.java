@@ -35,11 +35,11 @@ public class TypicalProducts {
      * Returns an {@code Inventory} with all the typical products.
      */
     public static Inventory getTypicalInventory() {
-        Inventory ab = new Inventory();
+        Inventory inv = new Inventory();
         for (Product product : getTypicalProducts()) {
-            ab.addProduct(product);
+            inv.addProduct(product);
         }
-        return ab;
+        return inv;
     }
 
     public static List<Product> getTypicalProducts() {
