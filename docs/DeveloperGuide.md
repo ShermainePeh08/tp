@@ -251,11 +251,118 @@ The following activity diagram summarizes what happens when a user executes a ne
 
 _{more aspects and alternatives to be added}_
 
-### \[Proposed\] Data archiving
+### Data archiving
+#### Implementation
+{currently for vendor only}
 
-_{Explain here how the data archiving feature will be implemented}_
+The archive feature allows vendor contacts to be hidden from the main list without permanently deleting them. Archived vendors remain stored in the system and can be restored later.
+
+The feature introduces two new commands:
+```
+archive INDEX
+restore INDEX
+```
+
+Internally, vendors are represented using the `Person` class. A boolean field `archived` is introduced in the `Person` model to track whether a vendor is archived.
 
 
+Archived vendors are stored in the same `AddressBook` data structure as active vendors. Instead of deleting vendors, the `archived` field is set to `true`.
+
+The archive and restore operations are exposed through the `Model` interface:
+```
+Model#archivePerson(Person person)
+Model#restorePerson(Person person)
+```
+
+These operations update the `Person` object.
+
+---
+
+#### Command Flow
+
+The following sequence occurs when executing `archive 1`:
+
+1. The user enters the command `archive 1`.
+2. `AddressBookParser` identifies the command word `archive`.
+3. `ArchiveCommandParser` parses the index argument.
+4. An `ArchiveCommand` object is created.
+5. `LogicManager` executes the command.
+6. The command retrieves the vendor from the filtered person list.
+7. `Model.archivePerson()` is called.
+8. The `Person` object is replaced with a new instance with `archived = true`.
+9. The UI updates automatically because archived vendors are excluded from the filtered list.
+
+The `restore vendor INDEX` command follows a similar flow but sets `archived = false`.
+
+---
+
+#### Filtering Behaviour
+
+Archived vendors are hidden from the default UI display.
+
+The model maintains a filtered list where:
+```
+person -> !person.isArchived()
+```
+
+This ensures archived vendors remain stored but are not displayed in the main vendor list.
+
+When a vendor is restored, the archived flag is set to `false`, causing the vendor to reappear in the UI.
+
+---
+
+#### Error Handling
+
+Error handling is implemented for index.
+{more implementations to be added}
+
+
+If the index is outside the displayed list range, a `CommandException` is thrown.
+
+**Model Layer**
+
+Protects internal state consistency. For example, attempting to archive an already archived vendor results in an `IllegalArgumentException`.
+
+---
+
+#### Design Considerations
+
+**Aspect: Representation of archived vendors**
+
+Option 1 (Current implementation): Use a boolean `archived` flag in the `Person` model.
+
+Pros:
+- Simple implementation
+- Minimal changes to existing architecture
+- Archived vendors remain stored in the same data structure
+
+Cons:
+- Requires filtering logic when displaying vendors
+
+Option 2: Maintain a separate archive list.
+
+Pros:
+- Clear separation between active and archived vendors
+
+Cons:
+- Increases model complexity
+- Requires synchronization between lists
+
+Option 1 was chosen as it integrates better with the existing data structure and keeps the implementation lightweight.
+
+---
+
+#### Future Improvements
+
+Future extensions may allow vendors to be archived using other identifiers such as:
+```
+archive email john@email.com
+archive name Alice
+restore phone 91234567
+```
+
+
+{product implementation to be added}
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Documentation, logging, testing, configuration, dev-ops**
