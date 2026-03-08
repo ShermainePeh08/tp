@@ -66,6 +66,15 @@ public interface Model {
     ReadOnlyInventory getInventory();
 
     /**
+     * Replaces all vendor vault data with the data in {@code vendorVault}.
+     */
+    void setVendorVault(ReadOnlyVendorVault vendorVault);
+
+    /** Returns the full VendorVault aggregate. */
+    ReadOnlyVendorVault getVendorVault();
+
+    // =========== Person ==================================================================================
+    /**
      * Returns true if a person with the same identity as {@code person} exists in the address book.
      */
     boolean hasPerson(Person person);
