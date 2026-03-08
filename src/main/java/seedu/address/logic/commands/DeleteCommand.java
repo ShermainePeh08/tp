@@ -64,24 +64,36 @@ public class DeleteCommand extends Command {
 
         Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
 
-        this.pendingConfirmation = new PendingConfirmation(() -> {
-            model.deletePerson(personToDelete);
-
-            model.commitVendorVault();
-            model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-            return Optional.of(new CommandResult(
-                    String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete))));
-        }, () -> {
-            model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-            return Optional.of(new CommandResult(
-                            String.format(MESSAGE_DELETE_FAILURE)
-            ));
-        }
-        );
+        this.pendingConfirmation = new PendingConfirmation(() ->
+                this.onConfirm(model, personToDelete), () -> this.onCancel(model));
 
         NameEqualsKeywordsPredicate predicate = new NameEqualsKeywordsPredicate(personToDelete);
         model.updateFilteredPersonList(predicate);
         return new CommandResult(CONFIRMATION_DELETE_PERSON_MESSAGE);
+    }
+
+    /**
+     * Executes the deletion of specified person from model upon confirmation
+     * Resets the displayed person list to show all the person after deletion
+     *
+     */
+    public Optional<CommandResult> onConfirm(Model model, Person personToDelete) {
+        model.deletePerson(personToDelete);
+
+        model.commitVendorVault();
+        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        return Optional.of(new CommandResult(
+                String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete))));
+    }
+
+    /**
+     * Cancels the deletion and reset the displayed person list to show all persons.
+     *
+     */
+    public Optional<CommandResult> onCancel(Model model) {
+        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        return Optional.of(new CommandResult(
+                String.format(MESSAGE_DELETE_FAILURE)));
     }
 
     @Override
