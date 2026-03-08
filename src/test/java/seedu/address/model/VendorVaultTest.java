@@ -1,6 +1,8 @@
 package seedu.address.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalProducts.getTypicalInventory;
@@ -70,6 +72,46 @@ public class VendorVaultTest {
     public void getProductList_modifyList_throwsUnsupportedOperationException() {
         vendorVault.resetData(createTypicalVendorVault());
         assertThrows(UnsupportedOperationException.class, () -> vendorVault.getProductList().remove(0));
+    }
+
+    @Test
+    public void getAddressBook_returnsAddressBookData() {
+        vendorVault.setAddressBook(getTypicalAddressBook());
+
+        assertEquals(getTypicalAddressBook(), vendorVault.getAddressBook());
+    }
+
+    @Test
+    public void getInventory_returnsInventoryData() {
+        vendorVault.setInventory(getTypicalInventory());
+
+        assertEquals(getTypicalInventory(), vendorVault.getInventory());
+    }
+
+    @Test
+    public void toStringMethod() {
+        String expected = VendorVault.class.getCanonicalName() + "{addressBook=" + vendorVault.getAddressBook()
+                + ", inventory=" + vendorVault.getInventory() + "}";
+        assertEquals(expected, vendorVault.toString());
+    }
+
+    @Test
+    public void equals() {
+        VendorVault expected = createTypicalVendorVault();
+        VendorVault copy = createTypicalVendorVault();
+
+        assertTrue(expected.equals(copy));
+        assertTrue(expected.equals(expected));
+        assertFalse(expected.equals(null));
+        assertFalse(expected.equals(1));
+
+        VendorVault differentAddressBook = createTypicalVendorVault();
+        differentAddressBook.setAddressBook(new AddressBook());
+        assertFalse(expected.equals(differentAddressBook));
+
+        VendorVault differentInventory = createTypicalVendorVault();
+        differentInventory.setInventory(new Inventory());
+        assertFalse(expected.equals(differentInventory));
     }
 
     private VendorVault createTypicalVendorVault() {
