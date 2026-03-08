@@ -3,8 +3,10 @@ package seedu.address.ui;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 
+/**
+ * UI component that represents a product card.
+ */
 public class ProductCard extends UiPart<HBox> {
 
     private static final String FXML = "ProductCard.fxml";
@@ -18,6 +20,12 @@ public class ProductCard extends UiPart<HBox> {
     @FXML
     private Label quantity;
 
+    /**
+     * Creates a ProductCard displaying the specified {@code Product}.
+     *
+     * @param product Product to display.
+     * @param displayedIndex Index shown in the inventory list.
+     */
     public ProductCard(String product, int displayedIndex) {
         super(FXML);
         this.product = product;

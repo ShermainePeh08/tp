@@ -5,14 +5,17 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
+/**
+ * Displays the inventory list in the right panel.
+ */
 public class InventoryListPanel extends UiPart<Region> {
 
     private static final String FXML = "InventoryListPanel.fxml";
@@ -21,6 +24,9 @@ public class InventoryListPanel extends UiPart<Region> {
     @FXML
     private ListView<String> inventoryListView;
 
+    /**
+     * Creates an InventoryListPanel with sample inventory data.
+     */
     public InventoryListPanel() {
         super(FXML);
 
@@ -42,8 +48,13 @@ public class InventoryListPanel extends UiPart<Region> {
             boolean lowA = qtyA <= LOW_STOCK_THRESHOLD;
             boolean lowB = qtyB <= LOW_STOCK_THRESHOLD;
 
-            if (lowA && !lowB) return -1;
-            if (!lowA && lowB) return 1;
+            if (lowA && !lowB) {
+                return -1;
+            }
+
+            if (!lowA && lowB) {
+                return 1;
+            }
 
             return Integer.compare(qtyA, qtyB);
         });
@@ -86,17 +97,17 @@ public class InventoryListPanel extends UiPart<Region> {
 
                 if (qty <= LOW_STOCK_THRESHOLD) {
                     qtyLabel.setStyle(
-                        "-fx-background-color: #e55d5d;" +
-                        "-fx-background-radius: 12;" +
-                        "-fx-padding: 4 12 4 12;" +
-                        "-fx-text-fill: white;"
+                        "-fx-background-color: #e55d5d;"
+                        + "-fx-background-radius: 12;"
+                        + "-fx-padding: 4 12 4 12;"
+                        + "-fx-text-fill: white;"
                     );
                 } else {
                     qtyLabel.setStyle(
-                        "-fx-background-color: #4bac80;" +
-                        "-fx-background-radius: 12;" +
-                        "-fx-padding: 4 12 4 12;" +
-                        "-fx-text-fill: white;"
+                        "-fx-background-color: #4bac80;"
+                        + "-fx-background-radius: 12;"
+                        + "-fx-padding: 4 12 4 12;"
+                        + "-fx-text-fill: white;"
                     );
                 }
 
