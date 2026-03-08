@@ -531,7 +531,7 @@ Use case ends.
 
 * 7a. Storage file cannot be written or accessed.
   * 7a1. VV displays a failure message indicating inventory could not be saved.
- 
+
   Use case ends.
 
 **Use Case: UC 5 - View Products**
