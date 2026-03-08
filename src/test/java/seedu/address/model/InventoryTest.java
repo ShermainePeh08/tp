@@ -7,6 +7,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_PRODUCT_NAME_AI
 import static seedu.address.logic.commands.CommandTestUtil.VALID_QUANTITY_IPHONE;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalProducts.OIL;
+import static seedu.address.testutil.TypicalProducts.RICE;
 import static seedu.address.testutil.TypicalProducts.getTypicalInventory;
 
 import java.util.Arrays;
@@ -20,6 +21,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.model.product.Product;
 import seedu.address.model.product.exceptions.DuplicateProductException;
+import seedu.address.model.product.exceptions.ProductNotFoundException;
 import seedu.address.testutil.ProductBuilder;
 
 public class InventoryTest {
@@ -29,6 +31,13 @@ public class InventoryTest {
     @Test
     public void constructor() {
         assertEquals(Collections.emptyList(), inventory.getProductList());
+    }
+
+    @Test
+    public void constructor_withValidReadOnlyInventory_copiesData() {
+        Inventory newData = getTypicalInventory();
+        Inventory inventory = new Inventory(newData);
+        assertEquals(newData, inventory);
     }
 
     @Test
@@ -45,10 +54,9 @@ public class InventoryTest {
 
     @Test
     public void resetData_withDuplicateProducts_throwsDuplicateProductException() {
-        // Two products with the same identity fields
-        Product editedAlice = new ProductBuilder(OIL).withName(VALID_PRODUCT_NAME_AIRPODS)
+        Product editedOil = new ProductBuilder(OIL).withName(VALID_PRODUCT_NAME_AIRPODS)
                 .withQuantity(VALID_QUANTITY_IPHONE).build();
-        List<Product> newProducts = Arrays.asList(OIL, editedAlice);
+        List<Product> newProducts = Arrays.asList(OIL, editedOil);
         InventoryStub newData = new InventoryStub(newProducts);
 
         assertThrows(DuplicateProductException.class, () -> inventory.resetData(newData));
@@ -73,9 +81,73 @@ public class InventoryTest {
     @Test
     public void hasProduct_productWithSameIdentityFieldsInInventory_returnsTrue() {
         inventory.addProduct(OIL);
-        Product editedAlice = new ProductBuilder(OIL).withName(VALID_PRODUCT_NAME_AIRPODS)
+        Product editedOil = new ProductBuilder(OIL).withName(VALID_PRODUCT_NAME_AIRPODS)
                 .withQuantity(VALID_QUANTITY_IPHONE).build();
-        assertTrue(inventory.hasProduct(editedAlice));
+        assertTrue(inventory.hasProduct(editedOil));
+    }
+
+    @Test
+    public void setProduct_nullTargetProduct_throwsNullPointerException() {
+        inventory.addProduct(OIL);
+        assertThrows(NullPointerException.class, () -> inventory.setProduct(null, OIL));
+    }
+
+    @Test
+    public void setProduct_nullEditedProduct_throwsNullPointerException() {
+        inventory.addProduct(OIL);
+        assertThrows(NullPointerException.class, () -> inventory.setProduct(OIL, null));
+    }
+
+    @Test
+    public void setProduct_targetProductNotInInventory_throwsProductNotFoundException() {
+        assertThrows(ProductNotFoundException.class, () -> inventory.setProduct(OIL, OIL));
+    }
+
+    @Test
+    public void setProduct_editedProductHasSameIdentity_success() {
+        inventory.addProduct(OIL);
+        Product editedOil = new ProductBuilder(OIL).withName(VALID_PRODUCT_NAME_AIRPODS)
+                .withQuantity(VALID_QUANTITY_IPHONE).build();
+
+        inventory.setProduct(OIL, editedOil);
+        Inventory expectedInventory = new Inventory();
+        expectedInventory.addProduct(editedOil);
+
+        assertEquals(expectedInventory, inventory);
+    }
+
+    @Test
+    public void setProduct_editedProductHasDifferentIdentity_success() {
+        inventory.addProduct(OIL);
+        inventory.setProduct(OIL, RICE);
+        Inventory expectedInventory = new Inventory();
+        expectedInventory.addProduct(RICE);
+        assertEquals(expectedInventory, inventory);
+    }
+
+    @Test
+    public void setProduct_editedProductHasNonUniqueIdentity_throwsDuplicateProductException() {
+        inventory.addProduct(OIL);
+        inventory.addProduct(RICE);
+        assertThrows(DuplicateProductException.class, () -> inventory.setProduct(RICE, OIL));
+    }
+
+    @Test
+    public void removeProduct_nullProduct_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> inventory.removeProduct(null));
+    }
+
+    @Test
+    public void removeProduct_missingProduct_throwsProductNotFoundException() {
+        assertThrows(ProductNotFoundException.class, () -> inventory.removeProduct(OIL));
+    }
+
+    @Test
+    public void removeProduct_existingProduct_removesProduct() {
+        inventory.addProduct(OIL);
+        inventory.removeProduct(OIL);
+        Inventory expectedInventory = new Inventory();
+        assertEquals(expectedInventory, inventory);
     }
 
     @Test
