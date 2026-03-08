@@ -259,8 +259,8 @@ The archive feature allows vendor contacts to be hidden from the main list witho
 
 The feature introduces two new commands:
 ```
-archive vendor INDEX
-restore vendor INDEX
+archive INDEX
+restore INDEX
 ```
 
 Internally, vendors are represented using the `Person` class. A boolean field `archived` is introduced in the `Person` model to track whether a vendor is archived.
@@ -280,9 +280,9 @@ These operations update the `Person` object.
 
 #### Command Flow
 
-The following sequence occurs when executing `archive vendor 1`:
+The following sequence occurs when executing `archive 1`:
 
-1. The user enters the command `archive vendor 1`.
+1. The user enters the command `archive 1`.
 2. `AddressBookParser` identifies the command word `archive`.
 3. `ArchiveCommandParser` parses the index argument.
 4. An `ArchiveCommand` object is created.
@@ -356,9 +356,9 @@ Option 1 was chosen as it integrates better with the existing data structure and
 
 Future extensions may allow vendors to be archived using other identifiers such as:
 ```
-archive vendor email john@email.com
-archive vendor name Alice
-restore vendor phone 91234567
+archive email john@email.com
+archive name Alice
+restore phone 91234567
 ```
 
 
@@ -531,7 +531,7 @@ Use case ends.
 
 * 7a. Storage file cannot be written or accessed.
   * 7a1. VV displays a failure message indicating inventory could not be saved.
-
+ 
   Use case ends.
 
 **Use Case: UC 5 - View Products**
