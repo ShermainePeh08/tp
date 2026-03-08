@@ -65,7 +65,7 @@ public class Email {
      * Used for warning users about potential issues with their input.
      *
      * @param test the string to test.
-     * @return true if the string is a valid email according to the stronger length validation criteria.
+     * @return true if the string is a valid email according to the length validation criteria.
      */
     public static boolean isValidEmailWarn(String test) {
         return test.matches(SOFT_VALIDATION_REGEX);
