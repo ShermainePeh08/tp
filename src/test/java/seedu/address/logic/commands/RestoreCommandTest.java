@@ -1,6 +1,8 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import org.junit.jupiter.api.Test;
 
@@ -40,5 +42,14 @@ public class RestoreCommandTest {
         RestoreCommand restoreCommand = new RestoreCommand(Index.fromOneBased(1));
         PendingConfirmation pendingConfirmation = restoreCommand.getPendingConfirmation();
         assertFalse(pendingConfirmation.getNeedConfirmation());
+    }
+
+    @Test
+    public void execute_invalidIndex_throwsCommandException() {
+        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+
+        RestoreCommand command = new RestoreCommand(Index.fromOneBased(1));
+
+        assertThrows(CommandException.class, () -> command.execute(model));
     }
 }

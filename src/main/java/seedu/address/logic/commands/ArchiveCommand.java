@@ -24,9 +24,9 @@ public class ArchiveCommand extends Command {
     public static final String COMMAND_WORD = "archive";
 
     public static final String MESSAGE_USAGE =
-            COMMAND_WORD + " vendor INDEX\n"
-            + "Archives the vendor identified by the index number used in the displayed vendor list.\n"
-            + "Example: " + COMMAND_WORD + " vendor 1";
+            COMMAND_WORD + " INDEX\n"
+            + "Archives the vendor identified by the index number in the displayed vendor list.\n"
+            + "Example: " + COMMAND_WORD + " 1";
 
     public static final String MESSAGE_ARCHIVE_SUCCESS =
             "Archived Vendor: %1$s";
