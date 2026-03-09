@@ -1,9 +1,9 @@
 package seedu.address.logic.parser;
 
+import java.util.Arrays;
+
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-
-import java.util.Arrays;
 
 /**
  * Parses input arguments and creates a new DeleteCommand object
@@ -14,7 +14,7 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
             "Invalid format. The '-y' flag must be separate from the index.\n"
                     + "Example: delete -y 1";
 
-    private final String CONFIRMATION_INDICATOR = "-y";
+    public static final String CONFIRMATION_INDICATOR = "-y";
 
     /**
      * Parses the given {@code String} of arguments in the context of the DeleteCommand

@@ -95,6 +95,11 @@ public class DeleteCommand extends Command {
                 : Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX + VALID_CONTACT_DELETE_RANGE + lastShownList.size();
     }
 
+    /**
+     * Deletes the specified person from the model and commits the change.
+     * After deletion, the list will show all the contacts.
+     *
+     */
     public CommandResult deletePerson(Model model, Person personToDelete) {
         model.deletePerson(personToDelete);
 
