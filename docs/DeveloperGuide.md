@@ -394,24 +394,23 @@ By flagging and sorting low-quantity products, owners instantly know what needs 
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​     | I want to …​                | So that I can…​                                                   |
-|----------|-------------|-----------------------------|-------------------------------------------------------------------|
-| `* *`    | new user    | see usage guide             | recap and learn commands                                          |
-| `* * *`  | user        | add a new contact           | add new vendors I work with                                       |
-| `* * *`  | user        | delete a contact            | remove vendors I no longer work with                              |
-| `* * *`  | user        | view contacts               |                                                                   |
-| `* *`    | user        | find a contact by name      | locate their details without having to go through the entire list |
-| `* *`    | user        | sort contacts by name       | browse them easily                                                |
-| `* *`    | user        | filter contact by category  | view similar vendors                                              |
-| `* * *`  | user        | add a product               | add new products I sell                                           |
-| `* * *`  | user        | delete a product            | remove products I no longer sell                                  |
-| `* * *`  | user        | view products               |                                                                   |
-| `* *`    | user        | sort products by name       | browse them easily                                                |
-| `* *`    | user        | filter products by category | view similar products                                             |
-| `* *`    | user        | view inventory statistics   | understand my product quantity levels                             |
-| `* *`    | expert user | add alias for commands      | create alias for long commands according to my preferences        |
-| `* *`    | expert user | delete alias for commands   | remove alias for I no longer want to use                          |
-| `* *`    | expert user | view aliases for commands   | view all aliases that I have set                                  |
+| Priority | As a …      | I want to …               | So that I can …                                                   |
+|----------|-------------|---------------------------|-------------------------------------------------------------------|
+| `* *`    | new user    | see usage guide           | recap and learn commands                                          |
+| `* * *`  | user        | add a new contact         | add new vendors I work with                                       |
+| `* * *`  | user        | delete a contact          | remove vendors I no longer work with                              |
+| `* * *`  | user        | view contacts             |                                                                   |
+| `* *`    | user        | find a contact by name    | locate their details without having to go through the entire list |
+| `*`      | user        | sort contacts by name     | browse them easily                                                |
+| `* * *`  | user        | add a product             | add new products I sell                                           |
+| `* * *`  | user        | delete a product          | remove products I no longer sell                                  |
+| `* * *`  | user        | view products             |                                                                   |
+| `* *`    | user        | find a product by name    | locate their details without having to go through the entire list |
+| `*`      | user        | sort products by name     | browse them easily                                                |
+| `* *`    | user        | view inventory statistics | understand my product quantity levels                             |
+| `* *`    | expert user | add alias for commands    | create alias for long commands according to my preferences        |
+| `* *`    | expert user | delete alias for commands | remove alias for I no longer want to use                          |
+| `* *`    | expert user | view aliases for commands | view all aliases that I have set                                  |
 
 ### Use cases
 
