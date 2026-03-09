@@ -72,7 +72,7 @@ public class SampleDataUtil {
     public static Product[] getSampleProducts() {
         return new Product[] {
             new Product(new Identifier("DS-1001"), productName("AA Batteries 4 Pack"),
-                    new Quantity("60")),
+                    new Quantity("10")),
             new Product(new Identifier("DS-1002"), productName("LED Bulb 9W"),
                     new Quantity("45")),
             new Product(new Identifier("DS-1003"), productName("Toothpaste 120g"),
