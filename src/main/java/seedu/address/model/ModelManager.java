@@ -13,8 +13,6 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Person;
 import seedu.address.model.product.Product;
-import seedu.address.model.util.SampleInventoryDataUtil;
-import seedu.address.model.product.Product;
 
 /**
  * Represents the in-memory model of the vendor vault data.
@@ -38,7 +36,6 @@ public class ModelManager implements Model {
         logger.fine("Initializing with address book: " + addressBook + " and user prefs " + userPrefs);
 
         this.inventory = new Inventory();
-        this.inventory.resetData(SampleInventoryDataUtil.getSampleInventory());
 
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);

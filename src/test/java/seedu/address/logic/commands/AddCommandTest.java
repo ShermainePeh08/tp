@@ -424,11 +424,6 @@ public class AddCommandTest {
         }
 
         @Override
-        public void setProduct(Product target, Product editedProduct) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
         public ObservableList<Person> getFilteredPersonList() {
             throw new AssertionError("This method should not be called.");
         }
@@ -470,16 +465,6 @@ public class AddCommandTest {
 
         @Override
         public boolean canUndoVendorVault() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public void updateFilteredProductList(Predicate<Product> predicate) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public ObservableList<Product> getFilteredProductList() {
             throw new AssertionError("This method should not be called.");
         }
 
