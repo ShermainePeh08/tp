@@ -35,7 +35,7 @@ public class InventoryListPanel extends UiPart<Region> {
             + "-fx-text-fill: white;";
 
     private static final int ID_WIDTH = 50;
-    private static final int QTY_COLUMN_WIDTH = 100;
+    private static final int QTY_COLUMN_WIDTH = 80;
     private static final int NAME_COLUMN_MIN_WIDTH = 40;
 
     @FXML
@@ -105,7 +105,7 @@ public class InventoryListPanel extends UiPart<Region> {
                 nameLabel.setTextFill(Color.WHITE);
                 nameLabel.setWrapText(true);
                 nameLabel.setMinWidth(NAME_COLUMN_MIN_WIDTH);
-                nameLabel.setMaxWidth(Double.MAX_VALUE);
+                nameLabel.setMaxWidth(600);
                 HBox.setHgrow(nameLabel, Priority.ALWAYS);
 
                 Label qtyLabel = new Label(String.valueOf(qty));
@@ -125,11 +125,6 @@ public class InventoryListPanel extends UiPart<Region> {
                 row.setAlignment(Pos.CENTER_LEFT);
                 row.setStyle("-fx-padding: 10 20 10 20;");
 
-                /*
-                 * Critical fix:
-                 * force the row to use the available cell width,
-                 * so it wraps instead of causing horizontal scrolling.
-                 */
                 row.prefWidthProperty().bind(getListView().widthProperty().subtract(18));
                 row.maxWidthProperty().bind(getListView().widthProperty().subtract(18));
 

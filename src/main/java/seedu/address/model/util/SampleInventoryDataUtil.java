@@ -19,7 +19,12 @@ public class SampleInventoryDataUtil {
             new Product(new Identifier("P001"), new Name("MilkMilkMilkMilkMilkMilkMilkMilk"), new Quantity("30")),
             new Product(new Identifier("P002"), new Name("ApplesApplesApplesApplesApplesApplesApplesApples"), new Quantity("8")),
             new Product(new Identifier("P003"), new Name("BreadBreadBreadBreadBreadBreadBreadBreadBread"), new Quantity("150000")),
-            new Product(new Identifier("P004"), new Name("Eggs"), new Quantity("5"))
+            new Product(new Identifier("P004"), new Name("Eggs"), new Quantity("5")),
+            new Product(new Identifier("P005"), new Name("Cheese"), new Quantity("20")),
+            new Product(new Identifier("P006"), new Name("Butter"), new Quantity("12")),
+            new Product(new Identifier("P007"), new Name("Yogurt"), new Quantity("3")),
+            new Product(new Identifier("P008"), new Name("Orange Juice"), new Quantity("25")),
+            new Product(new Identifier("P009"), new Name("Cereal"), new Quantity("10"))
         };
     }
 
