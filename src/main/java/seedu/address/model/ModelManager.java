@@ -42,7 +42,7 @@ public class ModelManager implements Model {
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
         filteredPersons.setPredicate(Model.PREDICATE_SHOW_ACTIVE_PERSONS);
         filteredProducts = new FilteredList<>(this.inventory.getProductList());
-        filteredProducts.setPredicate(Model.PREDICATE_SHOW_ALL_PRODUCTS);
+        filteredProducts.setPredicate(product -> !product.isArchived());
         versionedVendorVault = new VersionedVendorVault(addressBook);
     }
 
@@ -225,6 +225,26 @@ public class ModelManager implements Model {
     public void updateFilteredProductList(Predicate<Product> predicate) {
         requireNonNull(predicate);
         filteredProducts.setPredicate(predicate);
+    }
+
+    @Override
+    public void archiveProduct(Product product) {
+        requireNonNull(product);
+
+        Product archived = product.archive();
+        inventory.setProduct(product, archived);
+
+        updateFilteredProductList(p -> !p.isArchived());
+    }
+
+    @Override
+    public void restoreProduct(Product product) {
+        requireNonNull(product);
+
+        Product restored = product.restore();
+        inventory.setProduct(product, restored);
+
+        updateFilteredProductList(p -> !p.isArchived());
     }
 
     // =========== VendorVaultVersionControl ===================================================================

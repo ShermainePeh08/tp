@@ -97,6 +97,14 @@ public class UniqueProductList implements Iterable<Product> {
         internalList.setAll(products);
     }
 
+    public void archiveProduct(Product product) {
+        setProduct(product, product.archive());
+    }
+
+    public void restoreProduct(Product product) {
+        setProduct(product, product.restore());
+    }
+
     /**
      * Returns the backing list as an unmodifiable {@code ObservableList}.
      */
