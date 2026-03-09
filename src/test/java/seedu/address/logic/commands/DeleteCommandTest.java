@@ -37,6 +37,50 @@ public class DeleteCommandTest {
         return Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX
                 + DeleteCommand.VALID_CONTACT_DELETE_RANGE + model.getFilteredPersonList().size();
     }
+
+    @Test
+    public void execute_emptyList_throwCommandException() {
+        model.updateFilteredPersonList(p -> false);
+
+        DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON_STRING);
+        String expectedMessage = Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX + DeleteCommand.CONTACT_IS_EMPTY;
+
+        assertCommandFailure(deleteCommand, model, expectedMessage);
+    }
+
+    @Test
+    public void execute_nonIntegerIndex_throwsCommandException() {
+        DeleteCommand deleteCommand = new DeleteCommand("abcijabhisbaib");
+
+        assertCommandFailure(deleteCommand, model, format_exception_message(model));
+    }
+
+    @Test
+    public void execute_zeroIndex_throwsCommandException() {
+        DeleteCommand deleteCommand = new DeleteCommand("0");
+
+        assertCommandFailure(deleteCommand, model, format_exception_message(model));
+    }
+
+    @Test
+    public void execute_negativeIndex_throwsCommandException() {
+        DeleteCommand deleteCommand = new DeleteCommand("-1");
+
+        assertCommandFailure(deleteCommand, model, format_exception_message(model));
+    }
+
+    @Test
+    public void execute_indexWithWhitespace_success() {
+        Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        DeleteCommand deleteCommand = new DeleteCommand("  " + INDEX_FIRST_PERSON_STRING + "  ");
+
+        ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        NameEqualsKeywordsPredicate predicate = new NameEqualsKeywordsPredicate(personToDelete);
+        expectedModel.updateFilteredPersonList(predicate);
+
+        assertCommandSuccess(deleteCommand, model, CONFIRMATION_DELETE_PERSON_MESSAGE, expectedModel);
+    }
+
     @Test
     public void execute_validIndexUnfilteredListDeleteOnly_success() {
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
