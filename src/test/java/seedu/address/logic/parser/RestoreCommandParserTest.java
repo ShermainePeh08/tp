@@ -14,7 +14,7 @@ public class RestoreCommandParserTest {
 
     @Test
     public void parse_validArgs_returnsRestoreCommand() throws Exception {
-        RestoreCommand command = parser.parse("vendor 1");
+        RestoreCommand command = parser.parse("1");
         assertTrue(command instanceof RestoreCommand);
     }
 
@@ -24,7 +24,12 @@ public class RestoreCommandParserTest {
     }
 
     @Test
+    public void parse_emptyArgs_throwsParseException() {
+        assertThrows(ParseException.class, () -> parser.parse(""));
+    }
+
+    @Test
     public void parse_invalidIndex_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse("vendor x"));
+        assertThrows(ParseException.class, () -> parser.parse("x"));
     }
 }

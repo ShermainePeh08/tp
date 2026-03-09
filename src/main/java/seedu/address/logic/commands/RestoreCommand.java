@@ -1,11 +1,11 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 
 import java.util.List;
 
 import seedu.address.commons.core.index.Index;
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
@@ -24,9 +24,9 @@ public class RestoreCommand extends Command {
     public static final String COMMAND_WORD = "restore";
 
     public static final String MESSAGE_USAGE =
-            COMMAND_WORD + " vendor INDEX\n"
-            + "Restores the archived vendor identified by the index number used in the displayed vendor list.\n"
-            + "Example: " + COMMAND_WORD + " vendor 1";
+            COMMAND_WORD + " INDEX\n"
+            + "Restores the archived vendor identified by the index number.\n"
+            + "Example: " + COMMAND_WORD + " 1";
 
     public static final String MESSAGE_RESTORE_SUCCESS =
             "Restored Vendor: %1$s";
@@ -53,20 +53,24 @@ public class RestoreCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        // show archived vendors temporarily
-        model.updateFilteredPersonList(person -> person.isArchived());
-
-        List<Person> archivedList = model.getFilteredPersonList();
+        // get archived persons WITHOUT changing UI
+        List<Person> archivedList = model.getAddressBook().getPersonList()
+                .stream()
+                .filter(Person::isArchived)
+                .toList();
 
         if (targetIndex.getZeroBased() >= archivedList.size()) {
-            throw new CommandException(MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
-        Person vendorToRestore = archivedList.get(targetIndex.getZeroBased());
+        Person personToRestore = archivedList.get(targetIndex.getZeroBased());
 
-        model.restorePerson(vendorToRestore);
+        model.restorePerson(personToRestore);
 
-        return new CommandResult(String.format(MESSAGE_RESTORE_SUCCESS, vendorToRestore));
+        // Only update UI after success
+        model.updateFilteredPersonList(Model.PREDICATE_SHOW_ACTIVE_PERSONS);
+
+        return new CommandResult(String.format(MESSAGE_RESTORE_SUCCESS, personToRestore));
     }
 
     @Override

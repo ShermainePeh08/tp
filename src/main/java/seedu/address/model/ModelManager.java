@@ -14,9 +14,10 @@ import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Person;
 import seedu.address.model.product.Product;
 import seedu.address.model.util.SampleInventoryDataUtil;
+import seedu.address.model.product.Product;
 
 /**
- * Represents the in-memory model of the address book data.
+ * Represents the in-memory model of the vendor vault data.
  */
 public class ModelManager implements Model {
     private static final Logger logger = LogsCenter.getLogger(ModelManager.class);
@@ -27,7 +28,6 @@ public class ModelManager implements Model {
     private final FilteredList<Person> filteredPersons;
     private final FilteredList<Product> filteredProducts;
     private final VersionedVendorVault versionedVendorVault;
-
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -44,15 +44,16 @@ public class ModelManager implements Model {
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
         filteredPersons.setPredicate(Model.PREDICATE_SHOW_ACTIVE_PERSONS);
-        filteredProducts = new FilteredList<>(inventory.getProductList());
+        filteredProducts = new FilteredList<>(this.inventory.getProductList());
+        filteredProducts.setPredicate(Model.PREDICATE_SHOW_ALL_PRODUCTS);
         versionedVendorVault = new VersionedVendorVault(addressBook);
     }
 
     public ModelManager() {
         this(new AddressBook(), new UserPrefs());
     }
-    //=========== UserPrefs ==================================================================================
 
+    // =========== UserPrefs ==================================================================================
 
     @Override
     public void setUserPrefs(ReadOnlyUserPrefs userPrefs) {
@@ -86,8 +87,8 @@ public class ModelManager implements Model {
         requireNonNull(addressBookFilePath);
         userPrefs.setAddressBookFilePath(addressBookFilePath);
     }
-    //=========== AddressBook ================================================================================
 
+    // =========== AddressBook ================================================================================
 
     @Override
     public void setAddressBook(ReadOnlyAddressBook addressBook) {
@@ -97,6 +98,34 @@ public class ModelManager implements Model {
     @Override
     public ReadOnlyAddressBook getAddressBook() {
         return addressBook;
+    }
+
+    // =========== Inventory ==================================================================================
+    @Override
+    public void setInventory(ReadOnlyInventory inventory) {
+        this.inventory.resetData(inventory);
+    }
+
+    @Override
+    public ReadOnlyInventory getInventory() {
+        return inventory;
+    }
+
+    // =========== VendorVault ==================================================================================
+
+    @Override
+    public void setVendorVault(ReadOnlyVendorVault vendorVault) {
+        requireNonNull(vendorVault);
+        addressBook.resetData(vendorVault);
+        inventory.resetData(vendorVault);
+    }
+
+    @Override
+    public ReadOnlyVendorVault getVendorVault() {
+        VendorVault vendorVault = new VendorVault();
+        vendorVault.setAddressBook(addressBook);
+        vendorVault.setInventory(inventory);
+        return vendorVault;
     }
 
     @Override
@@ -150,8 +179,25 @@ public class ModelManager implements Model {
         inventory.setProduct(target, editedProduct);
     }
 
-    //=========== Filtered Person List Accessors =============================================================
 
+    @Override
+    public boolean hasProduct(Product product) {
+        requireNonNull(product);
+        return inventory.hasProduct(product);
+    }
+
+    @Override
+    public void deleteProduct(Product target) {
+        inventory.removeProduct(target);
+    }
+
+    @Override
+    public void addProduct(Product product) {
+        inventory.addProduct(product);
+        updateFilteredProductList(PREDICATE_SHOW_ALL_PRODUCTS);
+    }
+
+    // =========== Filtered Person List Accessors =============================================================
 
     /**
      * Returns an unmodifiable view of the list of {@code Person} backed by the internal list of
@@ -184,7 +230,8 @@ public class ModelManager implements Model {
         filteredProducts.setPredicate(predicate);
     }
 
-    //=========== VendorVaultVersionControl  ===================================================================
+    // =========== VendorVaultVersionControl ===================================================================
+
     @Override
     public void commitVendorVault() {
         versionedVendorVault.commit(addressBook);
@@ -213,6 +260,7 @@ public class ModelManager implements Model {
 
         ModelManager otherModelManager = (ModelManager) other;
         return addressBook.equals(otherModelManager.addressBook)
+                && inventory.equals(otherModelManager.inventory)
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredPersons.equals(otherModelManager.filteredPersons)
                 && filteredProducts.equals(otherModelManager.filteredProducts);

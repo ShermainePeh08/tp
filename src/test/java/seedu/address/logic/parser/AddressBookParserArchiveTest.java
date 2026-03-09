@@ -14,11 +14,11 @@ public class AddressBookParserArchiveTest {
 
     @Test
     public void parse_archiveCommand() throws Exception {
-        assertTrue(parser.parseCommand("archive vendor 1", new PendingConfirmation()) instanceof ArchiveCommand);
+        assertTrue(parser.parseCommand("archive 1", new PendingConfirmation()) instanceof ArchiveCommand);
     }
 
     @Test
     public void parse_restoreCommand() throws Exception {
-        assertTrue(parser.parseCommand("restore vendor 1", new PendingConfirmation()) instanceof RestoreCommand);
+        assertTrue(parser.parseCommand("restore 1", new PendingConfirmation()) instanceof RestoreCommand);
     }
 }
