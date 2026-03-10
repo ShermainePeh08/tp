@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.CancelCommand;
 import seedu.address.logic.commands.ClearCommand;
+import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.ConfirmCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
@@ -26,6 +27,7 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.ListProductsCommand;
 import seedu.address.logic.commands.PendingConfirmation;
 import seedu.address.logic.commands.UndoCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -135,5 +137,13 @@ public class AddressBookParserTest {
     public void parseCommand_unknownCommand_throwsParseException() {
         assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("unknownCommand",
                 new PendingConfirmation()));
+    }
+
+    @Test
+    public void parseCommand_listProducts() throws Exception {
+        AddressBookParser parser = new AddressBookParser();
+        Command command = parser.parseCommand("listproducts", new PendingConfirmation());
+
+        assertTrue(command instanceof ListProductsCommand);
     }
 }
