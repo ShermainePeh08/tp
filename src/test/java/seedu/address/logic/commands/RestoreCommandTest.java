@@ -86,4 +86,31 @@ public class RestoreCommandTest {
 
         assertFalse(restored.isArchived());
     }
+
+    @Test
+    public void execute_archivedPersonWithMatchingEmail_restoresPerson() throws Exception {
+        Model model = new ModelManager(TypicalPersons.getTypicalAddressBook(), new UserPrefs());
+
+        Person person = model.getFilteredPersonList().get(0);
+
+        model.archivePerson(person);
+
+        RestoreCommand command = new RestoreCommand(person.getEmail().value);
+
+        command.execute(model);
+
+        Person restored = model.getAddressBook().getPersonList().get(0);
+        assertFalse(restored.isArchived());
+    }
+
+    @Test
+    public void execute_personNotArchived_throwsCommandException() {
+        Model model = new ModelManager(TypicalPersons.getTypicalAddressBook(), new UserPrefs());
+
+        Person person = model.getFilteredPersonList().get(0);
+
+        RestoreCommand command = new RestoreCommand(person.getEmail().value);
+
+        assertThrows(CommandException.class, () -> command.execute(model));
+    }
 }

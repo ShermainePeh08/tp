@@ -332,6 +332,32 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void constructor_filtersArchivedProducts() {
+        ModelManager model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        Product product = new ProductBuilder().build();
+        model.addProduct(product);
+
+        assertEquals(1, model.getFilteredProductList().size());
+    }
+
+    @Test
+    public void restoreProduct_showsProductInFilteredList() {
+        ModelManager model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        Product product = new ProductBuilder().build();
+        model.addProduct(product);
+
+        model.archiveProduct(product);
+
+        Product archived = model.getInventory().getProductList().get(0);
+
+        model.restoreProduct(archived);
+
+        assertEquals(1, model.getFilteredProductList().size());
+    }
+
+    @Test
     public void setInventory_success() {
         ModelManager modelManager = new ModelManager(new AddressBook(), new UserPrefs());
 
