@@ -42,8 +42,8 @@ import seedu.address.testutil.ProductUtil;
 public class AddressBookParserTest {
 
     private final AddressBookParser parser = new AddressBookParser();
-    private final PendingConfirmation confirmation =
-            new PendingConfirmation(() -> Optional.empty(), () -> Optional.empty());
+    private final PendingConfirmation confirmation = new PendingConfirmation(() -> Optional.empty(), () ->
+            Optional.empty());
 
     @Test
     public void parseCommand_add() throws Exception {
@@ -77,6 +77,7 @@ public class AddressBookParserTest {
     public void parseCommand_cancelCommand() throws Exception {
         assertTrue(parser.parseCommand("n", confirmation) instanceof CancelCommand);
     }
+
     @Test
     public void parseCommand_delete() throws Exception {
         DeleteCommand command = (DeleteCommand) parser.parseCommand(
@@ -134,7 +135,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_unrecognisedInput_throwsParseException() {
         assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), ()
-            -> parser.parseCommand("", new PendingConfirmation()));
+                -> parser.parseCommand("", new PendingConfirmation()));
     }
 
     @Test
