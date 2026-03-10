@@ -34,7 +34,7 @@ public class InventoryListPanel extends UiPart<Region> {
             + "-fx-padding: 4 12 4 12;"
             + "-fx-text-fill: white;";
 
-    private static final int ID_WIDTH = 50;
+    private static final int ID_WIDTH = 80;
     private static final int QTY_COLUMN_WIDTH = 80;
     private static final int NAME_COLUMN_MIN_WIDTH = 80;
 

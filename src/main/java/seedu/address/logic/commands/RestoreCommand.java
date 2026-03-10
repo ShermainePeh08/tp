@@ -4,8 +4,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.List;
 
-import seedu.address.commons.core.index.Index;
-import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
@@ -23,23 +21,25 @@ public class RestoreCommand extends Command {
 
     public static final String COMMAND_WORD = "restore";
 
+    public static final String MESSAGE_VENDOR_NOT_FOUND = "No archived vendor found with email: %1$s";
+
     public static final String MESSAGE_USAGE =
-            COMMAND_WORD + " INDEX\n"
-            + "Restores the archived vendor identified by the index number.\n"
-            + "Example: " + COMMAND_WORD + " 1";
+        COMMAND_WORD + ": Restores an archived vendor using email.\n"
+        + "Parameters: EMAIL\n"
+        + "Example: " + COMMAND_WORD + " alexyeoh@example.com";
 
     public static final String MESSAGE_RESTORE_SUCCESS =
             "Restored Vendor: %1$s";
 
-    private final Index targetIndex;
+    private final String email;
 
     /**
      * Creates a RestoreCommand to restore the vendor at the specified {@code Index}.
      *
      * @param targetIndex Index of the vendor in the filtered vendor list.
      */
-    public RestoreCommand(Index targetIndex) {
-        this.targetIndex = targetIndex;
+    public RestoreCommand(String email) {
+        this.email = email;
     }
 
     /**
@@ -53,22 +53,23 @@ public class RestoreCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        // get archived persons WITHOUT changing UI
-        List<Person> archivedList = model.getAddressBook().getPersonList()
-                .stream()
-                .filter(Person::isArchived)
-                .toList();
+        List<Person> persons = model.getAddressBook().getPersonList();
 
-        if (targetIndex.getZeroBased() >= archivedList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        Person personToRestore = persons.stream()
+                .filter(person -> person.isArchived()
+                        && person.getEmail().value.equals(email))
+                .findFirst()
+                .orElse(null);
+
+        if (personToRestore == null) {
+            model.updateFilteredPersonList(Person::isArchived);
+            throw new CommandException(
+                "Please provide the email of the vendor to restore.\n"
+                + "Archived vendors listed below."
+            );
         }
 
-        Person personToRestore = archivedList.get(targetIndex.getZeroBased());
-
         model.restorePerson(personToRestore);
-
-        // Only update UI after success
-        model.updateFilteredPersonList(Model.PREDICATE_SHOW_ACTIVE_PERSONS);
 
         return new CommandResult(String.format(MESSAGE_RESTORE_SUCCESS, personToRestore));
     }

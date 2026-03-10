@@ -2,6 +2,7 @@ package seedu.address.model.product;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_IDENTIFIER_AIRPODS;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PRODUCT_NAME_IPAD;
@@ -43,6 +44,23 @@ public class ProductTest {
     }
 
     @Test
+    public void hashCode_sameProduct_sameHash() {
+        Product product1 = new ProductBuilder(RICE).build();
+        Product product2 = new ProductBuilder(RICE).build();
+
+        assertEquals(product1.hashCode(), product2.hashCode());
+    }
+
+    @Test
+    public void hashCode_differentArchivedStatus_notEqual() {
+        Product product1 = new ProductBuilder().build();
+        Product product2 = product1.archive();
+
+        assertNotEquals(product1.hashCode(), product2.hashCode());
+    }
+
+
+    @Test
     public void equals() {
         // same values -> returns true
         Product riceCopy = new ProductBuilder(RICE).build();
@@ -71,6 +89,13 @@ public class ProductTest {
         // different quantity -> returns false
         editedRice = new ProductBuilder(RICE).withQuantity(VALID_QUANTITY_IPHONE).build();
         assertFalse(RICE.equals(editedRice));
+    }
+
+    @Test
+    public void equals_differentArchivedStatus_false() {
+        Product product1 = new ProductBuilder().build();
+        Product product2 = product1.archive();
+        assertFalse(product1.equals(product2));
     }
 
     @Test

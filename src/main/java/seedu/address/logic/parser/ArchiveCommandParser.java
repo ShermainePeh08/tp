@@ -1,16 +1,15 @@
 package seedu.address.logic.parser;
 
-import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.ArchiveCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
  * Parses input arguments and creates a new {@code ArchiveCommand}.
  */
-public class ArchiveCommandParser implements Parser {
+public class ArchiveCommandParser implements Parser<ArchiveCommand> {
 
     /** Error message for incorrect command format */
-    private static final String MESSAGE_INVALID_FORMAT = "Usage: archive INDEX";
+    private static final String MESSAGE_INVALID_FORMAT = "Email must be provided.";
 
     /**
      * Parses the given {@code String} of arguments in the context of the ArchiveCommand
@@ -23,17 +22,12 @@ public class ArchiveCommandParser implements Parser {
     @Override
     public ArchiveCommand parse(String args) throws ParseException {
 
-        String trimmedArgs = args.trim();
+        String email = args.trim();
 
-        if (trimmedArgs.isEmpty()) {
-            throw new ParseException(MESSAGE_INVALID_FORMAT);
+        if (email.isEmpty()) {
+            throw new ParseException(ArchiveCommand.MESSAGE_USAGE);
         }
 
-        try {
-            Index index = ParserUtil.parseIndex(trimmedArgs);
-            return new ArchiveCommand(index);
-        } catch (ParseException e) {
-            throw new ParseException(MESSAGE_INVALID_FORMAT);
-        }
+        return new ArchiveCommand(email);
     }
 }

@@ -94,6 +94,14 @@ public class Inventory implements ReadOnlyInventory {
         products.remove(key);
     }
 
+    public void archiveProduct(Product product) {
+        products.archiveProduct(product);
+    }
+
+    public void restoreProduct(Product product) {
+        products.restoreProduct(product);
+    }
+
     //// util methods
 
     @Override

@@ -1,11 +1,12 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -25,7 +26,7 @@ public class ArchiveCommandTest {
 
         Person vendorToArchive = model.getFilteredPersonList().get(0);
 
-        ArchiveCommand archiveCommand = new ArchiveCommand(Index.fromOneBased(1));
+        ArchiveCommand archiveCommand = new ArchiveCommand(vendorToArchive.getEmail().value);
 
         archiveCommand.execute(model);
 
@@ -36,9 +37,18 @@ public class ArchiveCommandTest {
 
     @Test
     public void getPendingConfirmation_returnsInactivePendingConfirmation() {
-        ArchiveCommand archiveCommand = new ArchiveCommand(Index.fromOneBased(1));
+        ArchiveCommand archiveCommand = new ArchiveCommand(TypicalPersons.getTypicalPersons().get(0).getEmail().value);
 
         PendingConfirmation pendingConfirmation = archiveCommand.getPendingConfirmation();
         assertFalse(pendingConfirmation.getNeedConfirmation());
+    }
+
+    @Test
+    public void execute_vendorNotFound_throwsCommandException() {
+        Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+
+        ArchiveCommand command = new ArchiveCommand("notfound@email.com");
+
+        assertThrows(CommandException.class, () -> command.execute(model));
     }
 }
