@@ -47,6 +47,7 @@ public class ParserUtilTest {
             + "application. This address is way too long and exceeds the maximum length "
             + "allowed for an address in the vendor vault application. This address is"
             + "way too long and exceeds the maximum length allowed for an address in the vendor vault application. ";
+    private static final String INVALID_LONG_PRODUCT_NAME = "a".repeat(257);
 
     private static final String VALID_NAME = "Rachel Walker";
     private static final String VALID_PHONE = "123456";
@@ -331,6 +332,11 @@ public class ParserUtilTest {
     public void parseProductName_warnValue_returnsWarning() throws Exception {
         assertEquals(seedu.address.model.product.Name.MESSAGE_WARN,
                 ParserUtil.parseProductName(VALID_PRODUCT_NAME_WARN).getWarning().orElse(""));
+    }
+
+    @Test
+    public void parseProductName_invalidLongProductName_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseProductName(INVALID_LONG_PRODUCT_NAME));
     }
 
     @Test
