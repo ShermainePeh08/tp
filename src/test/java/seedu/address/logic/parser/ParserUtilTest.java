@@ -62,8 +62,9 @@ public class ParserUtilTest {
     private static final String INVALID_PRODUCT_NAME = " ";
     private static final String INVALID_QUANTITY = "-1";
 
-    private static final String INVALID_LONG_IDENTIFIER = "a".repeat(257);
-    private static final String INVALID_LONG_PRODUCT_NAME = "a".repeat(257);
+    private static final String INVALID_LONG_IDENTIFIER = "a".repeat(Identifier.MAX_LENGTH + 1);
+    private static final String INVALID_LONG_PRODUCT_NAME = "a".repeat(
+            seedu.address.model.product.Name.MAX_LENGTH + 1);
 
     private static final String WHITESPACE = " \t\r\n";
 
