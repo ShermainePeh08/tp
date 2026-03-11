@@ -150,6 +150,10 @@ public interface Model {
      */
     void updateFilteredProductList(Predicate<Product> predicate);
 
+    void archiveProduct(Product product);
+
+    void restoreProduct(Product product);
+
     // =========== AddressBookVersioning ========================================================================
     /**
      * Commits the current state of vendor vault. This should be called after any operation

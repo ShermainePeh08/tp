@@ -18,15 +18,25 @@ public class Product {
     // Data fields
     private final Name name;
     private final Quantity quantity;
+    private final boolean isArchived;
 
     /**
-     * Every field must be present and not null.
+     * Creates a Product that is not archived.
      */
     public Product(Identifier identifier, Name name, Quantity quantity) {
+        this(identifier, name, quantity, false);
+    }
+
+    /**
+     * Creates a Product with the specified archived status.
+     * Every field must be present and not null.
+     */
+    public Product(Identifier identifier, Name name, Quantity quantity, boolean isArchived) {
         requireAllNonNull(identifier, name, quantity);
         this.identifier = identifier;
         this.name = name;
         this.quantity = quantity;
+        this.isArchived = isArchived;
     }
 
     public Identifier getIdentifier() {
@@ -39,6 +49,18 @@ public class Product {
 
     public Quantity getQuantity() {
         return quantity;
+    }
+
+    public boolean isArchived() {
+        return isArchived;
+    }
+
+    public Product archive() {
+        return new Product(identifier, name, quantity, true);
+    }
+
+    public Product restore() {
+        return new Product(identifier, name, quantity, false);
     }
 
     /**
@@ -72,12 +94,13 @@ public class Product {
         Product otherProduct = (Product) other;
         return identifier.equals(otherProduct.identifier)
                 && name.equals(otherProduct.name)
-                && quantity.equals(otherProduct.quantity);
+                && quantity.equals(otherProduct.quantity)
+                && isArchived == otherProduct.isArchived;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(identifier, name, quantity);
+        return Objects.hash(identifier, name, quantity, isArchived);
     }
 
     @Override

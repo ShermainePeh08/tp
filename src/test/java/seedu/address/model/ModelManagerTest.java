@@ -21,10 +21,11 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.product.Product;
 import seedu.address.model.product.exceptions.DuplicateProductException;
 import seedu.address.model.product.exceptions.ProductNotFoundException;
-import seedu.address.model.util.SampleInventoryDataUtil;
 import seedu.address.testutil.AddressBookBuilder;
+import seedu.address.testutil.ProductBuilder;
 
 public class ModelManagerTest {
 
@@ -227,6 +228,56 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void archiveProduct_setsArchivedFlag() {
+        ModelManager model = new ModelManager(new AddressBook(), new UserPrefs());
+        Product product = new ProductBuilder().build();
+
+        model.addProduct(product);
+        model.archiveProduct(product);
+
+        assertTrue(model.getInventory().getProductList().get(0).isArchived());
+    }
+
+    @Test
+    public void constructor_productsFilteredCorrectly() {
+        ModelManager model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        Product product = new ProductBuilder().build();
+        model.addProduct(product);
+
+        assertEquals(1, model.getFilteredProductList().size());
+    }
+
+    @Test
+    public void archiveProduct_updatesFilteredList() {
+        ModelManager model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        Product product = new ProductBuilder().build();
+        model.addProduct(product);
+
+        model.archiveProduct(product);
+
+        assertEquals(0, model.getFilteredProductList().size());
+    }
+
+    @Test
+    public void restoreProduct_updatesFilteredList() {
+        ModelManager model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        Product product = new ProductBuilder().build();
+        model.addProduct(product);
+
+        model.archiveProduct(product);
+
+        Product archived = model.getInventory().getProductList().get(0);
+
+        model.restoreProduct(archived);
+
+        assertEquals(1, model.getFilteredProductList().size());
+    }
+
+
+    @Test
     public void equals() {
         AddressBook addressBook = new AddressBookBuilder().withPerson(ALICE).withPerson(BENSON).build();
         AddressBook differentAddressBook = new AddressBook();
@@ -281,10 +332,36 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void constructor_filtersArchivedProducts() {
+        ModelManager model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        Product product = new ProductBuilder().build();
+        model.addProduct(product);
+
+        assertEquals(1, model.getFilteredProductList().size());
+    }
+
+    @Test
+    public void restoreProduct_showsProductInFilteredList() {
+        ModelManager model = new ModelManager(new AddressBook(), new UserPrefs());
+
+        Product product = new ProductBuilder().build();
+        model.addProduct(product);
+
+        model.archiveProduct(product);
+
+        Product archived = model.getInventory().getProductList().get(0);
+
+        model.restoreProduct(archived);
+
+        assertEquals(1, model.getFilteredProductList().size());
+    }
+
+    @Test
     public void setInventory_success() {
         ModelManager modelManager = new ModelManager(new AddressBook(), new UserPrefs());
 
-        Inventory inventory = SampleInventoryDataUtil.getSampleInventory();
+        Inventory inventory = new Inventory();
         modelManager.setInventory(inventory);
 
         assertEquals(inventory, modelManager.getInventory());

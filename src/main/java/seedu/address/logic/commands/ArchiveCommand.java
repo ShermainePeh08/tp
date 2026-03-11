@@ -1,11 +1,9 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 
 import java.util.List;
 
-import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
@@ -29,17 +27,18 @@ public class ArchiveCommand extends Command {
             + "Example: " + COMMAND_WORD + " 1";
 
     public static final String MESSAGE_ARCHIVE_SUCCESS =
-            "Archived Vendor: %1$s";
+            "Archived Vendor: %1$s"
+            + "\n⚠ Warning: Vendor being archived. Use 'restore EMAIL' to restore the vendor.";
 
-    private final Index targetIndex;
-
+    private final String email;
     /**
      * Creates an ArchiveCommand to archive the vendor at the specified {@code Index}.
      *
      * @param targetIndex Index of the vendor in the filtered vendor list.
      */
-    public ArchiveCommand(Index targetIndex) {
-        this.targetIndex = targetIndex;
+    public ArchiveCommand(String email) {
+        requireNonNull(email);
+        this.email = email;
     }
 
     /**
@@ -55,15 +54,18 @@ public class ArchiveCommand extends Command {
 
         List<Person> lastShownList = model.getFilteredPersonList();
 
-        if (targetIndex.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
-        }
-
-        Person vendorToArchive = lastShownList.get(targetIndex.getZeroBased());
+        Person vendorToArchive = lastShownList.stream()
+                .filter(person -> person.getEmail().value.equals(email))
+                .findFirst()
+                .orElseThrow(() ->
+                        new CommandException("No vendor found with email: " + email));
 
         model.archivePerson(vendorToArchive);
 
-        return new CommandResult(String.format(MESSAGE_ARCHIVE_SUCCESS, vendorToArchive));
+        return new CommandResult(
+            String.format(MESSAGE_ARCHIVE_SUCCESS, vendorToArchive.getName()),
+            CommandResult.FEEDBACK_TYPE_WARN
+        );
     }
 
     @Override

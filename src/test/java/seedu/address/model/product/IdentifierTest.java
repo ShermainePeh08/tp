@@ -2,6 +2,7 @@ package seedu.address.model.product;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.model.product.Identifier.MAX_LENGTH;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -27,14 +28,14 @@ public class IdentifierTest {
         // invalid identifiers
         assertFalse(Identifier.isValidIdentifier("")); // empty string
         assertFalse(Identifier.isValidIdentifier(" ")); // spaces only
-        assertFalse(Identifier.isValidIdentifier("a".repeat(257))); // exceeds max length
+        assertFalse(Identifier.isValidIdentifier("a".repeat(MAX_LENGTH + 1))); // exceeds max length
 
         // valid identifiers
         assertTrue(Identifier.isValidIdentifier("A1"));
         assertTrue(Identifier.isValidIdentifier("12345"));
         assertTrue(Identifier.isValidIdentifier("00223"));
         assertTrue(Identifier.isValidIdentifier("A-1/2")); // supported symbols
-        assertTrue(Identifier.isValidIdentifier("a".repeat(256))); // exactly max length
+        assertTrue(Identifier.isValidIdentifier("a".repeat(MAX_LENGTH)));
 
         // warned identifiers
         assertFalse(Identifier.isValidIdentifierWarn("A B")); // spaces between characters

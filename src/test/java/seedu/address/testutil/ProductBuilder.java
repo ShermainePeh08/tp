@@ -11,12 +11,13 @@ import seedu.address.model.product.Quantity;
 public class ProductBuilder {
 
     public static final String DEFAULT_IDENTIFIER = "A1";
-    public static final String DEFAULT_NAME = "iPad";
+    public static final String DEFAULT_NAME = "iPad 11 Pro";
     public static final String DEFAULT_QUANTITY = "0";
 
     private Name name;
     private Quantity quantity;
     private Identifier identifier;
+    private boolean isArchived;
 
     /**
      * Creates a {@code ProductBuilder} with the default details.
@@ -25,6 +26,7 @@ public class ProductBuilder {
         identifier = new Identifier(DEFAULT_IDENTIFIER);
         name = new Name(DEFAULT_NAME);
         quantity = new Quantity(DEFAULT_QUANTITY);
+        isArchived = false;
     }
 
     /**
@@ -34,6 +36,7 @@ public class ProductBuilder {
         identifier = productToCopy.getIdentifier();
         name = productToCopy.getName();
         quantity = productToCopy.getQuantity();
+        isArchived = productToCopy.isArchived();
     }
 
     /**
@@ -61,7 +64,7 @@ public class ProductBuilder {
     }
 
     public Product build() {
-        return new Product(identifier, name, quantity);
+        return new Product(identifier, name, quantity, isArchived);
     }
 
 }

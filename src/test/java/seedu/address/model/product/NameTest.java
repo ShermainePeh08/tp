@@ -2,6 +2,7 @@ package seedu.address.model.product;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.model.product.Name.MAX_LENGTH;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -27,14 +28,14 @@ public class NameTest {
         // invalid names
         assertFalse(Name.isValidName("")); // empty string
         assertFalse(Name.isValidName(" ")); // spaces only
-        assertFalse(Name.isValidName("a".repeat(257))); // exceeds max length
+        assertFalse(Name.isValidName("a".repeat(MAX_LENGTH + 1))); // exceeds max length
 
         // valid names
         assertTrue(Name.isValidNameWarn("Product A"));
         assertTrue(Name.isValidNameWarn("12345"));
         assertTrue(Name.isValidNameWarn("Oatly - Barista Edition 1L")); // supported -
         assertTrue(Name.isValidNameWarn("Fish/Seafood Mix, Fresh")); // supported symbols
-        assertTrue(Name.isValidName("a".repeat(256))); // exactly max length
+        assertTrue(Name.isValidName("a".repeat(MAX_LENGTH)));
 
         // warned names
         assertFalse(Name.isValidNameWarn("apple juice 5% sugar")); // unsupported %

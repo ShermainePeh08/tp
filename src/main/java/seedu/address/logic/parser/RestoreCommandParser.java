@@ -1,16 +1,15 @@
 package seedu.address.logic.parser;
 
-import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.RestoreCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
  * Parses input arguments and creates a new {@code RestoreCommand}.
  */
-public class RestoreCommandParser implements Parser {
+public class RestoreCommandParser implements Parser<RestoreCommand> {
 
     /** Error message for incorrect command format */
-    private static final String MESSAGE_INVALID_FORMAT = "Usage: restore INDEX";
+    private static final String MESSAGE_INVALID_FORMAT = "Please provide the email of the vendor to restore.";
 
     /**
      * Parses the given {@code String} of arguments in the context of the RestoreCommand
@@ -23,17 +22,12 @@ public class RestoreCommandParser implements Parser {
     @Override
     public RestoreCommand parse(String args) throws ParseException {
 
-        String trimmedArgs = args.trim();
+        String email = args.trim();
 
-        if (trimmedArgs.isEmpty()) {
-            throw new ParseException(MESSAGE_INVALID_FORMAT);
+        if (email.isEmpty()) {
+            return new RestoreCommand(null);
         }
 
-        try {
-            Index index = ParserUtil.parseIndex(trimmedArgs);
-            return new RestoreCommand(index);
-        } catch (ParseException e) {
-            throw new ParseException(MESSAGE_INVALID_FORMAT);
-        }
+        return new RestoreCommand(email);
     }
 }

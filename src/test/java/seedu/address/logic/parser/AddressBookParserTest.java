@@ -16,8 +16,11 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.AddProductCommand;
+import seedu.address.logic.commands.ArchiveProductCommand;
 import seedu.address.logic.commands.CancelCommand;
 import seedu.address.logic.commands.ClearCommand;
+import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.ConfirmCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
@@ -26,20 +29,25 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.ListProductsCommand;
 import seedu.address.logic.commands.PendingConfirmation;
+import seedu.address.logic.commands.RestoreProductCommand;
 import seedu.address.logic.commands.UndoCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.product.Product;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
+import seedu.address.testutil.ProductBuilder;
+import seedu.address.testutil.ProductUtil;
 
 public class AddressBookParserTest {
 
     private final AddressBookParser parser = new AddressBookParser();
-    private final PendingConfirmation confirmation =
-            new PendingConfirmation(() -> Optional.empty(), () -> Optional.empty());
+    private final PendingConfirmation confirmation = new PendingConfirmation(() -> Optional.empty(), () ->
+            Optional.empty());
 
     @Test
     public void parseCommand_add() throws Exception {
@@ -47,6 +55,14 @@ public class AddressBookParserTest {
         AddCommand command = (AddCommand) parser.parseCommand(PersonUtil.getAddCommand(person),
                 new PendingConfirmation());
         assertEquals(new AddCommand(person), command);
+    }
+
+    @Test
+    public void parseCommand_addProduct() throws Exception {
+        Product product = new ProductBuilder().build();
+        AddProductCommand command = (AddProductCommand) parser.parseCommand(ProductUtil.getAddCommand(product),
+                new PendingConfirmation());
+        assertEquals(new AddProductCommand(product), command);
     }
 
     @Test
@@ -128,12 +144,34 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_unrecognisedInput_throwsParseException() {
         assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), ()
-            -> parser.parseCommand("", new PendingConfirmation()));
+                -> parser.parseCommand("", new PendingConfirmation()));
     }
 
     @Test
     public void parseCommand_unknownCommand_throwsParseException() {
         assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("unknownCommand",
                 new PendingConfirmation()));
+    }
+
+    @Test
+    public void parseCommand_listProducts() throws Exception {
+        AddressBookParser parser = new AddressBookParser();
+        Command command = parser.parseCommand("listproducts", new PendingConfirmation());
+
+        assertTrue(command instanceof ListProductsCommand);
+    }
+
+    @Test
+    public void parseCommand_archiveProduct() throws Exception {
+        Command command = parser.parseCommand("archiveproduct id/coffee", new PendingConfirmation());
+
+        assertTrue(command instanceof ArchiveProductCommand);
+    }
+
+    @Test
+    public void parseCommand_restoreProduct() throws Exception {
+        Command command = parser.parseCommand("restoreproduct id/coffee", new PendingConfirmation());
+
+        assertTrue(command instanceof RestoreProductCommand);
     }
 }

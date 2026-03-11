@@ -9,13 +9,13 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Name {
 
-    public static final String MESSAGE_CONSTRAINTS = "Names should not be blank.";
-    public static final int MAX_LENGTH = 256;
-    public static final String MESSAGE_LENGTH_CONSTRAINTS = "Names should be less than " + MAX_LENGTH + " characters.";
+    public static final String MESSAGE_CONSTRAINTS = "Name should not be blank.";
+    public static final int MAX_LENGTH = 120;
+    public static final String MESSAGE_LENGTH_CONSTRAINTS = "Name should be less than " + MAX_LENGTH + " characters.";
     public static final String MESSAGE_WARN = "⚠ Warning: Name contains unusual symbols, is this intentional?";
 
-    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} .,&+()/\\-']{0,255}";
-    public static final String SOFT_VALIDATION_REGEX = "[^\\s].{0,255}";
+    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} .,&+()/\\-']{0,119}";
+    public static final String SOFT_VALIDATION_REGEX = "[^\\s].{0,119}";
 
     public final String fullName;
 
