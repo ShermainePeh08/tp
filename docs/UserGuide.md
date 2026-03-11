@@ -155,6 +155,22 @@ Examples:
 * `list` followed by `delete 2` deletes the 2nd contact in the address book.
 * `find Betsy` followed by `delete 1` deletes the 1st contact in the results of the `find` command.
 
+### Adding a product: `addproduct`
+
+Adds a product to the inventory.
+
+Format: `addproduct id/IDENTIFIER n/NAME [q/QUANTITY]`
+
+<box type="tip" seamless>
+
+**Tip:** If quantity is not specified, it will default to 0.
+</box>
+
+Examples:
+* `addproduct id/SKU-1003 n/Tray of Eggs q/30`
+* `addproduct id/Pr1 n/HP LaserJet (M428fdw) q/5`
+* `addproduct id/DE/5 n/PlayStation`
+
 ### Clearing all entries : `clear`
 
 Clears all entries from the address book.
@@ -216,6 +232,7 @@ Action     | Format, Examples
 **Clear**  | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
 **Edit**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
+**Add product** | `addproduct id/IDENTIFIER n/NAME [q/QUANTITY]`e.g., `addproduct id/SKU-1003 n/Tray of Eggs q/30 `
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **Undo**   | `undo`
 **List**   | `list`

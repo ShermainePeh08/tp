@@ -25,7 +25,7 @@ public class TypicalProducts {
     public static final Product OIL = new ProductBuilder().withIdentifier("SKU-1002")
             .withName("Cooking Oil 2L").withQuantity("18").build();
     public static final Product EGGS = new ProductBuilder().withIdentifier("SKU-1003")
-            .withName("Eggs Tray 30").withQuantity("36").build();
+            .withName("Tray of Eggs").withQuantity("36").build();
     public static final Product SUGAR = new ProductBuilder().withIdentifier("SKU-1004")
             .withName("Sugar 1kg").withQuantity("42").build();
     public static final Product NOODLES = new ProductBuilder().withIdentifier("SKU-1005")
