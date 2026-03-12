@@ -30,15 +30,18 @@ public class ModelManager implements Model {
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
-    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyUserPrefs userPrefs) {
-        requireAllNonNull(addressBook, userPrefs);
+    public ModelManager(ReadOnlyAddressBook addressBook,
+            ReadOnlyUserPrefs userPrefs,
+            ReadOnlyInventory inventory) {
+        requireAllNonNull(addressBook, userPrefs, inventory);
 
-        logger.fine("Initializing with address book: " + addressBook + " and user prefs " + userPrefs);
+        logger.fine("Initializing with address book: " + addressBook + ", user prefs " + userPrefs
+            + " and inventory: " + inventory);
 
-        this.inventory = new Inventory();
-
+        this.inventory = new Inventory(inventory);
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
+
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
         filteredPersons.setPredicate(Model.PREDICATE_SHOW_ACTIVE_PERSONS);
         filteredProducts = new FilteredList<>(this.inventory.getProductList());
@@ -47,7 +50,7 @@ public class ModelManager implements Model {
     }
 
     public ModelManager() {
-        this(new AddressBook(), new UserPrefs());
+        this(new AddressBook(), new UserPrefs(), new Inventory());
     }
 
     // =========== UserPrefs ==================================================================================

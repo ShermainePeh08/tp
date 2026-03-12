@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.model.AddressBook;
+import seedu.address.model.Inventory;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -15,7 +16,7 @@ public class ListProductsCommandTest {
 
     @Test
     public void execute_listProducts_success() {
-        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        Model model = new ModelManager(new AddressBook(), new UserPrefs(), new Inventory());
         ListProductsCommand command = new ListProductsCommand();
 
         CommandResult result = command.execute(model);

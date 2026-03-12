@@ -110,8 +110,7 @@ public class MainApp extends Application {
             initialInventory = new Inventory();
         }
 
-        ModelManager modelManager = new ModelManager(initialData, userPrefs);
-        modelManager.setInventory(initialInventory);
+        ModelManager modelManager = new ModelManager(initialData, userPrefs, initialInventory);
 
         return modelManager;
     }
