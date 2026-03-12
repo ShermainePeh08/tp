@@ -33,7 +33,7 @@ public class ListProductsCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
         //If the GUI currently displays no products, sample products will be automatically populated.
-        if (model.getFilteredProductList().isEmpty()) {
+        if (model.getInventory().getProductList().isEmpty()) {
             for (Product product : SampleDataUtil.getSampleProducts()) {
                 model.addProduct(product);
             }

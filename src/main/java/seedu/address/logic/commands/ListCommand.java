@@ -23,7 +23,7 @@ public class ListCommand extends Command {
         // If the GUI currently shows no vendors, this indicates that the
         // vendor list is empty (for example after all vendors were deleted).
         // In this case, sample vendors are automatically populated
-        if (model.getFilteredPersonList().isEmpty()) {
+        if (model.getAddressBook().getPersonList().isEmpty()) {
             for (Person person : SampleDataUtil.getSamplePersons()) {
                 model.addPerson(person);
             }
