@@ -11,9 +11,13 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
+import static seedu.address.model.person.warnings.DuplicatePersonWarning.MESSAGE_SIMILAR_ADDRESS;
+import static seedu.address.model.person.warnings.DuplicatePersonWarning.MESSAGE_SIMILAR_NAME;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
+import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
+import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import org.junit.jupiter.api.Test;
@@ -216,6 +220,175 @@ public class EditCommandTest {
         String expected = EditCommand.class.getCanonicalName() + "{index=" + index + ", editPersonDescriptor="
                 + editPersonDescriptor + "}";
         assertEquals(expected, editCommand.toString());
+    }
+
+    // ==================== Warning-related tests ====================
+
+    @Test
+    public void execute_constructorWithPresetWarnings_warningsIncludedInFeedback() throws Exception {
+        // Edit FIONA (index 6) with only a phone change and a preset warning.
+        // FIONA's name "Fiona Kunz" has no similarity with any typical person, so no extra
+        // warnings are appended — the only warning in the result is the preset one.
+        String presetWarning = "Pre-existing warning message";
+        Index indexFiona = Index.fromOneBased(6);
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withPhone("55555500")
+                .build();
+        EditCommand editCommand = new EditCommand(indexFiona, descriptor, presetWarning);
+
+        CommandResult result = editCommand.execute(model);
+
+        assertTrue(result.getFeedbackToUser().contains(presetWarning));
+        assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
+    }
+
+    @Test
+    public void execute_editNameToSimilarName_warningShown() throws Exception {
+        // Edit CARL (INDEX_THIRD_PERSON) name to "Alice Kurz".
+        // "alice" in "Alice Kurz" overlaps with "alice" in ALICE's name "Alice Pauline"
+        // so similar name warning should be appended.
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withName("Alice Kurz")
+                .build();
+        EditCommand editCommand = new EditCommand(INDEX_THIRD_PERSON, descriptor);
+
+        CommandResult result = editCommand.execute(model);
+
+        assertTrue(result.getFeedbackToUser().contains(
+                String.format(MESSAGE_SIMILAR_NAME, ALICE.getName())));
+        assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
+    }
+
+    @Test
+    public void execute_editAddressToSimilarAddress_warningShown() throws Exception {
+        // Edit CARL (INDEX_THIRD_PERSON) address to "Jurong West".
+        // ALICE's address "123, Jurong West Ave 6, #08-111" contains "Jurong West" as a
+        // substring so similar address warning should be appended.
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withAddress("Jurong West")
+                .build();
+        EditCommand editCommand = new EditCommand(INDEX_THIRD_PERSON, descriptor);
+
+        CommandResult result = editCommand.execute(model);
+
+        assertTrue(result.getFeedbackToUser().contains(
+                String.format(MESSAGE_SIMILAR_ADDRESS, ALICE.getName(), ALICE.getAddress())));
+        assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
+    }
+
+    @Test
+    public void execute_editWithoutNameChange_noNameWarning() throws Exception {
+        // Add a person whose name is similar to ALICE ("alice" token shared).
+        Person aliceSimilar = new PersonBuilder()
+                .withName("Alice Brown")
+                .withPhone("55555555")
+                .withEmail("alice.brown@example.com")
+                .withAddress("some address far away")
+                .build();
+        model.addPerson(aliceSimilar);
+
+        // Edit only the phone (nameChanged = false).
+        // Even though "Alice Brown" shares a name token with ALICE
+        // there should be no name warning since the name field was not part of the edit descriptor.
+        Index indexLast = Index.fromOneBased(model.getFilteredPersonList().size());
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withPhone("66666666")
+                .build();
+        EditCommand editCommand = new EditCommand(indexLast, descriptor);
+
+        CommandResult result = editCommand.execute(model);
+
+        assertFalse(result.getFeedbackToUser().contains(String.format(MESSAGE_SIMILAR_NAME, ALICE.getName())));
+        assertEquals(CommandResult.FEEDBACK_TYPE_SUCCESS, result.getFeedbackType());
+    }
+
+    @Test
+    public void execute_editWithoutAddressChange_noAddressWarning() throws Exception {
+        // Add a person whose address is similar to ALICE's ("Jurong West" ⊂ ALICE's address).
+        Person personWithSimilarAddress = new PersonBuilder()
+                .withName("Unique XYZ Person")
+                .withPhone("55555556")
+                .withEmail("unique.xyz@example.com")
+                .withAddress("Jurong West")
+                .build();
+        model.addPerson(personWithSimilarAddress);
+
+        // Edit only the phone (addressChanged = false).
+        // Even though "Jurong West" is similar to ALICE's address, no address warning should
+        // fire because the address field was not part of the edit descriptor.
+        Index indexLast = Index.fromOneBased(model.getFilteredPersonList().size());
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withPhone("66666667")
+                .build();
+        EditCommand editCommand = new EditCommand(indexLast, descriptor);
+
+        CommandResult result = editCommand.execute(model);
+
+        assertFalse(result.getFeedbackToUser().contains(
+                String.format(MESSAGE_SIMILAR_ADDRESS, ALICE.getName(), ALICE.getAddress())));
+        assertEquals(CommandResult.FEEDBACK_TYPE_SUCCESS, result.getFeedbackType());
+    }
+
+    @Test
+    public void execute_editNameToMultipleSimilar_onlyOneWarning() throws Exception {
+        // Add two persons whose names share "john" with the new name we will edit to.
+        Person similar1 = new PersonBuilder()
+                .withName("John Doe")
+                .withPhone("55555561")
+                .withEmail("john.doe.extra@example.com")
+                .build();
+        Person similar2 = new PersonBuilder()
+                .withName("John Smith")
+                .withPhone("55555562")
+                .withEmail("john.smith.extra@example.com")
+                .build();
+        model.addPerson(similar1);
+        model.addPerson(similar2);
+
+        // Edit CARL's name to "John Kurz" — "john" overlaps with both similar1 and similar2.
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withName("John Kurz")
+                .build();
+        EditCommand editCommand = new EditCommand(INDEX_THIRD_PERSON, descriptor);
+
+        CommandResult result = editCommand.execute(model);
+        String feedback = result.getFeedbackToUser();
+
+        // Exactly one of the two possible warnings appears
+        assertTrue(feedback.contains(String.format(MESSAGE_SIMILAR_NAME, similar1.getName()))
+                || feedback.contains(String.format(MESSAGE_SIMILAR_NAME, similar2.getName())));
+        // but not both (deduplication must work).
+        assertFalse(feedback.contains(String.format(MESSAGE_SIMILAR_NAME, similar1.getName()))
+                && feedback.contains(String.format(MESSAGE_SIMILAR_NAME, similar2.getName())));
+        assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
+    }
+
+    @Test
+    public void execute_editNameAndAddress_bothWarningsShown() throws Exception {
+        // Add a person to trigger a name warning ("john" token shared with the new name).
+        Person nameSimilar = new PersonBuilder()
+                .withName("John Doe")
+                .withPhone("55555570")
+                .withEmail("johndoe.extra@example.com")
+                .withAddress("99 Nowhere Street")
+                .build();
+        model.addPerson(nameSimilar);
+
+        // Edit CARL: new name "John Kurz" so name warning (shares "john" with "John Doe");
+        //            new address "Jurong West" so address warning (contained in ALICE's address).
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withName("John Kurz")
+                .withAddress("Jurong West")
+                .build();
+        EditCommand editCommand = new EditCommand(INDEX_THIRD_PERSON, descriptor);
+
+        CommandResult result = editCommand.execute(model);
+
+        assertTrue(result.getFeedbackToUser().contains(
+                String.format(MESSAGE_SIMILAR_NAME, nameSimilar.getName())));
+        assertTrue(result.getFeedbackToUser().contains(
+                String.format(MESSAGE_SIMILAR_ADDRESS, ALICE.getName(), ALICE.getAddress())));
+        assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
     }
 
 }
