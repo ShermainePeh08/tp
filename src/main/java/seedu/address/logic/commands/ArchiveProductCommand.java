@@ -55,6 +55,7 @@ public class ArchiveProductCommand extends Command {
                         new CommandException(String.format(MESSAGE_PRODUCT_NOT_FOUND, identifier)));
 
         model.archiveProduct(productToArchive);
+        model.commitVendorVault();
 
         String message = String.format(
                 MESSAGE_ARCHIVE_SUCCESS + NEWLINE + MESSAGE_ARCHIVE_WARNING,

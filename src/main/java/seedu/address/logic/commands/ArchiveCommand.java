@@ -31,10 +31,11 @@ public class ArchiveCommand extends Command {
             + "\n⚠ Warning: Vendor being archived. Use 'restore EMAIL' to restore the vendor.";
 
     private final String email;
+
     /**
      * Creates an ArchiveCommand to archive the vendor at the specified {@code Index}.
      *
-     * @param targetIndex Index of the vendor in the filtered vendor list.
+     * @param email Email of the vendor in the filtered vendor list.
      */
     public ArchiveCommand(String email) {
         requireNonNull(email);
@@ -61,6 +62,7 @@ public class ArchiveCommand extends Command {
                         new CommandException("No vendor found with email: " + email));
 
         model.archivePerson(vendorToArchive);
+        model.commitVendorVault();
 
         return new CommandResult(
             String.format(MESSAGE_ARCHIVE_SUCCESS, vendorToArchive.getName()),

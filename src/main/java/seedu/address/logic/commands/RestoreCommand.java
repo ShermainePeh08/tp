@@ -36,7 +36,7 @@ public class RestoreCommand extends Command {
     /**
      * Creates a RestoreCommand to restore the vendor at the specified {@code Index}.
      *
-     * @param targetIndex Index of the vendor in the filtered vendor list.
+     * @param email Email of the vendor in the filtered vendor list.
      */
     public RestoreCommand(String email) {
         this.email = email;
@@ -70,6 +70,7 @@ public class RestoreCommand extends Command {
         }
 
         model.restorePerson(personToRestore);
+        model.commitVendorVault();
 
         return new CommandResult(String.format(MESSAGE_RESTORE_SUCCESS, personToRestore));
     }
