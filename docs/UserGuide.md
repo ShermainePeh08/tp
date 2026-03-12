@@ -32,9 +32,10 @@ VendorVault is designed for:
 Follow these steps to get VendorVault up and running:
 
 1. Install Java (one-time setup)
-   * VendorVault requires Java `17` or above to run. Full guide for installation [here](https://se-education.org/guides/tutorials/javaInstallation.html)
-   * If you are familiar with the installation process, you can download it directly [here](https://www.oracle.com/asean/java/technologies/downloads/).<br>
-   *  **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
+   * VendorVault requires Java `17` or above to run. 
+   * Installation Guide [here](https://se-education.org/guides/tutorials/javaInstallation.html).
+   * Direct Download [here](https://www.oracle.com/asean/java/technologies/downloads/).<br>
+   *  **Mac users:** Ensure you have the precise JDK version described [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 <br><br>
 1. Download the latest version of VendorVault [here](https://github.com/AY2526S2-CS2103T-W08-2/tp).
     * Specifically, choose to download the `.jar` file.
@@ -58,7 +59,11 @@ Follow these steps to get VendorVault up and running:
    VendorVault should start up and you should see a GUI similar to the below in a few seconds. Note how the app contains some sample data.<br>
    ![Ui](images/Ui.png)
 <br><br>
-1. Now, we're ready to use the app! At the top left of the app, you should see a command box with the text `Type a command here...`. This is where you can type in commands to interact with the app. You can also access the list of available commands by clicking on the `Help` menu at the top of the app or by pressing `F1` on your keyboard.
+1. **Start Using VendorVault:**
+<br><br>
+VendorVault will launch and display the main interface with some sample data.
+Enter commands in the **command box at the top left** of the application.
+Access the list of available commands by clicking on the Help menu or by pressing F1 on your keyboard.
 <br><br>
 Some example commands you can try:
 
@@ -131,7 +136,7 @@ add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​
 
 Examples:
 * `add n/Adafruit Industries p/64601234 e/support@adafruit.com a/151 Varick St, New York, NY 10013, USA`
-* `add n/Cytron Technologies Pte. Ltd. p/65480668 (Office), 91234567 (Sales) e/sg.sales@cytron.io a/78 St Patrick's Rd, #01-23, Seventy Saint Patrick's, Singapore 424180 t/electronics`
+* `add n/Cytron Technologies Pte. Ltd. p/65480668 (Office), 91234567 (Sales) e/sg.sales@cytron.io a/78 St Patrick's Rd, #01-23, Seventy Saint Patrick's, Singapore 424180 t/electronics` 
 
 <box type="tip" seamless>
 
@@ -185,7 +190,7 @@ list
 
 <box type="tip" seamless>
 
-**Tip:** Want to start with sample data? `list` will insert sample data if there are currently no contacts in VendorVault.
+**Tip:** Want to start with sample data? `list` will insert sample data if there are currently no contacts in VendorVault. 
 </box>
 
 <div style="height: 30px;"></div>
