@@ -110,7 +110,7 @@ public class AddressBookParser {
                 return new ListProductsCommand();
 
             case "listproducts":
-                throw new ParseException("Unknown command: listproduct. Did you mean 'listproducts'?");
+                throw new ParseException("Unknown command: listproducts. Did you mean 'listproduct'?");
 
             case ArchiveProductCommand.COMMAND_WORD:
                 return new ArchiveProductCommandParser().parse(arguments);
