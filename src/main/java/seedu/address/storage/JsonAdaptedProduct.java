@@ -79,6 +79,6 @@ public class JsonAdaptedProduct {
         }
         final Quantity modelQuantity = new Quantity(quantity);
 
-        return new Product(modelIdentifier, modelName, modelQuantity);
+        return new Product(modelIdentifier, modelName, modelQuantity, isArchived);
     }
 }
