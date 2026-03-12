@@ -65,7 +65,7 @@ public class JsonAdaptedProduct {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
                     Name.class.getSimpleName()));
         }
-        if (!seedu.address.model.person.Name.isValidName(name)) {
+        if (!Name.isValidName(name)) {
             throw new IllegalValueException(Name.MESSAGE_CONSTRAINTS);
         }
         final Name modelName = new Name(name);
