@@ -41,6 +41,7 @@ public class ModelManager implements Model {
         this.inventory = this.vendorVault.getInventory();
 
         this.userPrefs = new UserPrefs(userPrefs);
+
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
         filteredPersons.setPredicate(Model.PREDICATE_SHOW_ACTIVE_PERSONS);
         filteredProducts = new FilteredList<>(this.inventory.getProductList());
