@@ -10,6 +10,14 @@ VendorVault is a **desktop app for managing your vendors and inventory all in on
 
 Spend less time searching through spreadsheets and switching between apps. VendorVault keeps your business information organised so you can focus on what matters most: growing your business.
 
+## Target Audience
+
+VendorVault is designed for:
+
+* **Small business owners** managing vendor contacts and suppliers
+* **Small business owners** who track inventory and vendor information
+* **Users comfortable with typing commands** to quickly manage data
+
 <!-- * Table of Contents -->
 <page-nav-print />
 
@@ -123,7 +131,7 @@ add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​
 
 Examples:
 * `add n/Adafruit Industries p/64601234 e/support@adafruit.com a/151 Varick St, New York, NY 10013, USA`
-* `add n/Cytron Technologies Pte. Ltd. p/65480668 (Office), 91234567 (Sales) e/sg.sales@cytron.io a/78 St Patrick's Rd, #01-23, Seventy Saint Patrick's, Singapore 424180 t/electronics` 
+* `add n/Cytron Technologies Pte. Ltd. p/65480668 (Office), 91234567 (Sales) e/sg.sales@cytron.io a/78 St Patrick's Rd, #01-23, Seventy Saint Patrick's, Singapore 424180 t/electronics`
 
 <box type="tip" seamless>
 
@@ -177,7 +185,7 @@ list
 
 <box type="tip" seamless>
 
-**Tip:** Want to start with sample data? `list` will insert sample data if there are currently no contacts in VendorVault. 
+**Tip:** Want to start with sample data? `list` will insert sample data if there are currently no contacts in VendorVault.
 </box>
 
 <div style="height: 30px;"></div>
