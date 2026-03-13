@@ -7,7 +7,12 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalProducts.getTypicalInventory;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
+
+import seedu.address.model.person.Person;
+import seedu.address.testutil.PersonBuilder;
 
 public class VendorVaultTest {
 
@@ -89,6 +94,86 @@ public class VendorVaultTest {
     }
 
     @Test
+    public void findSimilarNameMatch_matchExists_returnsMatchingPerson() {
+        Person existingPerson = new PersonBuilder()
+                .withName("Acme Supplies")
+                .withPhone("90000001")
+                .withEmail("acme@example.com")
+                .withAddress("10 Business Park")
+                .build();
+        VendorVault vendorVault = createVendorVaultWithPersons(existingPerson);
+
+        Person candidate = new PersonBuilder()
+                .withName("Acme Partners")
+                .withPhone("90000002")
+                .withEmail("candidate@example.com")
+                .withAddress("99 Other Street")
+                .build();
+
+        assertEquals(Optional.of(existingPerson), vendorVault.findSimilarNameMatch(candidate, null));
+    }
+
+    @Test
+    public void findSimilarNameMatch_matchingPersonExcluded_returnsEmpty() {
+        Person existingPerson = new PersonBuilder()
+                .withName("Acme Supplies")
+                .withPhone("90000003")
+                .withEmail("acme2@example.com")
+                .withAddress("11 Business Park")
+                .build();
+        VendorVault vendorVault = createVendorVaultWithPersons(existingPerson);
+
+        Person candidate = new PersonBuilder()
+                .withName("Acme Partners")
+                .withPhone("90000004")
+                .withEmail("candidate2@example.com")
+                .withAddress("100 Other Street")
+                .build();
+
+        assertEquals(Optional.empty(), vendorVault.findSimilarNameMatch(candidate, existingPerson));
+    }
+
+    @Test
+    public void findSimilarAddressMatch_matchExists_returnsMatchingPerson() {
+        Person existingPerson = new PersonBuilder()
+                .withName("North Vendor")
+                .withPhone("90000005")
+                .withEmail("north@example.com")
+                .withAddress("123 Woodlands Avenue 5")
+                .build();
+        VendorVault vendorVault = createVendorVaultWithPersons(existingPerson);
+
+        Person candidate = new PersonBuilder()
+                .withName("South Vendor")
+                .withPhone("90000006")
+                .withEmail("south@example.com")
+                .withAddress("Woodlands")
+                .build();
+
+        assertEquals(Optional.of(existingPerson), vendorVault.findSimilarAddressMatch(candidate, null));
+    }
+
+    @Test
+    public void findSimilarAddressMatch_matchingPersonExcluded_returnsEmpty() {
+        Person existingPerson = new PersonBuilder()
+                .withName("North Vendor")
+                .withPhone("90000007")
+                .withEmail("north2@example.com")
+                .withAddress("456 Clementi Road")
+                .build();
+        VendorVault vendorVault = createVendorVaultWithPersons(existingPerson);
+
+        Person candidate = new PersonBuilder()
+                .withName("West Vendor")
+                .withPhone("90000008")
+                .withEmail("west@example.com")
+                .withAddress("Clementi")
+                .build();
+
+        assertEquals(Optional.empty(), vendorVault.findSimilarAddressMatch(candidate, existingPerson));
+    }
+
+    @Test
     public void toStringMethod() {
         String expected = VendorVault.class.getCanonicalName() + "{addressBook=" + vendorVault.getAddressBook()
                 + ", inventory=" + vendorVault.getInventory() + "}";
@@ -119,5 +204,13 @@ public class VendorVaultTest {
         typicalVendorVault.setAddressBook(getTypicalAddressBook());
         typicalVendorVault.setInventory(getTypicalInventory());
         return typicalVendorVault;
+    }
+
+    private VendorVault createVendorVaultWithPersons(Person... persons) {
+        VendorVault customVendorVault = new VendorVault();
+        for (Person person : persons) {
+            customVendorVault.getAddressBook().addPerson(person);
+        }
+        return customVendorVault;
     }
 }
