@@ -1,0 +1,35 @@
+package seedu.address.logic.commands;
+
+/**
+ * Represents the types of commands supported by the application for the alias command.
+ * Each constant maps to a specific command's word string used for parsing.
+ */
+public enum CommandType {
+
+    ADD(AddCommand.COMMAND_WORD),
+    ADDPRODUCT(AddProductCommand.COMMAND_WORD),
+    ARCHIVE(ArchiveCommand.COMMAND_WORD),
+    ARCHIVEPRODUCT(ArchiveProductCommand.COMMAND_WORD),
+    CLEAR(ClearCommand.COMMAND_WORD),
+    DELETE(DeleteCommand.COMMAND_WORD),
+    EDIT(EditCommand.COMMAND_WORD),
+    EXIT(ExitCommand.COMMAND_WORD),
+    FIND(FindCommand.COMMAND_WORD),
+    HELP(HelpCommand.COMMAND_WORD),
+    LIST(ListCommand.COMMAND_WORD),
+    LISTPRODUCT(ListProductsCommand.COMMAND_WORD),
+    REDO(RedoCommand.COMMAND_WORD),
+    RESTORE(RestoreCommand.COMMAND_WORD),
+    RESTOREPRODUCT(RestoreProductCommand.COMMAND_WORD),
+    UNDO(UndoCommand.COMMAND_WORD);
+
+    private final String commandWord;
+
+    CommandType(String commandWord) {
+        this.commandWord = commandWord;
+    }
+
+    public String getCommandWord() {
+        return this.commandWord;
+    }
+}
