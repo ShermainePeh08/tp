@@ -29,7 +29,6 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
-import seedu.address.model.person.warnings.DuplicatePersonWarning;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -158,39 +157,15 @@ public class EditCommand extends Command {
      */
     private void checkForSimilarContacts(Person editedPerson, Person personToEdit, Model model,
                                          StringBuilder warnings, EditPersonDescriptor descriptor) {
-        boolean hasSimilarName = false;
-        boolean hasSimilarAddress = false;
+        if (descriptor.getName().isPresent()) {
+            model.getAddressBook().findSimilarNameMatch(editedPerson, personToEdit).ifPresent(match ->
+                    appendWarning(warnings, String.format(MESSAGE_SIMILAR_NAME, match.getName())));
+        }
 
-        boolean nameChanged = descriptor.getName().isPresent();
-        boolean addressChanged = descriptor.getAddress().isPresent();
-
-        for (Person existingPerson : model.getFilteredPersonList()) {
-            if (existingPerson.equals(personToEdit)) {
-                continue;
-            }
-
-            DuplicatePersonWarning duplicateWarning = editedPerson.isSamePersonWarn(existingPerson);
-
-            if (!duplicateWarning.getValue()) {
-                continue;
-            }
-
-            String warning = duplicateWarning.getWarning();
-            // Only warn about name/address if name/address respectively were changed
-            if (warning.equals(MESSAGE_SIMILAR_NAME) && !hasSimilarName && nameChanged) {
-                appendWarning(warnings, String.format(MESSAGE_SIMILAR_NAME, existingPerson.getName()));
-                hasSimilarName = true;
-            } else if (warning.equals(MESSAGE_SIMILAR_ADDRESS) && !hasSimilarAddress && addressChanged) {
-                appendWarning(warnings, String.format(
-                        MESSAGE_SIMILAR_ADDRESS,
-                        existingPerson.getName(),
-                        existingPerson.getAddress()));
-                hasSimilarAddress = true;
-            }
-
-            if (hasSimilarName && hasSimilarAddress) {
-                break;
-            }
+        if (descriptor.getAddress().isPresent()) {
+            model.getAddressBook().findSimilarAddressMatch(editedPerson, personToEdit).ifPresent(match ->
+                    appendWarning(warnings, String.format(
+                            MESSAGE_SIMILAR_ADDRESS, match.getName(), match.getAddress())));
         }
     }
 

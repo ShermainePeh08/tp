@@ -3,6 +3,7 @@ package seedu.address.model;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
@@ -77,10 +78,24 @@ public class VendorVault implements ReadOnlyVendorVault {
         return inventory;
     }
 
+    // =============================== AddressBook ===============================
+
     @Override
     public ObservableList<Person> getPersonList() {
         return addressBook.getPersonList();
     }
+
+    @Override
+    public Optional<Person> findSimilarNameMatch(Person candidate, Person exclude) {
+        return addressBook.findSimilarNameMatch(candidate, exclude);
+    }
+
+    @Override
+    public Optional<Person> findSimilarAddressMatch(Person candidate, Person exclude) {
+        return addressBook.findSimilarAddressMatch(candidate, exclude);
+    }
+
+    // =============================== Inventory ===============================
 
     @Override
     public ObservableList<Product> getProductList() {

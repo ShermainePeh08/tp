@@ -16,7 +16,6 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.warnings.DuplicatePersonWarning;
 
 /**
  * Adds a person to the address book.
@@ -92,32 +91,12 @@ public class AddCommand extends Command {
      * Checks for similar contacts in the model and appends warnings if found.
      */
     private void checkForSimilarContacts(Model model, StringBuilder warnings) {
-        boolean hasSimilarName = false;
-        boolean hasSimilarAddress = false;
+        model.getAddressBook().findSimilarNameMatch(toAdd, null).ifPresent(match ->
+                appendWarning(warnings, String.format(MESSAGE_SIMILAR_NAME, match.getName())));
 
-        for (Person existingPerson : model.getFilteredPersonList()) {
-            DuplicatePersonWarning duplicateWarning = toAdd.isSamePersonWarn(existingPerson);
-
-            if (!duplicateWarning.getValue()) {
-                continue;
-            }
-
-            String warning = duplicateWarning.getWarning();
-            if (warning.equals(MESSAGE_SIMILAR_NAME) && !hasSimilarName) {
-                appendWarning(warnings, String.format(MESSAGE_SIMILAR_NAME, existingPerson.getName()));
-                hasSimilarName = true;
-            } else if (warning.equals(MESSAGE_SIMILAR_ADDRESS) && !hasSimilarAddress) {
+        model.getAddressBook().findSimilarAddressMatch(toAdd, null).ifPresent(match ->
                 appendWarning(warnings, String.format(
-                        MESSAGE_SIMILAR_ADDRESS,
-                        existingPerson.getName(),
-                        existingPerson.getAddress()));
-                hasSimilarAddress = true;
-            }
-
-            if (hasSimilarName && hasSimilarAddress) {
-                break;
-            }
-        }
+                        MESSAGE_SIMILAR_ADDRESS, match.getName(), match.getAddress())));
     }
 
     private void appendWarning(StringBuilder warnings, String message) {

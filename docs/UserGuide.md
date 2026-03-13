@@ -123,7 +123,7 @@ add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​
 
 Examples:
 * `add n/Adafruit Industries p/64601234 e/support@adafruit.com a/151 Varick St, New York, NY 10013, USA`
-* `add n/Cytron Technologies Pte. Ltd. p/65480668 (Office), 91234567 (Sales) e/sg.sales@cytron.io a/78 St Patrick's Rd, #01-23, Seventy Saint Patrick's, Singapore 424180 t/electronics` 
+* `add n/Cytron Technologies p/65480668 (Office), 91234567 (Sales) e/sg.sales@cytron.io a/09 Collyer Quay t/electronics` 
 
 <box type="tip" seamless>
 
@@ -165,7 +165,7 @@ For more details on possible warnings and errors when adding a contact, refer to
 
 #### Listing all contacts : `list`
 
-Shows a list of all vendor contacts in the VendorVault.
+Shows a list of all contacts in the VendorVault.
 
 Format:
 ```
@@ -174,27 +174,44 @@ list
 
 <box type="tip" seamless>
 
-**Tip:** Want to start with sample data? `list` will insert sample data if there are currently no contacts in VendorVault. 
+**Tip:** Want to start with sample data? `list` will insert sample data if there are no contacts or archived contacts. 
 </box>
 
 <div style="height: 30px;"></div>
 
 #### Editing a contact : `edit`
 
-Edits an existing contact in the address book.
+Edits a contact using the given email. Only the fields you specify will be updated, all others stay the same.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
-
-* Edits the contact at the specified `INDEX`. The index refers to the index number shown in the displayed contact list. The index **must be a positive integer** 1, 2, 3, …​
-* At least one of the optional fields must be provided.
-* Existing values will be updated to the input values.
-* When editing tags, the existing tags of the contact will be removed i.e adding of tags is not cumulative.
-* You can remove all the contact’s tags by typing `t/` without
-    specifying any tags after it.
+Format:
+```
+edit EMAIL [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​
+```
 
 Examples:
-*  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st contact to be `91234567` and `johndoe@example.com` respectively.
-*  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd contact to be `Betsy Crower` and clears all existing tags.
+*  `edit support@adafruit.com p/98196742 a/New York, USA` Updates the phone number and address for `support@adafruit.com`. The name, email, and tags remain unchanged.  
+*  `edit sg.sales@cytron.io n/Cytron t/` Updates the name to Cytron for `sg.sales@cytron.io` and clears all existing tags.
+
+<panel header="What happens to a contact's existing tags when I edit them?" type="seamless">
+
+The existing tags are **replaced with the new tags you specified**, adding new tags is not cumulative. 
+
+For example, if a contact has existing tags `t/electronics t/supplier` and you edit it with `edit EMAIL t/wholesale`, the contact's tags will be updated to only have `t/wholesale` and the previous tags will be removed.
+
+</panel>
+
+<panel header="How do I remove all tags from a contact?" type="seamless">
+
+Simply type `t/` without specifying any tags.
+
+For example, `edit EMAIL t/` will remove all tags from the contact with the specified email.
+
+</panel>
+
+<br>
+
+The same rules for multiple phone numbers and duplicates that apply to `add` also apply to `edit`.
+For more details on possible warnings and errors when editing a contact, refer to the [troubleshooting guide for edit contact](#troubleshooting-edit-contact) below.
 
 <div style="height: 30px;"></div>
 
@@ -336,17 +353,17 @@ _Details coming soon ..._
 
 ## Command Summary
 
-| Action             | Command                                                           | Example                                                                                                    | What it does                             |
-|--------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|------------------------------------------|
-| **Add Contact**    | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​ `          | `add n/TechSource Electronics p/61234567 e/sales@techsource.com a/15 Kallang Way, Singapore t/electronics` | Adds vendor contact                      |
-| **Edit Contact**   | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​` | `edit 2 n/TechSource Electronics p/61234567`                                                               | Edits specified fields of vendor contact |
-| **Delete Contact** | `delete INDEX`                                                    | `delete 3`                                                                                                 | Deletes contact at index specified       |
-| **List**           | `list`                                                            |                                                                                                            | Lists all contacts                       |
-| **Find Contact**   | `find KEYWORD [MORE_KEYWORDS]`                                    | `find TechSource`                                                                                          | Lists all contacts matching `KEYWORD`    |
-| **Clear Contacts** | `clear`                                                           |                                                                                                            | Clears all contacts                      |
-| **Add product**    | `addproduct id/IDENTIFIER n/NAME [q/QUANTITY]`                    | `addproduct id/SKU-1003 n/Tray of Eggs q/30 `                                                              | Adds product                             |
-| **Undo**           | `undo`                                                            |                                                                                                            | Undoes previous command                  |
-| **Help**           | `help`                                                            |                                                                                                            |                                          |
+| Action             | Command                                                                | Example                                                                                                    | What it does                             |
+|--------------------|------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|------------------------------------------|
+| **Add Contact**    | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​ `               | `add n/TechSource Electronics p/61234567 e/sales@techsource.com a/15 Kallang Way, Singapore t/electronics` | Adds vendor contact                      |
+| **Edit Contact**   | `edit EMAIL [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​` | `edit sales@techsource.com n/TechSource p/61234568`                                                        | Edits specified fields of vendor contact |
+| **Delete Contact** | `delete INDEX`                                                         | `delete 3`                                                                                                 | Deletes contact at index specified       |
+| **List**           | `list`                                                                 |                                                                                                            | Lists all contacts                       |
+| **Find Contact**   | `find KEYWORD [MORE_KEYWORDS]`                                         | `find TechSource`                                                                                          | Lists all contacts matching `KEYWORD`    |
+| **Clear Contacts** | `clear`                                                                |                                                                                                            | Clears all contacts                      |
+| **Add product**    | `addproduct id/IDENTIFIER n/NAME [q/QUANTITY]`                         | `addproduct id/SKU-1003 n/Tray of Eggs q/30 `                                                              | Adds product                             |
+| **Undo**           | `undo`                                                                 |                                                                                                            | Undoes previous command                  |
+| **Help**           | `help`                                                                 |                                                                                                            |                                          |
 
 <br>
 
@@ -406,28 +423,28 @@ Use this section when `add` fails or returns a warning.
 
 </box>
 
-| Scenario                                                                         | Message shown                                                                                 | How to fix                                                        |
-|----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|-------------------------------------------------------------------|
-| Missing one or more required prefixes (`n/`, `p/`, `e/`, `a/`)                   | `Missing required field(s): ...`                                                              | Include all required prefixed fields in your command.             |
-| No prefixes at all                                                               | `All required prefixes are missing, ...`                                                      | Use the full prefixed format, e.g. `add n/... p/... e/... a/...`. |
-| Text appears before the first prefix                                             | `No non-prefix characters before prefix(es) is allowed, ...`                                  | Remove any text before `n/`.                                      |
-| Same single-value field repeated (e.g. two `n/` or two `e/`)                     | `Multiple values specified for the following single-valued field(s): ...`                     | Keep only one value for each of `n/`, `p/`, `e/`, `a/`.           |
-| Name is blank                                                                    | `Name should not be blank.`                                                                   | Provide a non-empty name after `n/`.                              |
-| Name is too long                                                                 | `Name should be less than 256 characters.`                                                    | Shorten the name.                                                 |
-| Phone is blank/invalid                                                           | `Phone number should not be empty and must be at least 3 digits.`                             | Ensure each phone entry has at least 3 digits.                    |
-| Email is blank                                                                   | `Email should not be blank.`                                                                  | Provide a non-empty email after `e/`.                             |
-| Email format is invalid                                                          | `Email should be of the format local-part@domain ...`                                         | Use a valid email format (e.g. `sales@vendor.com`).               |
-| Address is blank                                                                 | `Address can take any values, and it should not be blank`                                     | Provide a non-empty address after `a/`.                           |
-| Address is too long                                                              | `Address should be less than 500 characters.`                                                 | Shorten the address.                                              |
-| Tag contains non-alphanumeric characters                                         | `Tag names should be alphanumeric`                                                            | Use letters/numbers only for each `t/` value.                     |
-| Contact duplicates an existing contact by same email or overlapping phone number | `This vendor contact already exists in the address book with the same email or phone number.` | Change the phone/email, or edit the existing contact instead.     |
+| Scenario                                                                         | Message shown                                                             | How to fix                                                        |
+|----------------------------------------------------------------------------------|---------------------------------------------------------------------------|-------------------------------------------------------------------|
+| Missing one or more required prefixes (`n/`, `p/`, `e/`, `a/`)                   | `Missing required field(s): ...`                                          | Include all required prefixed fields in your command.             |
+| No prefixes at all                                                               | `All required prefixes are missing, ...`                                  | Use the full prefixed format, e.g. `add n/... p/... e/... a/...`. |
+| Text appears before the first prefix                                             | `No non-prefix characters before prefix(es) is allowed, ...`              | Remove any text before `n/`.                                      |
+| Same single-value field repeated (e.g. two `n/` or two `e/`)                     | `Multiple values specified for the following single-valued field(s): ...` | Keep only one value for each of `n/`, `p/`, `e/`, `a/`.           |
+| Name is blank                                                                    | `Name should not be blank.`                                               | Provide a non-empty name after `n/`.                              |
+| Name is too long                                                                 | `Name should be at most 256 characters.`                                  | Shorten the name.                                                 |
+| Phone is blank/too short                                                         | `Phone number should not be empty and must be at least 3 digits.`         | Ensure each phone entry has at least 3 digits.                    |
+| Email is blank                                                                   | `Email should not be blank.`                                              | Provide a non-empty email after `e/`.                             |
+| Email format is invalid                                                          | `Email should be of the format local-part@domain ...`                     | Use a valid email format (e.g. `sales@vendor.com`).               |
+| Address is blank                                                                 | `Address can take any values, and it should not be blank`                 | Provide a non-empty address after `a/`.                           |
+| Address is too long                                                              | `Address should be at most 500 characters.`                               | Shorten the address.                                              |
+| Tag contains non-alphanumeric characters                                         | `Tag names should be alphanumeric`                                        | Use letters/numbers only for each `t/` value.                     |
+| Contact duplicates an existing contact by same email or overlapping phone number | `This vendor contact already exists with the same email or phone number.` | Change the phone/email, or edit the existing contact instead.     |
 
 Common `add` warnings:
 
 | Warning trigger                        | Warning shown                                                                                                          | What it means                                                                                                                                                                            |
 |----------------------------------------|------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Name has unusual symbols               | `⚠ Warning: Name contains unusual symbols, is this intentional?`                                                       | Name is accepted, but looks unusual. You can verify if you entered the correct name.                                                                                                     |
-| Phone includes unusual symbols/format  | `⚠ Warning: Phone number contains unusual symbols, is this intentional? ...`                                           | Phone is accepted, but format may be unintended. You can safely ignore it if you're providng specifications eg. `61234567 (Office)`                                                      |
+| Phone includes unusual symbols/format  | `⚠ Warning: Phone number contains unusual symbols, is this intentional?`                                               | Phone is accepted, but format may be unintended. You can safely ignore it if you're providing labels eg. `61234567 (Office)`                                                             |
 | Email is unusually long                | `⚠ Warning: This email address is unusually long, is this intentional?`                                                | Email is accepted, but unusually long. You can verify if the email entered is correct.                                                                                                   |
 | Similar name to an existing contact    | `⚠ Warning: There's a contact with a similar name (name: <similar-name>), is this intentional?`                        | Possible duplicate by similar name. You can check if the name in the warning message is the same vendor as what you were about to add.                                                   |
 | Similar address to an existing contact | `⚠ Warning: There's a contact with a similar address (name: <name>, address: <similar-address>), is this intentional?` | Possible duplicate/related location by address similarity. You can check if the vendor name and address in the warning message belongs to the same vendor as what you were about to add. |
@@ -435,5 +452,35 @@ Common `add` warnings:
 <box type="tip" seamless>
 
 Tip: If multiple warnings apply, VendorVault shows all of them (one per line) together with the success message.
+
+</box>
+
+#### Troubleshooting `edit` contact
+
+Use this section when `edit` fails or returns a warning.
+
+<box type="warning" seamless>
+
+**Important:**
+* **Error** messages mean the contact was **not edited**.
+* **Warning** messages mean the contact was **edited**, but VendorVault is flagging a possible issue.
+
+</box>
+
+| Scenario                                                              | Message shown                                    | How to fix                                                              |
+|-----------------------------------------------------------------------|--------------------------------------------------|-------------------------------------------------------------------------|
+| Missing/invalid target email (or extra non-prefixed text after email) | `Invalid command format! ...`                    | Follow the syntax `edit EMAIL [n/...] [p/...] [e/...] [a/...] [t/...]`. |
+| No fields specified to edit                                           | `At least one field to edit must be provided.`   | Include at least one of `n/`, `p/`, `e/`, `a/`, or `t/`.                |
+| Target email not found                                                | `No contact with the specified email was found.` | Check the contact exists and re-run with the correct existing email.    |
+
+<box type="info" seamless>
+
+Many errors that occur in `add` also apply to `edit`, specifically, all except the first three errors listed in the add contact section above also apply. Similarly, all warnings from `add` apply to `edit` as well. For these shared errors, refer to the [Troubleshooting add contact](#troubleshooting-add-contact) guide, as they behave the same way in edit contact commands.
+
+</box>
+
+<box type="tip" seamless>
+
+Tip: Unlike `add`, edit command warnings only appear for **fields you are actually editing**. For example, if you edit only the phone number and there's a similar name in the database, you won't see a name warning. This prevents unnecessary alerts for unchanged fields.
 
 </box>

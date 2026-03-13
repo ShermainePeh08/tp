@@ -539,7 +539,9 @@ public class AddCommandTest {
 
         @Override
         public ReadOnlyAddressBook getAddressBook() {
-            return new AddressBook();
+            AddressBook addressBook = new AddressBook();
+            personsAdded.forEach(addressBook::addPerson);
+            return addressBook;
         }
     }
 

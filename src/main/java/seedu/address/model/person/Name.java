@@ -13,7 +13,7 @@ public class Name {
             "Name should not be blank.";
     public static final int MAX_LENGTH = 256;
     public static final String MESSAGE_LENGTH_CONSTRAINTS =
-            "Name should be less than " + MAX_LENGTH + " characters.";
+            "Name should be at most " + MAX_LENGTH + " characters.";
     public static final String MESSAGE_WARN =
             "⚠ Warning: Name contains unusual symbols, is this intentional?";
 

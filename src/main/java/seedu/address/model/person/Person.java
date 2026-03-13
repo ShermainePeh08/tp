@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.parser.ParserUtil;
-import seedu.address.model.person.warnings.DuplicatePersonWarning;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -106,19 +105,19 @@ public class Person {
     }
 
     /**
-     * Returns true if both contacts have similar characteristics that warrant a warning.
-     * Checks for:
-     * 1. Similar names (case-insensitive or normalized whitespace match or overlapping name parts)
-     * 2. Similar addresses (partial substring match)
+     * Returns true if this person has a similar name to {@code otherPerson}.
+     * Intended for use by {@code AddressBook} similarity checks.
      */
-    public DuplicatePersonWarning isSamePersonWarn(Person otherPerson) {
-        if (hasSimilarName(otherPerson)) {
-            return new DuplicatePersonWarning(true, DuplicatePersonWarning.MESSAGE_SIMILAR_NAME);
-        }
+    public boolean isSimilarNameTo(Person otherPerson) {
+        return hasSimilarName(otherPerson);
+    }
 
-        return new DuplicatePersonWarning(
-                hasSimilarAddress(otherPerson),
-                DuplicatePersonWarning.MESSAGE_SIMILAR_ADDRESS);
+    /**
+     * Returns true if this person has a similar address to {@code otherPerson}.
+     * Intended for use by {@code AddressBook} similarity checks.
+     */
+    public boolean isSimilarAddressTo(Person otherPerson) {
+        return hasSimilarAddress(otherPerson);
     }
 
     private boolean hasSimilarName(Person otherPerson) {
