@@ -1,7 +1,12 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -52,10 +57,66 @@ public class DeleteProductCommandTest {
      */
     @Test
     public void equals() {
-        DeleteProductCommand firstCommand = new DeleteProductCommand("P001", true);
-        DeleteProductCommand secondCommand = new DeleteProductCommand("P001", true);
+        DeleteProductCommand first = new DeleteProductCommand("P001", true);
+        DeleteProductCommand second = new DeleteProductCommand("P001", true);
+        DeleteProductCommand third = new DeleteProductCommand("P002", true);
 
-        assertEquals(firstCommand, firstCommand);
-        assertEquals(firstCommand, secondCommand);
+        assertTrue(first.equals(first));
+        assertTrue(first.equals(second));
+        assertFalse(first.equals(third));
+        assertFalse(first.equals(null));
+    }
+
+    @Test
+    public void execute_needsConfirmation_setsPendingConfirmation() throws Exception {
+        ModelManager model = new ModelManager(new VendorVault(), new UserPrefs());
+
+        Product product = new ProductBuilder().build();
+        model.addProduct(product);
+
+        DeleteProductCommand command =
+                new DeleteProductCommand(product.getIdentifier().toString(), true);
+
+        command.execute(model);
+
+        assertNotNull(command.getPendingConfirmation());
+    }
+
+    @Test
+    public void onConfirm_deletesProduct() throws Exception {
+        ModelManager model = new ModelManager(new VendorVault(), new UserPrefs());
+
+        Product product = new ProductBuilder().build();
+        model.addProduct(product);
+
+        DeleteProductCommand command =
+                new DeleteProductCommand(product.getIdentifier().toString(), false);
+
+        command.onConfirm(model, product);
+
+        assertEquals(0, model.getFilteredProductList().size());
+    }
+
+    @Test
+    public void onCancel_returnsFailureMessage() {
+        ModelManager model = new ModelManager(new VendorVault(), new UserPrefs());
+
+        DeleteProductCommand command =
+                new DeleteProductCommand("P001", true);
+
+        Optional<CommandResult> result = command.onCancel(model);
+
+        assertTrue(result.isPresent());
+        assertEquals(DeleteProductCommand.MESSAGE_DELETE_FAILURE,
+                result.get().getFeedbackToUser());
+    }
+
+    @Test
+    public void toString_containsIdentifier() {
+        DeleteProductCommand command = new DeleteProductCommand("P001", true);
+
+        String str = command.toString();
+
+        assertTrue(str.contains("P001"));
     }
 }
