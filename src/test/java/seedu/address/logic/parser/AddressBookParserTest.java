@@ -23,6 +23,7 @@ import seedu.address.logic.commands.AliasCommand;
 import seedu.address.logic.commands.ArchiveProductCommand;
 import seedu.address.logic.commands.CancelCommand;
 import seedu.address.logic.commands.ClearCommand;
+import seedu.address.logic.commands.ClearProductCommand;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandType;
 import seedu.address.logic.commands.ConfirmCommand;
@@ -390,6 +391,17 @@ public class AddressBookParserTest {
         @Override
         public void restoreProduct(Product target) {
             throw new AssertionError("This method should not be called.");
+        }
+
+        @Test
+        public void parseCommand_clearProduct() throws Exception {
+            assertTrue(parser.parseCommand(ClearProductCommand.COMMAND_WORD,
+                    new PendingConfirmation(), new ModelManager())
+                    instanceof ClearProductCommand);
+
+            assertTrue(parser.parseCommand(ClearProductCommand.COMMAND_WORD + " 3",
+                    new PendingConfirmation(), new ModelManager())
+                    instanceof ClearProductCommand);
         }
 
         @Override
