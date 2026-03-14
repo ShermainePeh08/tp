@@ -20,24 +20,27 @@ public class Product {
     // Data fields
     private final Name name;
     private final Quantity quantity;
+    private final RestockThreshold threshold;
     private final boolean isArchived;
 
     /**
      * Creates a Product that is not archived.
      */
-    public Product(Identifier identifier, Name name, Quantity quantity) {
-        this(identifier, name, quantity, false);
+    public Product(Identifier identifier, Name name, Quantity quantity, RestockThreshold threshold) {
+        this(identifier, name, quantity, threshold, false);
     }
 
     /**
      * Creates a Product with the specified archived status.
      * Every field must be present and not null.
      */
-    public Product(Identifier identifier, Name name, Quantity quantity, boolean isArchived) {
-        requireAllNonNull(identifier, name, quantity);
+    public Product(Identifier identifier, Name name, Quantity quantity, RestockThreshold threshold,
+                   boolean isArchived) {
+        requireAllNonNull(identifier, name, quantity, threshold);
         this.identifier = identifier;
         this.name = name;
         this.quantity = quantity;
+        this.threshold = threshold;
         this.isArchived = isArchived;
     }
 
@@ -53,16 +56,20 @@ public class Product {
         return quantity;
     }
 
+    public RestockThreshold getRestockThreshold() {
+        return threshold;
+    }
+
     public boolean isArchived() {
         return isArchived;
     }
 
     public Product archive() {
-        return new Product(identifier, name, quantity, true);
+        return new Product(identifier, name, quantity, threshold, true);
     }
 
     public Product restore() {
-        return new Product(identifier, name, quantity, false);
+        return new Product(identifier, name, quantity, threshold, false);
     }
 
     /**
@@ -126,12 +133,13 @@ public class Product {
         return identifier.equals(otherProduct.identifier)
                 && name.equals(otherProduct.name)
                 && quantity.equals(otherProduct.quantity)
+                && threshold.equals(otherProduct.threshold)
                 && isArchived == otherProduct.isArchived;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(identifier, name, quantity, isArchived);
+        return Objects.hash(identifier, name, quantity, threshold, isArchived);
     }
 
     @Override
@@ -140,6 +148,7 @@ public class Product {
                 .add("identifier", identifier)
                 .add("name", name)
                 .add("quantity", quantity)
+                .add("threshold", threshold)
                 .toString();
     }
 
