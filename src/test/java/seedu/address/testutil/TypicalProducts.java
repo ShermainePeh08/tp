@@ -6,6 +6,8 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_PRODUCT_NAME_AI
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PRODUCT_NAME_IPAD;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_QUANTITY_AIRPODS;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_QUANTITY_IPAD;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_THRESHOLD_AIRPODS;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_THRESHOLD_IPAD;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,25 +23,27 @@ import seedu.address.model.product.Product;
 public class TypicalProducts {
 
     public static final Product RICE = new ProductBuilder().withIdentifier("SKU-1001")
-            .withName("Brown Rice 5kg").withQuantity("24").build();
+            .withName("Brown Rice 5kg").withQuantity("24").withThreshold("20").build();
     public static final Product OIL = new ProductBuilder().withIdentifier("SKU-1002")
-            .withName("Cooking Oil 2L").withQuantity("18").build();
+            .withName("Cooking Oil 2L").withQuantity("18").withThreshold("20").build();
     public static final Product EGGS = new ProductBuilder().withIdentifier("SKU-1003")
-            .withName("Tray of Eggs").withQuantity("36").build();
+            .withName("Tray of Eggs").withQuantity("36").withThreshold("25").build();
     public static final Product SUGAR = new ProductBuilder().withIdentifier("SKU-1004")
-            .withName("Sugar 1kg").withQuantity("42").build();
+            .withName("Sugar 1kg").withQuantity("42").withThreshold("20").build();
     public static final Product NOODLES = new ProductBuilder().withIdentifier("SKU-1005")
-            .withName("Instant Noodles Chicken").withQuantity("80").build();
+            .withName("Instant Noodles Chicken").withQuantity("80").withThreshold("80").build();
     public static final Product CUPS = new ProductBuilder().withIdentifier("SKU-1006")
-            .withName("Paper Cups 50 Pack").withQuantity("15").build();
+            .withName("Paper Cups 50 Pack").withQuantity("15").withThreshold("16").build();
     public static final Product WATER = new ProductBuilder().withIdentifier("SKU-1007")
-            .withName("Bottled Water 500ml").withQuantity("120").build();
+            .withName("Bottled Water 500ml").withQuantity("120").withThreshold("100").build();
 
     // Manually added - Product's details found in {@code CommandTestUtil}
     public static final Product IPAD = new ProductBuilder().withIdentifier(VALID_IDENTIFIER_IPAD)
-            .withName(VALID_PRODUCT_NAME_IPAD).withQuantity(VALID_QUANTITY_IPAD).build();
+            .withName(VALID_PRODUCT_NAME_IPAD).withQuantity(VALID_QUANTITY_IPAD)
+            .withThreshold(VALID_THRESHOLD_IPAD).build();
     public static final Product AIRPODS = new ProductBuilder().withIdentifier(VALID_IDENTIFIER_AIRPODS)
-            .withName(VALID_PRODUCT_NAME_AIRPODS).withQuantity(VALID_QUANTITY_AIRPODS).build();
+            .withName(VALID_PRODUCT_NAME_AIRPODS).withQuantity(VALID_QUANTITY_AIRPODS)
+            .withThreshold(VALID_THRESHOLD_AIRPODS).build();
 
     private TypicalProducts() {
     } // prevents instantiation
