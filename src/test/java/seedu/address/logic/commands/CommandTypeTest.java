@@ -1,13 +1,13 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-
-
-public class CommandClassTest {
+public class CommandTypeTest {
 
     @Test
     public void getCommandWord_allTypes_returnsCorrectWord() {
@@ -37,5 +37,27 @@ public class CommandClassTest {
     @Test
     public void valueOf_invalidName_throwsIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> CommandType.valueOf("INVALID"));
+    }
+
+    @Test
+    public void isValidCommand_validCommandWord_returnsTrue() {
+        assertTrue(CommandType.isValidCommand(AddCommand.COMMAND_WORD));
+        assertTrue(CommandType.isValidCommand(ListCommand.COMMAND_WORD));
+        assertTrue(CommandType.isValidCommand(UndoCommand.COMMAND_WORD));
+    }
+
+    @Test
+    public void isValidCommand_emptyString_returnsFalse() {
+        assertFalse(CommandType.isValidCommand(""));
+    }
+
+    @Test
+    public void isValidCommand_invalidCommandWord_returnsFalse() {
+        assertFalse(CommandType.isValidCommand("invalidCommand"));
+    }
+
+    @Test
+    public void isValidCommand_validCommandWordWrongCase_returnsFalse() {
+        assertFalse(CommandType.isValidCommand(AddCommand.COMMAND_WORD.toUpperCase()));
     }
 }
