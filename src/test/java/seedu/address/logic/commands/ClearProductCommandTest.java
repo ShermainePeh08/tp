@@ -83,16 +83,15 @@ public class ClearProductCommandTest {
     @Test
     public void execute_withConfirmation_setsPendingConfirmation() throws Exception {
         Model model = new ModelManager(
-            new VendorVault(getTypicalAddressBook(), getTypicalInventory()),
-            new UserPrefs());
+                new VendorVault(getTypicalAddressBook(), getTypicalInventory()),
+                new UserPrefs());
 
         ClearProductCommand command = new ClearProductCommand(true);
 
-        command.execute(model);
+        CommandResult result = command.execute(model);
 
-        PendingConfirmation pending = command.getPendingConfirmation();
-
-        assertNotNull(pending);
+        assertEquals(ClearProductCommand.MESSAGE_CONFIRMATION, result.getFeedbackToUser());
+        assertNotNull(command.getPendingConfirmation());
     }
 
     @Test
@@ -106,6 +105,44 @@ public class ClearProductCommandTest {
         CommandResult result = command.onCancel(model).get();
 
         assertEquals(ClearProductCommand.MESSAGE_CANCELLED, result.getFeedbackToUser());
+    }
+
+    @Test
+    public void execute_confirm_clearsProducts() throws Exception {
+        Model model = new ModelManager(
+                new VendorVault(getTypicalAddressBook(), getTypicalInventory()),
+                new UserPrefs());
+
+        ClearProductCommand command = new ClearProductCommand(true);
+
+        command.execute(model);
+
+        PendingConfirmation pending = command.getPendingConfirmation();
+
+        ConfirmCommand confirmCommand = new ConfirmCommand(pending.getOnConfirm());
+
+        confirmCommand.execute(model);
+
+        assertTrue(model.getFilteredProductList().isEmpty());
+    }
+
+    @Test
+    public void execute_cancel_doesNotClearProducts() throws Exception {
+        Model model = new ModelManager(
+                new VendorVault(getTypicalAddressBook(), getTypicalInventory()),
+                new UserPrefs());
+
+        ClearProductCommand command = new ClearProductCommand(true);
+
+        command.execute(model);
+
+        PendingConfirmation pending = command.getPendingConfirmation();
+
+        CancelCommand cancelCommand = new CancelCommand(pending.getOnCancel());
+
+        cancelCommand.execute(model);
+
+        assertFalse(model.getFilteredProductList().isEmpty());
     }
 
     @Test
