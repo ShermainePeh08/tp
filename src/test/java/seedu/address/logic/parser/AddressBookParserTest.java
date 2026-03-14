@@ -274,6 +274,19 @@ public class AddressBookParserTest {
                     new ModelManager()));
     }
 
+    @Test
+    public void parseCommand_clearProduct() throws Exception {
+        AddressBookParser parser = new AddressBookParser();
+
+        Command command = parser.parseCommand(
+                ClearProductCommand.COMMAND_WORD,
+                new PendingConfirmation(),
+                new ModelManager()
+        );
+
+        assertTrue(command instanceof ClearProductCommand);
+    }
+
     /**
      * A default model stub that have all of the methods failing.
      */

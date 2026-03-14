@@ -4,11 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalProducts.getTypicalInventory;
 
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.VendorVault;
@@ -19,7 +22,9 @@ public class ClearProductCommandTest {
 
     @Test
     public void execute_needsConfirmation_setsPendingConfirmation() throws Exception {
-        ModelManager model = new ModelManager(new VendorVault(), new UserPrefs());
+        Model model = new ModelManager(
+            new VendorVault(getTypicalAddressBook(), getTypicalInventory()),
+            new UserPrefs());
 
         Product product = new ProductBuilder().build();
         model.addProduct(product);
@@ -33,7 +38,9 @@ public class ClearProductCommandTest {
 
     @Test
     public void onConfirm_clearsProducts() {
-        ModelManager model = new ModelManager(new VendorVault(), new UserPrefs());
+        Model model = new ModelManager(
+            new VendorVault(getTypicalAddressBook(), getTypicalInventory()),
+            new UserPrefs());
 
         Product product = new ProductBuilder().build();
         model.addProduct(product);
@@ -47,7 +54,9 @@ public class ClearProductCommandTest {
 
     @Test
     public void onCancel_returnsCancelMessage() {
-        ModelManager model = new ModelManager(new VendorVault(), new UserPrefs());
+        Model model = new ModelManager(
+            new VendorVault(getTypicalAddressBook(), getTypicalInventory()),
+            new UserPrefs());
 
         ClearProductCommand command = new ClearProductCommand(true);
 
@@ -56,6 +65,47 @@ public class ClearProductCommandTest {
         assertTrue(result.isPresent());
         assertEquals(ClearProductCommand.MESSAGE_CANCELLED,
                 result.get().getFeedbackToUser());
+    }
+
+    @Test
+    public void execute_noConfirmation_clearsProducts() throws Exception {
+        Model model = new ModelManager(
+            new VendorVault(getTypicalAddressBook(), getTypicalInventory()),
+            new UserPrefs());
+
+        ClearProductCommand command = new ClearProductCommand(false);
+
+        command.execute(model);
+
+        assertTrue(model.getFilteredProductList().isEmpty());
+    }
+
+    @Test
+    public void execute_withConfirmation_setsPendingConfirmation() throws Exception {
+        Model model = new ModelManager(
+            new VendorVault(getTypicalAddressBook(), getTypicalInventory()),
+            new UserPrefs());
+
+        ClearProductCommand command = new ClearProductCommand(true);
+
+        command.execute(model);
+
+        PendingConfirmation pending = command.getPendingConfirmation();
+
+        assertNotNull(pending);
+    }
+
+    @Test
+    public void onCancel_returnsCancelledMessage() {
+        Model model = new ModelManager(
+            new VendorVault(getTypicalAddressBook(), getTypicalInventory()),
+            new UserPrefs());
+
+        ClearProductCommand command = new ClearProductCommand(true);
+
+        CommandResult result = command.onCancel(model).get();
+
+        assertEquals(ClearProductCommand.MESSAGE_CANCELLED, result.getFeedbackToUser());
     }
 
     @Test
@@ -68,5 +118,13 @@ public class ClearProductCommandTest {
         assertTrue(first.equals(second));
         assertFalse(first.equals(third));
         assertFalse(first.equals(null));
+    }
+
+    @Test
+    public void toStringMethod() {
+        ClearProductCommand command = new ClearProductCommand(true);
+
+        String expected = "ClearProductCommand(needsConfirmation=true)";
+        assertEquals(expected, command.toString());
     }
 }
