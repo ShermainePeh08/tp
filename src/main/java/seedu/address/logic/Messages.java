@@ -78,7 +78,9 @@ public class Messages {
                 .append("; Name: ")
                 .append(product.getName())
                 .append("; Quantity: ")
-                .append(product.getQuantity());
+                .append(product.getQuantity())
+                .append("; Restock Threshold: ")
+                .append(product.getRestockThreshold());
         return builder.toString();
     }
 }

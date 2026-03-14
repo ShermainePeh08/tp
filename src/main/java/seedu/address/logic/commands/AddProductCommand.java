@@ -5,6 +5,7 @@ import static seedu.address.logic.Messages.MESSAGE_DUPLICATE_PRODUCT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IDENTIFIER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_QUANTITY;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_THRESHOLD;
 import static seedu.address.logic.parser.ParserUtil.NEWLINE;
 import static seedu.address.model.product.warnings.DuplicateProductWarning.MESSAGE_SIMILAR_NAME;
 
@@ -30,7 +31,8 @@ public class AddProductCommand extends Command {
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_IDENTIFIER + "A1 "
             + PREFIX_NAME + "iPad 11 Pro "
-            + PREFIX_QUANTITY + "20";
+            + PREFIX_QUANTITY + "20"
+            + PREFIX_THRESHOLD + "5";
 
     public static final String MESSAGE_SUCCESS = "New product added: %1$s";
 

@@ -37,6 +37,7 @@ import seedu.address.model.product.Identifier;
 import seedu.address.model.product.Name;
 import seedu.address.model.product.Product;
 import seedu.address.model.product.Quantity;
+import seedu.address.model.product.RestockThreshold;
 import seedu.address.model.product.warnings.DuplicateProductWarning;
 import seedu.address.testutil.ProductBuilder;
 
@@ -175,6 +176,7 @@ public class AddProductCommandTest {
                 new Identifier("SKU-4200"),
                 new Name("Desk Lamp"),
                 new Quantity("5"),
+                new RestockThreshold("5"),
                 new DuplicateProductWarning(true, "OTHER_WARNING_TYPE"));
 
         ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded();
@@ -535,9 +537,9 @@ public class AddProductCommandTest {
     private static class ProductWithForcedWarning extends Product {
         private final DuplicateProductWarning forcedWarning;
 
-        ProductWithForcedWarning(Identifier identifier, Name name, Quantity quantity,
+        ProductWithForcedWarning(Identifier identifier, Name name, Quantity quantity, RestockThreshold threshold,
                                  DuplicateProductWarning forcedWarning) {
-            super(identifier, name, quantity);
+            super(identifier, name, quantity, threshold);
             this.forcedWarning = forcedWarning;
         }
 

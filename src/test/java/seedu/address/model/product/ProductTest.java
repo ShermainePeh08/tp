@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_IDENTIFIER_AIRPODS;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PRODUCT_NAME_IPAD;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_QUANTITY_IPHONE;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_THRESHOLD_AIRPODS;
 import static seedu.address.testutil.TypicalProducts.NOODLES;
 import static seedu.address.testutil.TypicalProducts.OIL;
 import static seedu.address.testutil.TypicalProducts.RICE;
@@ -27,7 +28,7 @@ public class ProductTest {
 
         // same id, all other attributes different -> returns true
         Product editedRice = new ProductBuilder(RICE).withName(VALID_PRODUCT_NAME_IPAD)
-                .withQuantity(VALID_QUANTITY_IPHONE).build();
+                .withQuantity(VALID_QUANTITY_IPHONE).withThreshold(VALID_THRESHOLD_AIRPODS).build();
         assertTrue(RICE.isSameProduct(editedRice));
 
         // different id, all other attributes same -> returns false
@@ -90,6 +91,10 @@ public class ProductTest {
         // different quantity -> returns false
         editedRice = new ProductBuilder(RICE).withQuantity(VALID_QUANTITY_IPHONE).build();
         assertFalse(RICE.equals(editedRice));
+
+        // different threshold -> returns false
+        editedRice = new ProductBuilder(RICE).withThreshold(VALID_THRESHOLD_AIRPODS).build();
+        assertFalse(RICE.equals(editedRice));
     }
 
     @Test
@@ -103,7 +108,7 @@ public class ProductTest {
     public void toStringMethod() {
         String expected =
                 Product.class.getCanonicalName() + "{identifier=" + RICE.getIdentifier() + ", name=" + RICE.getName()
-                + ", quantity=" + RICE.getQuantity() + "}";
+                + ", quantity=" + RICE.getQuantity() + ", threshold=" + RICE.getRestockThreshold() + "}";
         assertEquals(expected, RICE.toString());
     }
 

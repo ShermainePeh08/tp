@@ -2,36 +2,43 @@
   "products" : [ {
     "name" : "Brown Rice 5kg",
     "quantity" : "24",
+    "threshold": "20",
     "isArchived" : false,
     "identifier" : "SKU-1001"
   }, {
     "name" : "Cooking Oil 2L",
     "quantity" : "18",
+    "threshold": "20",
     "isArchived" : false,
     "identifier" : "SKU-1002"
   }, {
     "name" : "Tray of Eggs",
     "quantity" : "36",
+    "threshold": "25",
     "isArchived" : false,
     "identifier" : "SKU-1003"
   }, {
     "name" : "Sugar 1kg",
     "quantity" : "42",
+    "threshold": "20",
     "isArchived" : false,
     "identifier" : "SKU-1004"
   }, {
     "name" : "Instant Noodles Chicken",
     "quantity" : "80",
+    "threshold": "80",
     "isArchived" : false,
     "identifier" : "SKU-1005"
   }, {
     "name" : "Paper Cups 50 Pack",
     "quantity" : "15",
+    "threshold": "16",
     "isArchived" : false,
     "identifier" : "SKU-1006"
   }, {
     "name" : "Bottled Water 500ml",
     "quantity" : "120",
+    "threshold": "100",
     "isArchived" : false,
     "identifier" : "SKU-1007"
   } ]

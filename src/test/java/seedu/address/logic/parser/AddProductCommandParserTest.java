@@ -14,17 +14,25 @@ import static seedu.address.logic.commands.CommandTestUtil.INVALID_PRODUCT_NAME_
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PRODUCT_NAME_DESC_WARN;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PRODUCT_NAME_WARN;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_QUANTITY_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_THRESHOLD_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_NON_EMPTY;
 import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_WHITESPACE;
 import static seedu.address.logic.commands.CommandTestUtil.PRODUCT_NAME_DESC_AIRPODS;
 import static seedu.address.logic.commands.CommandTestUtil.PRODUCT_NAME_DESC_IPAD;
 import static seedu.address.logic.commands.CommandTestUtil.QUANTITY_DESC_AIRPODS;
 import static seedu.address.logic.commands.CommandTestUtil.QUANTITY_DESC_IPAD;
+import static seedu.address.logic.commands.CommandTestUtil.THRESHOLD_DESC_AIRPODS;
+import static seedu.address.logic.commands.CommandTestUtil.THRESHOLD_DESC_IPAD;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_IDENTIFIER_IPAD;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PRODUCT_NAME_IPAD;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_QUANTITY_IPAD;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_THRESHOLD_IPAD;
+import static seedu.address.logic.parser.AddProductCommandParser.DEFAULT_QUANTITY;
+import static seedu.address.logic.parser.AddProductCommandParser.DEFAULT_THRESHOLD;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IDENTIFIER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_QUANTITY;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_THRESHOLD;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.logic.parser.ParserUtil.FIELD_IDENTIFIER;
@@ -42,6 +50,7 @@ import seedu.address.model.product.Identifier;
 import seedu.address.model.product.Name;
 import seedu.address.model.product.Product;
 import seedu.address.model.product.Quantity;
+import seedu.address.model.product.RestockThreshold;
 import seedu.address.testutil.ProductBuilder;
 
 public class AddProductCommandParserTest {
@@ -52,25 +61,43 @@ public class AddProductCommandParserTest {
         Product expectedProduct = new ProductBuilder(AIRPODS).build();
 
         assertParseSuccess(parser, PREAMBLE_WHITESPACE + IDENTIFIER_DESC_AIRPODS + PRODUCT_NAME_DESC_AIRPODS
-                + QUANTITY_DESC_AIRPODS, new AddProductCommand(expectedProduct));
+                + QUANTITY_DESC_AIRPODS + THRESHOLD_DESC_AIRPODS, new AddProductCommand(expectedProduct));
     }
 
     @Test
-    public void parse_optionalFieldMissing_successWithWarning() throws Exception {
+    public void parse_optionalFieldsMissing_successWithWarning() throws Exception {
         Product expectedProduct = new ProductBuilder(IPAD).build();
 
         AddProductCommand result = parser.parse(IDENTIFIER_DESC_IPAD + PRODUCT_NAME_DESC_IPAD);
         assertEquals(new AddProductCommand(expectedProduct), result);
-        assertEquals(AddProductCommandParser.MESSAGE_QUANTITY_DEFAULTED, result.getWarnings());
+
+        String expectedWarnings = AddProductCommandParser.MESSAGE_QUANTITY_DEFAULTED + NEWLINE
+                + AddProductCommandParser.MESSAGE_THRESHOLD_DEFAULTED;
+        assertEquals(expectedWarnings, result.getWarnings());
     }
 
     @Test
     public void parse_missingQuantityWarning_appearsInSuccessMessage() throws Exception {
-        Product expectedProduct = new Product(new Identifier(VALID_IDENTIFIER_IPAD),
-                new Name(VALID_PRODUCT_NAME_IPAD), new Quantity("0"));
-        AddProductCommand command = parser.parse(IDENTIFIER_DESC_IPAD + PRODUCT_NAME_DESC_IPAD);
+        Product expectedProduct = new Product(new Identifier(VALID_IDENTIFIER_IPAD), new Name(VALID_PRODUCT_NAME_IPAD),
+                new Quantity(DEFAULT_QUANTITY), new RestockThreshold(VALID_THRESHOLD_IPAD));
+        AddProductCommand command = parser.parse(
+                IDENTIFIER_DESC_IPAD + PRODUCT_NAME_DESC_IPAD + THRESHOLD_DESC_IPAD);
 
         String expectedWarnings = AddProductCommandParser.MESSAGE_QUANTITY_DEFAULTED;
+        assertEquals(new AddProductCommand(expectedProduct, expectedWarnings),
+                new AddProductCommand(expectedProduct, command.getWarnings()));
+        assertEquals(expectedWarnings, command.getWarnings());
+        assertEquals(1, command.getWarnings().split(NEWLINE).length);
+    }
+
+    @Test
+    public void parse_missingThresholdWarning_appearsInSuccessMessage() throws Exception {
+        Product expectedProduct = new Product(new Identifier(VALID_IDENTIFIER_IPAD), new Name(VALID_PRODUCT_NAME_IPAD),
+                new Quantity(VALID_QUANTITY_IPAD), new RestockThreshold(DEFAULT_THRESHOLD));
+        AddProductCommand command = parser.parse(
+                IDENTIFIER_DESC_IPAD + PRODUCT_NAME_DESC_IPAD + QUANTITY_DESC_IPAD);
+
+        String expectedWarnings = AddProductCommandParser.MESSAGE_THRESHOLD_DEFAULTED;
         assertEquals(new AddProductCommand(expectedProduct, expectedWarnings),
                 new AddProductCommand(expectedProduct, command.getWarnings()));
         assertEquals(expectedWarnings, command.getWarnings());
@@ -110,17 +137,27 @@ public class AddProductCommandParserTest {
 
         assertParseFailure(parser, IDENTIFIER_DESC_IPAD + PRODUCT_NAME_DESC_IPAD + INVALID_QUANTITY_DESC,
                 Quantity.MESSAGE_CONSTRAINTS);
+
+        assertParseFailure(parser, IDENTIFIER_DESC_IPAD + PRODUCT_NAME_DESC_IPAD + QUANTITY_DESC_IPAD
+                + INVALID_THRESHOLD_DESC, RestockThreshold.MESSAGE_CONSTRAINTS);
     }
 
     @Test
     public void parse_repeatedFields_failure() {
-        String validArgs = IDENTIFIER_DESC_AIRPODS + PRODUCT_NAME_DESC_AIRPODS + QUANTITY_DESC_AIRPODS;
+        String validArgs = IDENTIFIER_DESC_AIRPODS + PRODUCT_NAME_DESC_AIRPODS
+                + QUANTITY_DESC_AIRPODS + THRESHOLD_DESC_AIRPODS;
 
         assertParseFailure(parser, IDENTIFIER_DESC_IPAD + validArgs,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_IDENTIFIER));
 
         assertParseFailure(parser, PRODUCT_NAME_DESC_IPAD + validArgs,
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NAME));
+
+        assertParseFailure(parser, QUANTITY_DESC_IPAD + validArgs,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_QUANTITY));
+
+        assertParseFailure(parser, THRESHOLD_DESC_IPAD + validArgs,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_THRESHOLD));
     }
 
     @Test
@@ -130,18 +167,19 @@ public class AddProductCommandParserTest {
                 .withIdentifier(INVALID_IDENTIFIER_WARN)
                 .withName(INVALID_PRODUCT_NAME_WARN)
                 .withQuantity(VALID_QUANTITY_IPAD)
+                .withThreshold(VALID_THRESHOLD_IPAD)
                 .build();
 
         AddProductCommand expectedCommand = new AddProductCommand(expectedProduct);
 
-        String input = INVALID_IDENTIFIER_DESC_WARN + INVALID_PRODUCT_NAME_DESC_WARN + QUANTITY_DESC_IPAD;
+        String input = INVALID_IDENTIFIER_DESC_WARN + INVALID_PRODUCT_NAME_DESC_WARN
+                + QUANTITY_DESC_IPAD + THRESHOLD_DESC_IPAD;
 
         AddProductCommand result = parser.parse(input);
 
         assertEquals(expectedCommand, result);
 
-        String expectedWarnings = Identifier.MESSAGE_WARN + NEWLINE
-                        + Name.MESSAGE_WARN;
+        String expectedWarnings = Identifier.MESSAGE_WARN + NEWLINE + Name.MESSAGE_WARN;
 
         assertEquals(expectedWarnings, result.getWarnings());
     }

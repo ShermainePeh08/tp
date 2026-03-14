@@ -2,6 +2,7 @@
   "products" : [ {
     "name" : "",
     "quantity" : "10",
+    "threshold" : "0",
     "isArchived" : false,
     "identifier" : "DS-1001"
   } ]

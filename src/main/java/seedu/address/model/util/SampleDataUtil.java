@@ -15,6 +15,7 @@ import seedu.address.model.person.Phone;
 import seedu.address.model.product.Identifier;
 import seedu.address.model.product.Product;
 import seedu.address.model.product.Quantity;
+import seedu.address.model.product.RestockThreshold;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -72,17 +73,17 @@ public class SampleDataUtil {
     public static Product[] getSampleProducts() {
         return new Product[] {
             new Product(new Identifier("DS-1001"), productName("AA Batteries 4 Pack"),
-                    new Quantity("10")),
+                    new Quantity("10"), new RestockThreshold("11")),
             new Product(new Identifier("DS-1002"), productName("LED Bulb 9W"),
-                    new Quantity("45")),
+                    new Quantity("45"), new RestockThreshold("40")),
             new Product(new Identifier("DS-1003"), productName("Toothpaste 120g"),
-                    new Quantity("38")),
+                    new Quantity("38"), new RestockThreshold("38")),
             new Product(new Identifier("DS-1004"), productName("Dish Sponge 3 Pack"),
-                    new Quantity("52")),
+                    new Quantity("52"), new RestockThreshold("20")),
             new Product(new Identifier("DS-1005"), productName("Notebook A5"),
-                    new Quantity("70")),
+                    new Quantity("70"), new RestockThreshold("0")),
             new Product(new Identifier("DS-1006"), productName("Laundry Detergent 1L"),
-                    new Quantity("24"))
+                    new Quantity("24"), new RestockThreshold("37"))
         };
     }
 

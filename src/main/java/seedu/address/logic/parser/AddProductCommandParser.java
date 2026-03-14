@@ -7,6 +7,7 @@ import static seedu.address.logic.Messages.MESSAGE_NON_PREFIX_BEFORE_PREFIX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IDENTIFIER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_QUANTITY;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_THRESHOLD;
 import static seedu.address.logic.parser.ParserUtil.COMMA_SEPARATOR;
 import static seedu.address.logic.parser.ParserUtil.FIELD_IDENTIFIER;
 import static seedu.address.logic.parser.ParserUtil.FIELD_PRODUCT_NAME;
@@ -23,6 +24,7 @@ import seedu.address.model.product.Identifier;
 import seedu.address.model.product.Name;
 import seedu.address.model.product.Product;
 import seedu.address.model.product.Quantity;
+import seedu.address.model.product.RestockThreshold;
 
 /**
  * Parses input arguments and creates a new AddProductCommand object.
@@ -30,8 +32,11 @@ import seedu.address.model.product.Quantity;
 public class AddProductCommandParser implements Parser<AddProductCommand> {
 
     public static final String DEFAULT_QUANTITY = "0";
+    public static final String DEFAULT_THRESHOLD = "10";
     public static final String MESSAGE_QUANTITY_DEFAULTED =
             "⚠ Warning: Quantity missing, defaulted to 0.";
+    public static final String MESSAGE_THRESHOLD_DEFAULTED =
+            "⚠ Warning: Restock threshold missing, defaulted to 10.";
 
     private record RequiredField(Prefix prefix, String name) {
     }
@@ -44,10 +49,10 @@ public class AddProductCommandParser implements Parser<AddProductCommand> {
      */
     public AddProductCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(
-                args, PREFIX_IDENTIFIER, PREFIX_NAME, PREFIX_QUANTITY);
+                args, PREFIX_IDENTIFIER, PREFIX_NAME, PREFIX_QUANTITY, PREFIX_THRESHOLD);
 
         requireAddProductPrefixes(argMultimap);
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_IDENTIFIER, PREFIX_NAME, PREFIX_QUANTITY);
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_IDENTIFIER, PREFIX_NAME, PREFIX_QUANTITY, PREFIX_THRESHOLD);
 
         StringBuilder warnings = new StringBuilder();
         ParseResult<Identifier> identifierResult = ParserUtil
@@ -66,7 +71,15 @@ public class AddProductCommandParser implements Parser<AddProductCommand> {
             appendWarning(warnings, Optional.of(MESSAGE_QUANTITY_DEFAULTED));
         }
 
-        Product product = new Product(identifierResult.getValue(), nameResult.getValue(), quantity);
+        RestockThreshold threshold;
+        if (argMultimap.getValue(PREFIX_THRESHOLD).isPresent()) {
+            threshold = ParserUtil.parseThreshold(argMultimap.getValue(PREFIX_THRESHOLD).get()).getValue();
+        } else {
+            threshold = new RestockThreshold(DEFAULT_THRESHOLD);
+            appendWarning(warnings, Optional.of(MESSAGE_THRESHOLD_DEFAULTED));
+        }
+
+        Product product = new Product(identifierResult.getValue(), nameResult.getValue(), quantity, threshold);
 
         if (!warnings.isEmpty()) {
             return new AddProductCommand(product, warnings.toString());

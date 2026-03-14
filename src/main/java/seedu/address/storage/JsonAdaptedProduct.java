@@ -8,6 +8,7 @@ import seedu.address.model.product.Identifier;
 import seedu.address.model.product.Name;
 import seedu.address.model.product.Product;
 import seedu.address.model.product.Quantity;
+import seedu.address.model.product.RestockThreshold;
 
 /**
  * Jackson-friendly version of {@link Product}
@@ -22,17 +23,22 @@ public class JsonAdaptedProduct {
     // Data fields
     private final String name;
     private final String quantity;
+    private final String threshold;
     private final boolean isArchived;
 
     /**
-     * Constructs a {@Code JsonAdapatedProduct} with the given product details.
+     * Constructs a {@Code JsonAdaptedProduct} with the given product details.
      */
     @JsonCreator
-    public JsonAdaptedProduct(@JsonProperty("identfier") String identifier, @JsonProperty("name") String name,
-            @JsonProperty("quantity") String quantity, @JsonProperty("isArchived") boolean isArchived) {
+    public JsonAdaptedProduct(@JsonProperty("identifier") String identifier,
+                              @JsonProperty("name") String name,
+                              @JsonProperty("quantity") String quantity,
+                              @JsonProperty("threshold") String threshold,
+                              @JsonProperty("isArchived") boolean isArchived) {
         this.identifier = identifier;
         this.name = name;
         this.quantity = quantity;
+        this.threshold = threshold;
         this.isArchived = isArchived;
     }
 
@@ -43,6 +49,7 @@ public class JsonAdaptedProduct {
         this.identifier = product.getIdentifier().toString();
         this.name = product.getName().fullName;
         this.quantity = product.getQuantity().toString();
+        this.threshold = product.getRestockThreshold().toString();
         this.isArchived = product.isArchived();
     }
 
@@ -79,6 +86,15 @@ public class JsonAdaptedProduct {
         }
         final Quantity modelQuantity = new Quantity(quantity);
 
-        return new Product(modelIdentifier, modelName, modelQuantity, isArchived);
+        if (threshold == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
+                    RestockThreshold.class.getSimpleName()));
+        }
+        if (!RestockThreshold.isValidRestockThreshold(threshold)) {
+            throw new IllegalValueException(RestockThreshold.MESSAGE_CONSTRAINTS);
+        }
+        final RestockThreshold modelThreshold = new RestockThreshold(threshold);
+
+        return new Product(modelIdentifier, modelName, modelQuantity, modelThreshold, isArchived);
     }
 }
