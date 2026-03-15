@@ -95,7 +95,7 @@ public class ClearProductCommand extends Command {
      * @param model the model to update
      * @return the command result wrapped in an {@link Optional}
      */
-    public Optional<CommandResult> onConfirm(Model model) {
+    private Optional<CommandResult> onConfirm(Model model) {
         return Optional.of(clearProducts(model));
     }
 
@@ -105,7 +105,7 @@ public class ClearProductCommand extends Command {
      * @param model the model to update
      * @return the command result wrapped in an {@link Optional}
      */
-    public Optional<CommandResult> onCancel(Model model) {
+    private Optional<CommandResult> onCancel(Model model) {
         return Optional.of(new CommandResult(MESSAGE_CANCELLED));
     }
 
