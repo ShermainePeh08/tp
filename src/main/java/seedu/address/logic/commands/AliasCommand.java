@@ -22,7 +22,7 @@ public class AliasCommand extends Command {
 
     public static final String MESSAGE_EMPTY_ALIAS_LIST = "No alias added yet. Add alias using the alias command.";
 
-    public static final String MESSAGE_DISPLAY_ALIAS_LIST = "Here are your current aliases: ";
+    public static final String MESSAGE_DISPLAY_ALIAS_LIST = "Here are your current aliases:\n";
 
     private final Optional<Alias> alias;
 
@@ -41,7 +41,7 @@ public class AliasCommand extends Command {
         if (alias.isPresent()) {
             return addAliasToModel(model, alias.get());
         } else {
-            return null;
+            return showCurrentAliases(model);
         }
     }
 
@@ -65,10 +65,11 @@ public class AliasCommand extends Command {
         for (int i = 1; i <= aliasList.size(); i++) {
             Alias currAlias = aliasList.get(i-1);
             stringBuilder.append(i)
-                    .append(") Alias:")
+                    .append(")")
+                    .append(currAlias.getOriginalCommand())
+                    .append("->")
                     .append(currAlias.getAlias())
-                    .append(", Original Command:")
-                    .append(currAlias.getOriginalCommand());
+                    .append("\n");
         }
         return new CommandResult(stringBuilder.toString());
     }
