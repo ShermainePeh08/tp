@@ -15,7 +15,6 @@ import static seedu.address.testutil.TypicalProducts.RICE;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.model.person.Email;
 import seedu.address.testutil.ProductBuilder;
 
 public class ProductTest {
