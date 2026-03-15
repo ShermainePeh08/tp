@@ -142,7 +142,7 @@ public class AddressBookParser {
 
             case ClearProductCommand.COMMAND_WORD:
                 return new ClearProductCommandParser().parse(arguments);
-                
+
             case DeleteProductCommand.COMMAND_WORD:
                 return new DeleteProductCommandParser().parse(arguments);
 
