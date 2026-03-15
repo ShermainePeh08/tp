@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PRODUCTS;
 import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.address.testutil.TypicalAliases.getTypicalAliases;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BENSON;
 import static seedu.address.testutil.TypicalProducts.OIL;
@@ -124,6 +125,18 @@ public class ModelManagerTest {
 
         assertEquals(modelManager.getAddressBook().getPersonList(), vendorVault.getPersonList());
         assertEquals(modelManager.getInventory().getProductList(), vendorVault.getProductList());
+    }
+
+    @Test
+    public void setAliases_validAliases_replacesAliasesData() {
+        Aliases aliases = getTypicalAliases();
+        modelManager.setAliases(aliases);
+        assertEquals(aliases, modelManager.getAliases());
+    }
+
+    @Test
+    public void setAliases_nullAliases_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.setAliases(null));
     }
 
     @Test

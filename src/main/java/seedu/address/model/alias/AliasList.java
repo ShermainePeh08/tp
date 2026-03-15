@@ -89,4 +89,19 @@ public class AliasList {
         }
         throw new NoAliasFoundInAliasListException();
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+
+        if (!(other instanceof AliasList)) {
+            return false;
+        }
+
+        AliasList otherAliasList = (AliasList) other;
+        return aliases.equals(otherAliasList.aliases)
+                && aliasHashSet.equals(otherAliasList.aliasHashSet);
+    }
 }
