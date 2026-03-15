@@ -97,7 +97,7 @@ public class AddressBookParser {
                 return new DeleteCommandParser().parse(arguments);
 
             case ClearCommand.COMMAND_WORD:
-                return new ClearCommand();
+                return new ClearCommandParser().parse(arguments);
 
             case UndoCommand.COMMAND_WORD:
                 return new UndoCommand();
