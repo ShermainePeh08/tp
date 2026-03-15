@@ -4,6 +4,7 @@ import static seedu.address.logic.Messages.MESSAGE_ALL_PREFIXES_MISSING;
 import static seedu.address.logic.Messages.MESSAGE_MISSING_FIELD_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_MISSING_PREFIX;
 import static seedu.address.logic.Messages.MESSAGE_NON_PREFIX_BEFORE_PREFIX;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IDENTIFIER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_QUANTITY;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 import seedu.address.logic.commands.AddProductCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.Email;
 import seedu.address.model.product.Identifier;
 import seedu.address.model.product.Name;
 import seedu.address.model.product.Product;
@@ -37,6 +39,8 @@ public class AddProductCommandParser implements Parser<AddProductCommand> {
             "⚠ Warning: Quantity missing, defaulted to 0.";
     public static final String MESSAGE_THRESHOLD_DEFAULTED =
             "⚠ Warning: Restock threshold missing, defaulted to 10.";
+    public static final String MESSAGE_VENDOR_EMAIL_MISSING =
+            "⚠ Warning: Vendor email missing, product will not be not associated with a vendor.";
 
     private record RequiredField(Prefix prefix, String name) {
     }
@@ -49,10 +53,11 @@ public class AddProductCommandParser implements Parser<AddProductCommand> {
      */
     public AddProductCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(
-                args, PREFIX_IDENTIFIER, PREFIX_NAME, PREFIX_QUANTITY, PREFIX_THRESHOLD);
+                args, PREFIX_IDENTIFIER, PREFIX_NAME, PREFIX_QUANTITY, PREFIX_THRESHOLD, PREFIX_EMAIL);
 
         requireAddProductPrefixes(argMultimap);
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_IDENTIFIER, PREFIX_NAME, PREFIX_QUANTITY, PREFIX_THRESHOLD);
+        argMultimap.verifyNoDuplicatePrefixesFor(
+                PREFIX_IDENTIFIER, PREFIX_NAME, PREFIX_QUANTITY, PREFIX_THRESHOLD, PREFIX_EMAIL);
 
         StringBuilder warnings = new StringBuilder();
         ParseResult<Identifier> identifierResult = ParserUtil
@@ -79,7 +84,18 @@ public class AddProductCommandParser implements Parser<AddProductCommand> {
             appendWarning(warnings, Optional.of(MESSAGE_THRESHOLD_DEFAULTED));
         }
 
-        Product product = new Product(identifierResult.getValue(), nameResult.getValue(), quantity, threshold);
+        Email vendorEmail = null;
+        Optional<String> vendorEmailValue = argMultimap.getValue(PREFIX_EMAIL);
+        if (vendorEmailValue.isPresent()) {
+            ParseResult<Email> vendorEmailResult = ParserUtil.parseEmail(vendorEmailValue.get());
+            appendWarning(warnings, vendorEmailResult.getWarning());
+            vendorEmail = vendorEmailResult.getValue();
+        } else {
+            appendWarning(warnings, Optional.of(MESSAGE_VENDOR_EMAIL_MISSING));
+        }
+
+        Product product = new Product(
+                identifierResult.getValue(), nameResult.getValue(), quantity, threshold, vendorEmail);
 
         if (!warnings.isEmpty()) {
             return new AddProductCommand(product, warnings.toString());
