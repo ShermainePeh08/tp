@@ -26,6 +26,8 @@ import seedu.address.model.VendorVault;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.NameEqualsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.product.Identifier;
+import seedu.address.model.product.Product;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for
@@ -211,5 +213,12 @@ public class DeleteCommandTest {
         model.updateFilteredPersonList(p -> false);
 
         assertTrue(model.getFilteredPersonList().isEmpty());
+    }
+
+    private Product findProductByIdentifier(Model model, String identifier) {
+        return model.getInventory().getProductList().stream()
+                .filter(product -> product.getIdentifier().equals(new Identifier(identifier)))
+                .findFirst()
+                .orElseThrow();
     }
 }
