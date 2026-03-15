@@ -101,6 +101,22 @@ public class AddProductCommandTest {
     }
 
     @Test
+    public void execute_vendorEmailDoesNotExist_throwsCommandException() {
+        Product productWithMissingVendor = new ProductBuilder()
+            .withIdentifier("SKU-2005")
+            .withName("Monitor")
+            .withVendorEmail("missing@example.com")
+            .build();
+        ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded();
+
+        AddProductCommand addProductCommand = new AddProductCommand(productWithMissingVendor);
+
+        assertThrows(CommandException.class,
+                String.format(AddProductCommand.MESSAGE_VENDOR_DOES_NOT_EXIST, "missing@example.com"), () ->
+                        addProductCommand.execute(modelStub));
+    }
+
+    @Test
     public void execute_similarProductName_warnAndAddSuccessful() throws Exception {
         Product existingProduct = new ProductBuilder()
                 .withIdentifier("SKU-3000")
@@ -514,6 +530,12 @@ public class AddProductCommandTest {
         public void addProduct(Product product) {
             requireNonNull(product);
             productsAdded.add(product);
+        }
+
+        @Override
+        public Optional<Person> findByEmail(Email email) {
+            requireNonNull(email);
+            return Optional.empty();
         }
 
         void seedExistingProduct(Product product) {
