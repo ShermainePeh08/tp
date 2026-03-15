@@ -39,6 +39,7 @@ import seedu.address.model.product.Product;
 import seedu.address.model.product.Quantity;
 import seedu.address.model.product.RestockThreshold;
 import seedu.address.model.product.warnings.DuplicateProductWarning;
+import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.ProductBuilder;
 
 public class AddProductCommandTest {
@@ -290,6 +291,41 @@ public class AddProductCommandTest {
         assertFalse(result.getFeedbackToUser().contains(warning1)
                 && result.getFeedbackToUser().contains(warning2));
         assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
+    }
+
+    @Test
+    public void execute_vendorEmailExists_addSuccessful() throws Exception {
+        Email existingVendorEmail = new Email("vendor@example.com");
+        Person existingVendor = new PersonBuilder()
+                .withName("John Doe")
+                .withPhone("11111111")
+                .withEmail(existingVendorEmail.value)
+                .withAddress("111 John Street")
+                .build();
+        Product productWithExistingVendor = new ProductBuilder()
+                .withIdentifier("SKU-2005")
+                .withName("Monitor")
+                .withVendorEmail(existingVendorEmail.value)
+                .build();
+
+        ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded() {
+            @Override
+            public Optional<Person> findByEmail(Email email) {
+                requireNonNull(email);
+                if (existingVendorEmail.equals(email)) {
+                    return Optional.of(existingVendor);
+                }
+                return Optional.empty();
+            }
+        };
+
+        CommandResult commandResult = new AddProductCommand(productWithExistingVendor).execute(modelStub);
+
+        assertEquals(String.format(AddProductCommand.MESSAGE_SUCCESS,
+                        Messages.formatProduct(productWithExistingVendor)), commandResult.getFeedbackToUser());
+        assertEquals(CommandResult.FEEDBACK_TYPE_SUCCESS, commandResult.getFeedbackType());
+        assertEquals(1, modelStub.productsAdded.size());
+        assertEquals(productWithExistingVendor, modelStub.productsAdded.get(0));
     }
 
     @Test
