@@ -153,6 +153,7 @@ public class EditCommand extends Command {
 
     private Optional<CommandResult> onConfirm(Model model, Person personToEdit, Person editedPerson,
                                               String allWarnings) {
+        // all user errors should have already been validated before confirmation
         try {
             return Optional.of(applyEdit(model, personToEdit, editedPerson, allWarnings));
         } catch (CommandException e) {

@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_BOB;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Aliases;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -32,6 +34,7 @@ import seedu.address.model.UserPrefs;
 import seedu.address.model.VendorVault;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
@@ -267,6 +270,30 @@ public class EditCommandTest {
         assertTrue(result.getFeedbackToUser().startsWith("Edited Contact:"));
         assertFalse(editCommand.getPendingConfirmation().getNeedConfirmation());
         assertTrue(model.findByEmail(personWithTag.getEmail()).orElseThrow().getTags().isEmpty());
+    }
+
+    @Test
+    public void execute_confirmFailure_throwsAssertionError() throws Exception {
+        Model throwingModel = new ModelManager(new VendorVault(
+                getTypicalAddressBook(), getTypicalInventory(), new Aliases()), new UserPrefs()) {
+            @Override
+            public void setPerson(Person target, Person editedPerson) throws DuplicatePersonException {
+                throw new DuplicatePersonException();
+            }
+        };
+
+        Person targetPerson = throwingModel.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withTags().build();
+        EditCommand editCommand = new EditCommand(targetPerson.getEmail(), descriptor);
+
+        editCommand.execute(throwingModel);
+        PendingConfirmation pendingConfirmation = editCommand.getPendingConfirmation();
+
+        AssertionError assertionError = assertThrows(AssertionError.class, () ->
+                new ConfirmCommand(pendingConfirmation.getOnConfirm()).execute(throwingModel));
+        assertEquals(EditCommand.MESSAGE_FAILURE, assertionError.getMessage());
+        assertTrue(assertionError.getCause() instanceof CommandException);
+        assertEquals(Messages.MESSAGE_DUPLICATE_PERSON, assertionError.getCause().getMessage());
     }
 
     @Test
