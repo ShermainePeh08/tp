@@ -87,7 +87,7 @@ Some example commands you can try:
   e.g. in `add n/NAME`, `NAME` is a parameter which can be used as `add n/John Doe`.
 
 * Items in square brackets are optional.<br>
-  e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
+  e.g. `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
 
 * Items with `…`​ after them can be used multiple times including zero times.<br>
   e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/friend`, `t/friend t/family` etc.
@@ -226,7 +226,7 @@ Finds contacts whose names contain any of the given keywords.
 
 Format: `find KEYWORD [MORE_KEYWORDS]`
 
-* The search is case-insensitive. e.g `hans` will match `Hans`
+* The search is case-insensitive. e.g. `hans` will match `Hans`
 * The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
 * Only the name is searched.
 * Only full words will be matched e.g. `Han` will not match `Hans`
@@ -396,11 +396,10 @@ If you edited the data file and it caused VendorVault to behave unexpectedly, yo
 Follow these steps:
 * Install VendorVault on the new computer (see [Quick Start](#quick-start)).
 * On the old computer, open the folder where VendorVault's `.jar` file is located.
-* Look for the data files created by VendorVault. They contain your vendor and inventory data.
-    * Specifically, look for the `data` folder which contain the files `addressbook.json` and `inventory.json`.
-* Copy both files to an external or cloud storage.
-* On the new computer, launch VendorVault and a new `data` folder will be created. 
-* Replace the files there with those from the old computer.
+* Look for the `data` folder, which contain the files `addressbook.json` and `inventory.json`.
+* Copy the folder to an external or cloud storage.
+* When you launch VendorVault on the new computer, a new `data` folder is created. Replace it with the old 
+  computer's folder.
 * Relaunch VendorVault and you should see your data appear exactly as before.
 
 </panel>
