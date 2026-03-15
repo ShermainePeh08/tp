@@ -23,16 +23,20 @@ Spend less time searching through spreadsheets and switching between apps. Vendo
 
 Follow these steps to get VendorVault up and running:
 
-1. Install Java (one-time setup)
-   * VendorVault requires Java `17` or above to run. Full guide for installation [here](https://se-education.org/guides/tutorials/javaInstallation.html)
-   * If you are familiar with the installation process, you can download it directly [here](https://www.oracle.com/asean/java/technologies/downloads/).<br>
-   *  **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
-<br><br>
-1. Download the latest version of VendorVault [here](https://github.com/AY2526S2-CS2103T-W08-2/tp).
+1. Ensure Java 17 or above is installed.
+   * Full guide for installation [here](https://se-education.org/guides/tutorials/javaInstallation.html). If you are familiar with the process, you can download Java directly [here](https://www.oracle.com/asean/java/technologies/downloads/).<br>
+   
+   <box type="important" seamless>
+   
+     **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
+     
+   </box>
+
+2. Download the latest version of VendorVault [here](https://github.com/AY2526S2-CS2103T-W08-2/tp).
     * Specifically, choose to download the `.jar` file.
     * If necessary, move the file to a folder you want to use as the _home folder_ for VendorVault.
 <br><br>
-1. Open Command Prompt (Windows) or Terminal (Mac/Linux) and run the following commands
+3. Open Command Prompt (Windows) or Terminal (Mac/Linux) and run the following commands
     ```
    cd PATH_TO_FOLDER_CONTAINING_JAR_FILE
    java -jar vendorvault.jar
@@ -50,7 +54,8 @@ Follow these steps to get VendorVault up and running:
    VendorVault should start up and you should see a GUI similar to the below in a few seconds. Note how the app contains some sample data.<br>
    ![Ui](images/Ui.png)
 <br><br>
-1. Now, we're ready to use the app! At the top left of the app, you should see a command box with the text `Type a command here...`. This is where you can type in commands to interact with the app. You can also access the list of available commands by clicking on the `Help` menu at the top of the app or by pressing `F1` on your keyboard.
+4. Now, we're ready to use the app! At the top left of the app, you should see a command box with the text `Type a 
+command here...`. This is where you can type in commands to interact with the app. You can also access the list of available commands by clicking on the `Help` menu at the top of the app or by pressing `F1` on your keyboard.
 <br><br>
 Some example commands you can try:
 
@@ -64,7 +69,7 @@ Some example commands you can try:
 
    * `exit` : Exits VendorVault.
 
-1. Refer to the [Features](#features) below for details of each command. Or [Command Summary](#command-summary) for a quick summary of all commands.
+5. Refer to the [Features](#features) below for details of each command. Or [Command Summary](#command-summary) for a quick summary of all commands.
 
 <br>
 
