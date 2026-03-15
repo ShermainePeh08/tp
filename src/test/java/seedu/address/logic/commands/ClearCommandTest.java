@@ -1,9 +1,13 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalProducts.getTypicalInventory;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +24,7 @@ public class ClearCommandTest {
         Model model = new ModelManager();
         Model expectedModel = new ModelManager();
 
-        assertCommandSuccess(new ClearCommand(), model, ClearCommand.MESSAGE_SUCCESS, expectedModel);
+        assertCommandSuccess(new ClearCommand(false), model, ClearCommand.MESSAGE_SUCCESS, expectedModel);
     }
 
     @Test
@@ -31,15 +35,72 @@ public class ClearCommandTest {
                 getTypicalAddressBook(), getTypicalInventory()), new UserPrefs());
         expectedModel.setAddressBook(new AddressBook());
 
-        assertCommandSuccess(new ClearCommand(), model, ClearCommand.MESSAGE_SUCCESS, expectedModel);
+        assertCommandSuccess(new ClearCommand(false), model, ClearCommand.MESSAGE_SUCCESS, expectedModel);
+    }
+
+    // ── confirmation prompt ─────────────────────────────────────────────────
+
+    @Test
+    public void execute_withConfirmation_showsConfirmationMessage() {
+        Model model = new ModelManager(new VendorVault(
+                getTypicalAddressBook(), getTypicalInventory()), new UserPrefs());
+
+        ClearCommand clearCommand = new ClearCommand(true);
+        CommandResult result = clearCommand.execute(model);
+
+        assertEquals(ClearCommand.CONFIRMATION_CLEAR_MESSAGE, result.getFeedbackToUser());
+
+        // address book must NOT have been cleared yet
+        assertFalse(model.getAddressBook().getPersonList().isEmpty());
     }
 
     @Test
-    public void getPendingConfirmation_returnsInactivePendingConfirmation() {
-        ClearCommand clearCommand = new ClearCommand();
+    public void execute_withConfirmation_pendingConfirmationIsActive() {
+        Model model = new ModelManager();
 
-        PendingConfirmation pendingConfirmation = clearCommand.getPendingConfirmation();
-        assertFalse(pendingConfirmation.getNeedConfirmation());
+        ClearCommand clearCommand = new ClearCommand(true);
+        clearCommand.execute(model);
+
+        assertTrue(clearCommand.getPendingConfirmation().getNeedConfirmation());
+    }
+
+    @Test
+    public void onConfirm_clearsAddressBook() {
+        Model model = new ModelManager(new VendorVault(
+                getTypicalAddressBook(), getTypicalInventory()), new UserPrefs());
+
+        ClearCommand clearCommand = new ClearCommand(true);
+        clearCommand.execute(model);
+
+        Optional<CommandResult> result = clearCommand.getPendingConfirmation().getOnConfirm().get();
+
+        assertTrue(result.isPresent());
+        assertEquals(ClearCommand.MESSAGE_SUCCESS, result.get().getFeedbackToUser());
+        assertTrue(model.getAddressBook().getPersonList().isEmpty());
+    }
+
+    @Test
+    public void onCancel_doesNotClearAddressBook() {
+        Model model = new ModelManager(new VendorVault(
+                getTypicalAddressBook(), getTypicalInventory()), new UserPrefs());
+        int originalSize = model.getAddressBook().getPersonList().size();
+
+        ClearCommand clearCommand = new ClearCommand(true);
+        clearCommand.execute(model);
+
+        Optional<CommandResult> result = clearCommand.getPendingConfirmation().getOnCancel().get();
+
+        assertTrue(result.isPresent());
+        assertEquals(ClearCommand.MESSAGE_CLEAR_FAILURE, result.get().getFeedbackToUser());
+        assertEquals(originalSize, model.getAddressBook().getPersonList().size());
+    }
+
+    // ── getPendingConfirmation ───────────────────────────────────────────────
+
+    @Test
+    public void getPendingConfirmation_beforeExecute_returnsInactive() {
+        ClearCommand clearCommand = new ClearCommand();
+        assertFalse(clearCommand.getPendingConfirmation().getNeedConfirmation());
     }
 
 }
