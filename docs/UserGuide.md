@@ -414,19 +414,20 @@ You can transfer your VendorVault data by transferring two files:
 
 ## Troubleshooting
 
+<box type="important" seamless>
+
+**Error** messages mean the command **did not succeed**.
+<br>
+**Warning** messages mean the command **succeeded**, but VendorVault is flagging a possible issue.
+
+</box>
+
 ### Managing contacts
 
 #### Troubleshooting `add` contact
 
 Use this section when `add` fails or returns a warning.
 
-<box type="warning" seamless>
-
-**Important:**
-* **Error** messages mean the contact was **not added**.
-* **Warning** messages mean the contact was **added**, but VendorVault is flagging a possible issue.
-
-</box>
 
 | Scenario                                                                         | Message shown                                                             | How to fix                                                        |
 |----------------------------------------------------------------------------------|---------------------------------------------------------------------------|-------------------------------------------------------------------|
@@ -464,14 +465,6 @@ Tip: If multiple warnings apply, VendorVault shows all of them (one per line) to
 
 Use this section when `edit` fails or returns a warning.
 
-<box type="warning" seamless>
-
-**Important:**
-* **Error** messages mean the contact was **not edited**.
-* **Warning** messages mean the contact was **edited**, but VendorVault is flagging a possible issue.
-
-</box>
-
 | Scenario                                                              | Message shown                                    | How to fix                                                              |
 |-----------------------------------------------------------------------|--------------------------------------------------|-------------------------------------------------------------------------|
 | Missing/invalid target email (or extra non-prefixed text after email) | `Invalid command format! ...`                    | Follow the syntax `edit EMAIL [n/...] [p/...] [e/...] [a/...] [t/...]`. |
@@ -494,14 +487,6 @@ Tip: Unlike `add`, edit command warnings only appear for **fields you are actual
 
 Use this section when `addproduct` fails or returns a warning.
 
-<box type="warning" seamless>
-
-**Important:**
-* **Error** messages mean the product was **not added**.
-* **Warning** messages mean the product was **added**, but VendorVault is flagging a possible issue.
-
-</box>
-
 | Scenario                                            | Message shown                                                             | How to fix                                                    |
 |-----------------------------------------------------|---------------------------------------------------------------------------|---------------------------------------------------------------|
 | Missing one or more required prefixes (`id/`, `n/`) | `Missing required field(s): ...`                                          | Include all required prefixed fields in your command.         |
@@ -511,8 +496,6 @@ Use this section when `addproduct` fails or returns a warning.
 | Identifier is blank                                 | `Identifier should not be blank.`                                         | Provide a non-empty identifier after `id/`.                   |
 | Name is too long                                    | `Name should be at most 120 characters.`                                  | Shorten the name.                                             |
 | Product is a duplicate                              | `This product already exists with the same identifier.`                   | Change the identifier, or edit the existing product instead.  |
-
-Common `addproduct` warnings:
 
 | Warning trigger                     | Warning shown                                                                                                                                   | What it means                                                                                                                   |
 |-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
