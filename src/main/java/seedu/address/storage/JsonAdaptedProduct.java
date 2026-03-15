@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.person.Email;
 import seedu.address.model.product.Identifier;
 import seedu.address.model.product.Name;
 import seedu.address.model.product.Product;
@@ -24,6 +25,7 @@ public class JsonAdaptedProduct {
     private final String name;
     private final String quantity;
     private final String threshold;
+    private final String vendorEmail;
     private final boolean isArchived;
 
     /**
@@ -34,11 +36,13 @@ public class JsonAdaptedProduct {
                               @JsonProperty("name") String name,
                               @JsonProperty("quantity") String quantity,
                               @JsonProperty("threshold") String threshold,
+                              @JsonProperty("vendorEmail") String vendorEmail,
                               @JsonProperty("isArchived") boolean isArchived) {
         this.identifier = identifier;
         this.name = name;
         this.quantity = quantity;
         this.threshold = threshold;
+        this.vendorEmail = vendorEmail;
         this.isArchived = isArchived;
     }
 
@@ -50,6 +54,7 @@ public class JsonAdaptedProduct {
         this.name = product.getName().fullName;
         this.quantity = product.getQuantity().toString();
         this.threshold = product.getRestockThreshold().toString();
+        this.vendorEmail = product.getVendorEmail().map(email -> email.value).orElse(null);
         this.isArchived = product.isArchived();
     }
 
@@ -95,6 +100,14 @@ public class JsonAdaptedProduct {
         }
         final RestockThreshold modelThreshold = new RestockThreshold(threshold);
 
-        return new Product(modelIdentifier, modelName, modelQuantity, modelThreshold, isArchived);
+        Email modelVendorEmail = null;
+        if (vendorEmail != null) {
+            if (!Email.isValidEmail(vendorEmail)) {
+                throw new IllegalValueException(Email.MESSAGE_CONSTRAINTS);
+            }
+            modelVendorEmail = new Email(vendorEmail);
+        }
+
+        return new Product(modelIdentifier, modelName, modelQuantity, modelThreshold, modelVendorEmail, isArchived);
     }
 }
