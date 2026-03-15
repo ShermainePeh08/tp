@@ -38,11 +38,15 @@ public class AliasCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        if (alias.isPresent()) {
+        if (hasAlias()) {
             return addAliasToModel(model, alias.get());
         } else {
             return showCurrentAliases(model);
         }
+    }
+
+    public boolean hasAlias() {
+        return alias.isPresent();
     }
 
     /**
