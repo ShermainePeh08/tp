@@ -1,11 +1,13 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.ParserUtil.NEWLINE;
 import static seedu.address.model.Model.PREDICATE_SHOW_ACTIVE_PERSONS;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
@@ -15,6 +17,7 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.NameEqualsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.product.Identifier;
 import seedu.address.model.product.Product;
 
 /**
@@ -30,6 +33,8 @@ public class DeleteCommand extends Command {
             + "Example: " + COMMAND_WORD + " irfam@example.com";
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
+    public static final String MESSAGE_PRODUCTS_DELINKED =
+            "⚠ Warning: %1$d product(s) became unassociated from contact (%2$s).";
 
     public static final String CONFIRMATION_DELETE_PERSON_MESSAGE =
             "Confirm (y) you want to delete the following person shown below:";
@@ -95,8 +100,21 @@ public class DeleteCommand extends Command {
 
         model.commitVendorVault();
         model.updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
-        return new CommandResult(
-                String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
+
+        String successMessage = String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete));
+        if (linkedProducts.isEmpty()) {
+            return new CommandResult(successMessage);
+        }
+
+        String linkedProductIds = linkedProducts.stream()
+                .map(Product::getIdentifier)
+                .map(Identifier::toString)
+                .collect(Collectors.joining(", "));
+        String warning = String.format(MESSAGE_PRODUCTS_DELINKED, linkedProducts.size(), linkedProductIds);
+
+        return new CommandResult(successMessage + NEWLINE + warning, CommandResult.FEEDBACK_TYPE_WARN);
+    }
+
     /**
      * Returns products currently linked to the given person via vendor email.
      */
