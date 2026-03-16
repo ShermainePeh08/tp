@@ -121,7 +121,7 @@ Some example commands you can try:
 
 * `help`: View available commands within the app.
 
-1. Refer to the [Features](#features) below for details of each command. Or [Command Summary](#command-summary) for a quick summary of all commands.
+5\. Refer to the [Features](#features) below for details of each command. Or [Command Summary](#command-summary) for a quick summary of all commands.
 
 <br>
 
@@ -308,8 +308,8 @@ find KEYWORD [MORE_KEYWORDS]
 
 Examples:
 
-* `find Hans Bo` finds the contact with the name `Hans` or `Bo` in the name
-* `find Hans` finds the contact with the name `Hans`
+* `find Industries Technologies` finds the companies names that contains `Industries` or `Technologies`
+* `find Industries` finds the companies names that contains `Industries` 
 
 <box type="tip" seamless>
 
@@ -317,9 +317,14 @@ Examples:
 
 </box>
 
-<panel header="Can I find a subset of the name?" type="seamless">
+<panel header="Can I search by part of the name?" type="seamless">
 
 No, the `find` command will match by full name, not partial name.
+
+Example:
+* If there is a company named `Adafruit Industries`
+* `find fruit` will not find the company
+* `find adafruit` will find the company
 
 </panel>
 
@@ -647,7 +652,7 @@ Format: `exit`
 
 | Action    | Command | What it does               |
 |-----------|---------|----------------------------|
-| **Alias** | `alias` | Add a command alias        |
+| **Alias** | `alias` | Add a new alias            |
 | **Undo**  | `undo`  | Undoes previous command    |
 | **Redo**  | `redo`  | Redoes last undone command |
 | **Help**  | `help`  | Shows help message         |
