@@ -297,20 +297,28 @@ For more details on possible warnings and errors when editing a contact, refer t
 
 Finds contacts whose names contain any of the given keywords.
 
-Format: `find KEYWORD [MORE_KEYWORDS]`
+Format: 
 
-* The search is case-insensitive. e.g. `hans` will match `Hans`
-* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
-* Only the name is searched.
-* Only full words will be matched e.g. `Han` will not match `Hans`
-* contacts matching at least one keyword will be returned (i.e. `OR` search).
-  e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
+```
+find KEYWORD [MORE_KEYWORDS]
+```
 
 Examples:
 
-* `find John` returns `john` and `John Doe`
-* `find alex david` returns `Alex Yeoh`, `David Li`<br>
-  ![result for 'find alex david'](images/findAlexDavidResult.png)
+* `find Hans Bo` finds the contact with the name `Hans` or `Bo` in the name
+* `find Hans` finds the contact with the name `Hans`
+
+<box type="tip" seamless>
+
+**Tip:** The keywords to search are _case-insensitive_
+
+</box>
+
+<panel header="Can I find a subset of the name?" type="seamless">
+
+No, the `find` command will match by full name, not partial name.
+
+</panel>
 
 <div style="height: 30px;"></div>
 
