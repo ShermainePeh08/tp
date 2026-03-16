@@ -2,7 +2,9 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.Messages.MESSAGE_DUPLICATE_PRODUCT;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PRODUCT_NAME_IPAD;
@@ -16,6 +18,7 @@ import static seedu.address.testutil.TypicalProducts.getTypicalInventory;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.Messages;
+import seedu.address.logic.commands.EditProductCommand.EditProductDescriptor;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -56,8 +59,7 @@ public class EditProductCommandTest {
 
         Model expectedModel = new ModelManager(
                 model.getVendorVault(),
-                new UserPrefs(),
-                model.getAliases());
+                new UserPrefs());
         expectedModel.setProduct(firstProduct, editedProduct);
         expectedModel.updateFilteredProductList(Model.PREDICATE_SHOW_ACTIVE_PRODUCTS);
         expectedModel.commitVendorVault();
@@ -86,8 +88,7 @@ public class EditProductCommandTest {
 
         Model expectedModel = new ModelManager(
                 model.getVendorVault(),
-                new UserPrefs(),
-                model.getAliases());
+                new UserPrefs());
         expectedModel.setProduct(firstProduct, editedProduct);
         expectedModel.updateFilteredProductList(Model.PREDICATE_SHOW_ACTIVE_PRODUCTS);
         expectedModel.commitVendorVault();
@@ -119,8 +120,7 @@ public class EditProductCommandTest {
 
         Model expectedModel = new ModelManager(
                 model.getVendorVault(),
-                new UserPrefs(),
-                model.getAliases());
+                new UserPrefs());
         expectedModel.setProduct(productWithVendor, editedProduct);
         expectedModel.updateFilteredProductList(Model.PREDICATE_SHOW_ACTIVE_PRODUCTS);
         expectedModel.commitVendorVault();
@@ -160,6 +160,14 @@ public class EditProductCommandTest {
     }
 
     @Test
+    public void constructor_noFieldsEdited_throwsException() {
+        EditProductCommand.EditProductDescriptor descriptor =
+                new EditProductCommand.EditProductDescriptor();
+        assertThrows(IllegalArgumentException.class, ()
+                -> new EditProductCommand("SKU-1", descriptor));
+    }
+
+    @Test
     public void equals() {
         String targetIdentifier = "SKU-1001";
         EditProductCommand.EditProductDescriptor firstDescriptor = new EditProductDescriptorBuilder()
@@ -177,6 +185,22 @@ public class EditProductCommandTest {
         assertFalse(editFirstCommand.equals(1));
         assertFalse(editFirstCommand.equals(null));
         assertFalse(editFirstCommand.equals(editSecondCommand));
+    }
+
+    @Test
+    public void equals_sameIdentifierDifferentDescriptor_false() {
+        String targetIdentifier = "SKU-1001";
+
+        EditProductCommand.EditProductDescriptor descriptor1 =
+                new EditProductDescriptorBuilder().withName("iPad").build();
+
+        EditProductCommand.EditProductDescriptor descriptor2 =
+                new EditProductDescriptorBuilder().withQuantity("5").build();
+
+        EditProductCommand command1 = new EditProductCommand(targetIdentifier, descriptor1);
+        EditProductCommand command2 = new EditProductCommand(targetIdentifier, descriptor2);
+
+        assertFalse(command1.equals(command2));
     }
 
     @Test
