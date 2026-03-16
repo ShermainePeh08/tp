@@ -698,6 +698,82 @@ Follow these steps:
 
 </panel>
 
+<panel header="How do I edit my data directly?" type="seamless">
+
+* Open the folder where VendorVault's `.jar` file is located.
+* Inside, locate the `data` folder, which contains `.json` files.
+
+<panel header="`addressbook.json`: stores contact details" type="seamless">
+
+This is the json for address book: 
+
+```json
+{
+  "persons" : [ {
+    "name" : "Alex Yeoh",
+    "phone" : "87438807",
+    "email" : "alexyeoh@example.com",
+    "address" : "Blk 30 Geylang Street 29, #06-40",
+    "tags" : [ "friends" ]
+  }, {
+    "name" : "Bernice Yu",
+    "phone" : "99272758",
+    "email" : "berniceyu@example.com",
+    "address" : "Blk 30 Lorong 3 Serangoon Gardens, #07-18",
+    "tags" : [ "colleagues", "friends" ]
+  } ]
+}
+```
+
+</panel>
+
+<panel header="`inventory.json`: stores product details" type="seamless">
+
+This is the json for inventory:
+
+```json
+{
+  "products" : [ {
+    "identifier" : "ABCDE",
+    "name" : "item",
+    "quantity" : "0",
+    "threshold" : "10",
+    "vendorEmail" : null,
+    "isArchived" : false
+  }, {
+    "identifier" : "ABCDF",
+    "name" : "item2",
+    "quantity" : "0",
+    "threshold" : "10",
+    "vendorEmail" : null,
+    "isArchived" : false
+  } ]
+}
+```
+
+</panel>
+
+<panel header="`aliases.json`: stores alias details" type="seamless">
+
+This is the json for aliases:
+
+```json
+{
+  "aliasList" : [ {
+    "alias" : "a",
+    "originalCommand" : "add"
+  }, {
+    "alias" : "b",
+    "originalCommand" : "add"
+  } ]
+}
+```
+
+</panel>
+
+
+</panel>
+
 <br>
 
 --------------------------------------------------------------------------------------------------------------------
