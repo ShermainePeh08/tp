@@ -593,15 +593,20 @@ AddressBook data are saved in the hard disk automatically after any command that
 
 <div style="height: 30px;"></div>
 
-### Editing the data file
+### Editing data
 
-AddressBook data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
+VendorVault data is saved automatically in `[JAR file location]/data/` as JSON files. Advanced users are welcome to update data directly by editing those files.
 
 <box type="warning" seamless>
 
 **Caution:**
-If your changes to the data file makes its format invalid, AddressBook will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
-Furthermore, certain edits can cause the AddressBook to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
+<br>
+If your changes to the file make its format invalid, VendorVault will **discard all data** and start with an empty 
+file at the next run. Hence, it is recommended to [back up your data](#faq-backup-data) before editing.
+<br>&nbsp;<br>
+Furthermore, certain changes can cause VendorVault to **behave unexpectedly** (e.g., if a value provided is outside the 
+acceptable range). Therefore, edit the file only if you are confident of doing so correctly.
+
 </box>
 
 <div style="height: 30px;"></div>
@@ -673,8 +678,7 @@ Follow these steps:
 
 * Install VendorVault on the new computer (see [Quick Start](#quick-start)).
 * On the old computer, open the folder where VendorVault's `.jar` file is located.
-* Look for the `data` folder, which contain the files `addressbook.json` and `inventory.json`.
-* Copy the folder to an external or cloud storage.
+* Look for the `data` folder and copy it to an external/cloud storage.
 * When you launch VendorVault on the new computer, a new `data` folder is created. Replace it with the old
   computer's folder.
 * Relaunch VendorVault and you should see your data appear exactly as before.
