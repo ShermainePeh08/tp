@@ -409,10 +409,13 @@ For instructions on how to backup your data, check out [How do I backup my data]
 
 Adds a product to the inventory.
 
-Format: `addproduct id/IDENTIFIER n/NAME [q/QUANTITY] [th/RESTOCK_THRESHOLD]`
+Format: 
+```addproduct id/IDENTIFIER n/NAME [q/QUANTITY] [th/RESTOCK_THRESHOLD]```
 
 <box type="tip" seamless>
 
+**Tip:**
+<br>
 If quantity is not specified, it will default to 0.
 <br>
 If threshold is not specified, it will default to 0.
@@ -426,7 +429,7 @@ Examples:
 
 <panel header="What products are considered duplicates?" type="seamless" id="faq-duplicate-products">
 
-A product is considered a duplicate if it has the **same identifier (id) as an existing product** in VendorVault. For example, these products have the same identifier `SKU-1003`:
+A product is considered a duplicate if it has the **same identifier (id) as an existing product**. For example, these products have the same identifier `SKU-1003`:
 
 ```
 addproduct id/SKU-1003 n/Arduino Uno R4 Development Board
@@ -701,7 +704,7 @@ Follow these steps:
 
 **Error** messages mean the command **did not succeed**.
 <br>
-**Warning** messages mean the command **succeeded**, but VendorVault is flagging a possible issue.
+**Warning** messages mean the command **succeeded**, but VendorVault is flagging a **possible issue**.
 
 </box>
 
@@ -804,7 +807,9 @@ Use this section when `addproduct` fails or returns a warning.
 | Name is too long                                    | `Name should be at most 120 characters.`                                  | Shorten the name.                                             |
 | Product is a duplicate                              | `This product already exists with the same identifier.`                   | Change the identifier, or edit the existing product instead.  |
 
-Common `add` warnings:
+<br>
+
+Common `addproduct` warnings:
 
 | Warning trigger                     | Warning shown                                                                                                                                   | What it means                                                                                                                   |
 |-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
