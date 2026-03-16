@@ -561,7 +561,9 @@ For instructions on how to back up your data, check out [How do I backup my data
 
 <div style="height: 30px;"></div>
 
-### Undoing the previous command : `undo`
+### Utility Commands
+
+#### Undoing the previous command : `undo`
 
 Undoes the previous command that changed the data.
 
@@ -573,7 +575,7 @@ undo
 
 <div style="height: 30px;"></div>
 
-### Redoing the previous undone command : `redo`
+#### Redoing the previous undone command : `redo`
 
 Redoes the previous undone command that changed the data.
 
@@ -585,7 +587,7 @@ redo
 
 <div style="height: 30px;"></div>
 
-### Exiting the program : `exit`
+#### Exiting the program : `exit`
 
 Exits the program.
 
