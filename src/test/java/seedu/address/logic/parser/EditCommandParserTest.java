@@ -255,9 +255,9 @@ public class EditCommandParserTest {
         Model model = new ModelManager(
                 new VendorVault(
                         TypicalPersons.getTypicalAddressBook(),
-                        TypicalProducts.getTypicalInventory(),
-                        TypicalAliases.getTypicalAliases()),
-                new UserPrefs());
+                        TypicalProducts.getTypicalInventory()),
+                new UserPrefs(),
+                TypicalAliases.getTypicalAliases());
         Email targetEmail = model.getFilteredPersonList().get(0).getEmail();
 
         EditCommand command = parser.parse("-y " + targetEmail + TAG_EMPTY);

@@ -47,7 +47,7 @@ public class EditCommandTest {
     private static final Email NON_EXISTENT_EMAIL = new Email("missing.person@example.com");
 
     private Model model = new ModelManager(new VendorVault(
-            getTypicalAddressBook(), getTypicalInventory(), new Aliases()), new UserPrefs());
+            getTypicalAddressBook(), getTypicalInventory()), new UserPrefs(), new Aliases());
 
     @Test
     public void execute_allFieldsSpecifiedUnfilteredList_success() {
@@ -58,7 +58,7 @@ public class EditCommandTest {
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
 
-        Model expectedModel = new ModelManager(new VendorVault(model.getVendorVault()), new UserPrefs());
+        Model expectedModel = new ModelManager(new VendorVault(model.getVendorVault()), new UserPrefs(), new Aliases());
         expectedModel.setPerson(model.getFilteredPersonList().get(0), editedPerson);
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
@@ -79,7 +79,7 @@ public class EditCommandTest {
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
 
-        Model expectedModel = new ModelManager(new VendorVault(model.getVendorVault()), new UserPrefs());
+        Model expectedModel = new ModelManager(new VendorVault(model.getVendorVault()), new UserPrefs(), new Aliases());
         expectedModel.setPerson(lastPerson, editedPerson);
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
@@ -93,7 +93,7 @@ public class EditCommandTest {
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
 
-        Model expectedModel = new ModelManager(new VendorVault(model.getVendorVault()), new UserPrefs());
+        Model expectedModel = new ModelManager(new VendorVault(model.getVendorVault()), new UserPrefs(), new Aliases());
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
@@ -109,7 +109,7 @@ public class EditCommandTest {
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
 
-        Model expectedModel = new ModelManager(new VendorVault(model.getVendorVault()), new UserPrefs());
+        Model expectedModel = new ModelManager(new VendorVault(model.getVendorVault()), new UserPrefs(), new Aliases());
         expectedModel.setPerson(model.getFilteredPersonList().get(0), editedPerson);
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
@@ -275,7 +275,7 @@ public class EditCommandTest {
     @Test
     public void execute_confirmFailure_throwsAssertionError() throws Exception {
         Model throwingModel = new ModelManager(new VendorVault(
-                getTypicalAddressBook(), getTypicalInventory(), new Aliases()), new UserPrefs()) {
+                getTypicalAddressBook(), getTypicalInventory()), new UserPrefs(), new Aliases()) {
             @Override
             public void setPerson(Person target, Person editedPerson) throws DuplicatePersonException {
                 throw new DuplicatePersonException();
