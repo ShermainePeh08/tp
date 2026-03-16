@@ -563,6 +563,21 @@ For instructions on how to back up your data, check out [How do I backup my data
 
 ### Utility Commands
 
+#### Add a command alias : `alias`
+
+Create an alternative command word that triggers an existing command.
+
+Format:
+```
+alias ALIAS ORIGINAL_COMMAND
+```
+
+Example:
+* `alias` list all current aliases
+* `alias ls list` maps `ls` as an alias for the `list` command
+
+<div style="height: 30px;"></div>
+
 #### Undoing the previous command : `undo`
 
 Undoes the previous command that changed the data.
