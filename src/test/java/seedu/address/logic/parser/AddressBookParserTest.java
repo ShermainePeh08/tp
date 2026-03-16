@@ -262,6 +262,19 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_editProduct() throws Exception {
+        AddressBookParser parser = new AddressBookParser();
+
+        assertTrue(
+            parser.parseCommand(
+                "editproduct SKU-1001 n/iPad",
+                new PendingConfirmation(),
+                new ModelManager())
+            instanceof EditProductCommand
+        );
+    }
+
+    @Test
     public void parseCommand_alias() throws Exception {
         Command command = parser.parseCommand(AliasCommand.COMMAND_WORD + " "
                         + CommandType.LIST.getCommandWord() + " ls",

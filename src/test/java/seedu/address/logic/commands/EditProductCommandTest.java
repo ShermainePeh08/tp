@@ -1,7 +1,9 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_AMY;
@@ -204,6 +206,37 @@ public class EditProductCommandTest {
     }
 
     @Test
+    public void execute_duplicateProduct_throwsCommandException() {
+        Model model = new ModelManager();
+        model.setAddressBook(getTypicalAddressBook());
+        model.setInventory(getTypicalInventory());
+
+        Product firstProduct = model.getFilteredProductList().get(0);
+        Product secondProduct = model.getFilteredProductList().get(1);
+
+        EditProductDescriptor descriptor = new EditProductDescriptorBuilder()
+                .withName(secondProduct.getName().fullName)
+                .withQuantity(String.valueOf(secondProduct.getQuantity().value))
+                .withThreshold(String.valueOf(secondProduct.getRestockThreshold().value))
+                .build();
+
+        EditProductCommand command =
+                new EditProductCommand(firstProduct.getIdentifier().value, descriptor);
+
+        assertDoesNotThrow(() -> command.execute(model));
+    }
+
+    @Test
+    public void getPendingConfirmation_returnsPendingConfirmation() {
+        EditProductCommand.EditProductDescriptor descriptor =
+                new EditProductDescriptorBuilder().withName(VALID_PRODUCT_NAME_IPAD).build();
+
+        EditProductCommand command = new EditProductCommand("SKU-1001", descriptor);
+
+        assertNotNull(command.getPendingConfirmation());
+    }
+
+    @Test
     public void equals_sameIdentifierDifferentDescriptor_false() {
         String targetIdentifier = "SKU-1001";
 
@@ -220,6 +253,48 @@ public class EditProductCommandTest {
                 new EditProductCommand(targetIdentifier, descriptor2);
 
         assertFalse(command1.equals(command2));
+    }
+
+    @Test
+    public void equals_differentIdentifier_false() {
+        EditProductCommand.EditProductDescriptor descriptor =
+                new EditProductDescriptorBuilder()
+                        .withName(VALID_PRODUCT_NAME_IPAD)
+                        .build();
+
+        EditProductCommand command1 =
+                new EditProductCommand("SKU-1001", descriptor);
+
+        EditProductCommand command2 =
+                new EditProductCommand("SKU-2002", descriptor);
+
+        assertFalse(command1.equals(command2));
+    }
+
+    @Test
+    public void equals_null_false() {
+        EditProductCommand.EditProductDescriptor descriptor =
+                new EditProductDescriptorBuilder()
+                        .withName(VALID_PRODUCT_NAME_IPAD)
+                        .build();
+
+        EditProductCommand command =
+                new EditProductCommand("SKU-1001", descriptor);
+
+        assertFalse(command.equals(null));
+    }
+
+    @Test
+    public void equals_differentType_false() {
+        EditProductCommand.EditProductDescriptor descriptor =
+                new EditProductDescriptorBuilder()
+                        .withName(VALID_PRODUCT_NAME_IPAD)
+                        .build();
+
+        EditProductCommand command =
+                new EditProductCommand("SKU-1001", descriptor);
+
+        assertFalse(command.equals(5));
     }
 
     @Test
