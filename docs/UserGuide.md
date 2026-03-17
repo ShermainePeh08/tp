@@ -848,7 +848,11 @@ Use this section when `restore` fails.
 
 <div style="height: 30px;"></div>
 
-#### Troubleshooting `addproduct` contact
+
+### Managing inventory
+<div style="height: 30px;"></div>
+
+#### Troubleshooting `addproduct`
 
 Use this section when `addproduct` fails or returns a warning.
 
