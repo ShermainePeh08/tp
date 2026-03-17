@@ -127,7 +127,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     @Override
     public Optional<Person> findSimilarNameMatch(Person candidate, Person exclude) {
         return persons.asUnmodifiableObservableList().stream()
-                .filter(p -> exclude == null || !p.equals(exclude))
+                .filter(p -> !p.equals(exclude))
                 .filter(candidate::isSimilarNameTo)
                 .findFirst();
     }

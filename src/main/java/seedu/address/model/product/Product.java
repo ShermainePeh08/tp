@@ -121,6 +121,14 @@ public class Product {
                 DuplicateProductWarning.MESSAGE_SIMILAR_NAME);
     }
 
+    /**
+     * Returns true if this person has a similar name to {@code otherPerson}.
+     * Intended for use by {@code AddressBook} similarity checks.
+     */
+    public boolean isSimilarNameTo(Product otherProduct) {
+        return hasSimilarName(otherProduct);
+    }
+
     private boolean hasSimilarName(Product otherProduct) {
         String thisName = this.name.fullName.toLowerCase().trim();
         String otherName = otherProduct.getName().fullName.toLowerCase().trim();
@@ -129,8 +137,8 @@ public class Product {
             return true;
         }
 
-        String[] thisParts = thisName.split(ParserUtil.SPACE_SEPARATOR);
-        String[] otherParts = otherName.split(ParserUtil.SPACE_SEPARATOR);
+        String[] thisParts = thisName.split(ParserUtil.SEPARATOR_SPACE);
+        String[] otherParts = otherName.split(ParserUtil.SEPARATOR_SPACE);
 
         java.util.Set<String> nameParts = new java.util.HashSet<>(java.util.Arrays.asList(thisParts));
         for (String part : otherParts) {

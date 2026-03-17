@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_DUPLICATE_PRODUCT;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_IDENTIFIER_WARN;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PRODUCT_NAME_WARN;
-import static seedu.address.logic.parser.ParserUtil.NEWLINE;
+import static seedu.address.logic.commands.CommandUtil.SEPARATOR_NEW_LINE;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.nio.file.Path;
@@ -72,12 +72,12 @@ public class AddProductCommandTest {
                 .withName(INVALID_PRODUCT_NAME_WARN)
                 .build();
 
-        String warnings = Identifier.MESSAGE_WARN + NEWLINE + Name.MESSAGE_WARN;
+        String warnings = Identifier.MESSAGE_WARN + SEPARATOR_NEW_LINE + Name.MESSAGE_WARN;
         AddProductCommand addProductCommand = new AddProductCommand(validProductWithWarnings, warnings);
 
         CommandResult result = addProductCommand.execute(modelStub);
 
-        String expectedMessage = String.format(AddProductCommand.MESSAGE_SUCCESS + NEWLINE + warnings,
+        String expectedMessage = String.format(AddProductCommand.MESSAGE_SUCCESS + SEPARATOR_NEW_LINE + warnings,
                 Messages.formatProduct(validProductWithWarnings));
 
         assertEquals(expectedMessage, result.getFeedbackToUser());
@@ -171,7 +171,7 @@ public class AddProductCommandTest {
     }
 
     @Test
-    public void execute_warningValueTrueButDifferentWarningType_noSimilarNameWarning() throws Exception {
+    public void execute_warningValueTrueButDifferentWarningType_withSimilarNameWarning() throws Exception {
         // When there's multiple warnings
         Product toAddWithDifferentWarningType = new ProductWithForcedWarning(
                 new Identifier("SKU-4200"),
@@ -192,8 +192,8 @@ public class AddProductCommandTest {
 
         CommandResult result = new AddProductCommand(toAddWithDifferentWarningType).execute(modelStub);
 
-        assertFalse(result.getFeedbackToUser().contains("similar name"));
-        assertEquals(CommandResult.FEEDBACK_TYPE_SUCCESS, result.getFeedbackType());
+        assertTrue(result.getFeedbackToUser().contains("similar name"));
+        assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
         assertEquals(3, modelStub.productsAdded.size());
     }
 
@@ -588,6 +588,25 @@ public class AddProductCommandTest {
         public Optional<Person> findByEmail(Email email) {
             requireNonNull(email);
             return Optional.empty();
+        }
+
+        @Override
+        public ReadOnlyInventory getInventory() {
+            return new ReadOnlyInventory() {
+                @Override
+                public ObservableList<Product> getProductList() {
+                    return FXCollections.observableArrayList(productsAdded);
+                }
+
+                @Override
+                public Optional<Product> findSimilarNameMatch(Product candidate, Product exclude) {
+                    requireNonNull(candidate);
+                    return productsAdded.stream()
+                            .filter(p -> exclude == null || !p.equals(exclude))
+                            .filter(candidate::isSimilarNameTo)
+                            .findFirst();
+                }
+            };
         }
 
         void seedExistingProduct(Product product) {

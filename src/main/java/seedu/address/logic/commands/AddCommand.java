@@ -2,12 +2,13 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_DUPLICATE_PERSON;
+import static seedu.address.logic.commands.CommandUtil.EMPTY_STRING;
+import static seedu.address.logic.commands.CommandUtil.SEPARATOR_NEW_LINE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.logic.parser.ParserUtil.NEWLINE;
 import static seedu.address.model.person.warnings.DuplicatePersonWarning.MESSAGE_SIMILAR_ADDRESS;
 import static seedu.address.model.person.warnings.DuplicatePersonWarning.MESSAGE_SIMILAR_NAME;
 
@@ -24,7 +25,7 @@ public class AddCommand extends Command {
 
     public static final String COMMAND_WORD = "add";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a vendor contact to the address book. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a vendor contact to VendorVault. "
             + "Parameters: "
             + PREFIX_NAME + "NAME "
             + PREFIX_PHONE + "PHONE "
@@ -32,65 +33,79 @@ public class AddCommand extends Command {
             + PREFIX_ADDRESS + "ADDRESS "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_NAME + "John Doe "
-            + PREFIX_PHONE + "98765432 "
-            + PREFIX_EMAIL + "johnd@example.com "
-            + PREFIX_ADDRESS + "311, Clementi Ave 2, #02-25 "
-            + PREFIX_TAG + "friends "
-            + PREFIX_TAG + "owesMoney";
+            + PREFIX_NAME + "Cytron Technologies Pte. Ltd. "
+            + PREFIX_PHONE + "65480668 "
+            + PREFIX_EMAIL + "sg.sales@cytron.io "
+            + PREFIX_ADDRESS + "09 Collyer Quay "
+            + PREFIX_TAG + "electronics ";
 
     public static final String MESSAGE_SUCCESS = "New contact added: %1$s";
 
     private final Person toAdd;
-    private String warnings = "";
+    private final String initialWarnings;
 
     /**
      * Creates an AddCommand to add the specified {@code Person}
      */
     public AddCommand(Person person) {
-        requireNonNull(person);
-        toAdd = person;
+        this(person, EMPTY_STRING);
     }
 
     /**
      * Creates an AddCommand to add the specified {@code Person}
      * With warnings to show after success.
      */
-    public AddCommand(Person person, String warnings) {
+    public AddCommand(Person person, String initialWarnings) {
         requireNonNull(person);
         this.toAdd = person;
-        this.warnings = warnings;
+        this.initialWarnings = initialWarnings;
     }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        if (model.hasPerson(toAdd)) {
-            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
-        }
+        validateNoDuplicate(model);
 
-        StringBuilder allWarnings = new StringBuilder(warnings);
-        checkForSimilarContacts(model, allWarnings);
+        String allWarnings = buildWarnings(model, initialWarnings);
 
         model.addPerson(toAdd);
         model.commitVendorVault();
 
-        String formattedWarnings = allWarnings.isEmpty() ? "" : NEWLINE + allWarnings;
-        String feedbackType = allWarnings.isEmpty()
-                ? CommandResult.FEEDBACK_TYPE_SUCCESS
-                : CommandResult.FEEDBACK_TYPE_WARN;
+        return buildCommandResult(allWarnings);
+    }
 
-        return new CommandResult(
-                String.format(MESSAGE_SUCCESS + formattedWarnings, Messages.format(toAdd)),
-                false, false, feedbackType, true);
+    private CommandResult buildCommandResult(String allWarnings) {
+        boolean hasWarnings = !allWarnings.isEmpty();
+
+        String message = hasWarnings
+                ? String.format(MESSAGE_SUCCESS + SEPARATOR_NEW_LINE + allWarnings, Messages.format(toAdd))
+                : String.format(MESSAGE_SUCCESS, Messages.format(toAdd));
+
+        String feedbackType = hasWarnings
+                ? CommandResult.FEEDBACK_TYPE_WARN
+                : CommandResult.FEEDBACK_TYPE_SUCCESS;
+
+        return new CommandResult(message, false, false, feedbackType, true);
 
     }
 
+    private String buildWarnings(Model model, String originalWarnings) {
+        StringBuilder warningsBuilder = new StringBuilder(originalWarnings);
+        appendSimilarContactWarnings(model, warningsBuilder);
+        return warningsBuilder.toString();
+    }
+
+    private void validateNoDuplicate(Model model) throws CommandException {
+        if (model.hasPerson(toAdd)) {
+            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
+        }
+    }
+
     /**
-     * Checks for similar contacts in the model and appends warnings if found.
+     * Adds warnings when similar contacts are detected to avoid accidental duplicates.
      */
-    private void checkForSimilarContacts(Model model, StringBuilder warnings) {
+    private void appendSimilarContactWarnings(Model model, StringBuilder warnings) {
         model.getAddressBook().findSimilarNameMatch(toAdd, null).ifPresent(match ->
                 appendWarning(warnings, String.format(MESSAGE_SIMILAR_NAME, match.getName())));
 
@@ -101,7 +116,7 @@ public class AddCommand extends Command {
 
     private void appendWarning(StringBuilder warnings, String message) {
         if (warnings.length() > 0) {
-            warnings.append(NEWLINE);
+            warnings.append(SEPARATOR_NEW_LINE);
         }
         warnings.append(message);
     }
@@ -109,15 +124,6 @@ public class AddCommand extends Command {
     @Override
     public PendingConfirmation getPendingConfirmation() {
         return new PendingConfirmation();
-    }
-
-    /**
-     * Returns the warnings to show after successfully adding the person.
-     *
-     * @return the warnings to show
-     */
-    public String getWarnings() {
-        return warnings;
     }
 
     @Override

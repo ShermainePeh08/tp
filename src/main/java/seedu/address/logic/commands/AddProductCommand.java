@@ -2,12 +2,12 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_DUPLICATE_PRODUCT;
+import static seedu.address.logic.commands.CommandUtil.SEPARATOR_NEW_LINE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_IDENTIFIER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_QUANTITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_THRESHOLD;
-import static seedu.address.logic.parser.ParserUtil.NEWLINE;
 import static seedu.address.model.product.warnings.DuplicateProductWarning.MESSAGE_SIMILAR_NAME;
 
 import java.util.Optional;
@@ -18,7 +18,6 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Email;
 import seedu.address.model.product.Product;
-import seedu.address.model.product.warnings.DuplicateProductWarning;
 
 /**
  * Adds a product to the inventory.
@@ -69,9 +68,7 @@ public class AddProductCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        if (model.hasProduct(toAdd)) {
-            throw new CommandException(MESSAGE_DUPLICATE_PRODUCT);
-        }
+        validateNoDuplicate(model);
 
         Optional<Email> vendorEmail = toAdd.getVendorEmail();
         if (vendorEmail.isPresent()) {
@@ -81,12 +78,12 @@ public class AddProductCommand extends Command {
             }
         }
 
-        StringBuilder allWarnings = new StringBuilder(warnings);
-        checkForSimilarProducts(model, allWarnings);
+        String allWarnings = buildWarnings(model, warnings);
+
         model.addProduct(toAdd);
         model.commitVendorVault();
 
-        String formattedWarnings = allWarnings.isEmpty() ? "" : NEWLINE + allWarnings;
+        String formattedWarnings = allWarnings.isEmpty() ? "" : SEPARATOR_NEW_LINE + allWarnings;
         String feedbackType = allWarnings.isEmpty()
                 ? CommandResult.FEEDBACK_TYPE_SUCCESS
                 : CommandResult.FEEDBACK_TYPE_WARN;
@@ -95,29 +92,30 @@ public class AddProductCommand extends Command {
                 feedbackType);
     }
 
-    /**
-     * Checks for similar products in the model and appends warnings if found.
-     */
-    private void checkForSimilarProducts(Model model, StringBuilder warnings) {
-        for (Product existingProduct : model.getFilteredProductList()) {
-            DuplicateProductWarning duplicateWarning = toAdd.isSameProductWarn(existingProduct);
+    private String buildWarnings(Model model, String originalWarnings) {
+        StringBuilder warningsBuilder = new StringBuilder(originalWarnings);
+        appendSimilarProductWarnings(model, warningsBuilder);
+        return warningsBuilder.toString();
+    }
 
-            if (!duplicateWarning.getValue()) {
-                continue;
-            }
-
-            String warning = duplicateWarning.getWarning();
-            if (warning.equals(MESSAGE_SIMILAR_NAME)) {
-                appendWarning(warnings, String.format(
-                        MESSAGE_SIMILAR_NAME, existingProduct.getIdentifier(), existingProduct.getName()));
-                break;
-            }
+    private void validateNoDuplicate(Model model) throws CommandException {
+        if (model.hasProduct(toAdd)) {
+            throw new CommandException(MESSAGE_DUPLICATE_PRODUCT);
         }
+    }
+
+    /**
+     * Adds warnings when similar products are detected to avoid accidental duplicates.
+     */
+    private void appendSimilarProductWarnings(Model model, StringBuilder warnings) {
+        model.getInventory().findSimilarNameMatch(toAdd, null).ifPresent(match ->
+                appendWarning(warnings, String.format(
+                        MESSAGE_SIMILAR_NAME, match.getIdentifier(), match.getName())));
     }
 
     private void appendWarning(StringBuilder warnings, String message) {
         if (!warnings.isEmpty()) {
-            warnings.append(NEWLINE);
+            warnings.append(SEPARATOR_NEW_LINE);
         }
         warnings.append(message);
     }

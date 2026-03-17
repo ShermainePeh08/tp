@@ -30,9 +30,11 @@ public class ParserUtil {
     public static final String FIELD_ADDRESS = "address";
     public static final String FIELD_IDENTIFIER = "identifier";
     public static final String FIELD_PRODUCT_NAME = "product name";
-    public static final String COMMA_SEPARATOR = ", ";
-    public static final String SPACE_SEPARATOR = " ";
-    public static final String NEWLINE = "\n";
+
+    public static final String SEPARATOR_COMMA = ", ";
+    public static final String SEPARATOR_SPACE = " ";
+    public static final String SEPARATOR_NEW_LINE = "\n";
+
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
     public static final String MESSAGE_NOT_A_NUMBER = "Index is not a number.";
 

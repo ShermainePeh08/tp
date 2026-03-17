@@ -42,7 +42,7 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailur
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.logic.parser.ParserUtil.FIELD_IDENTIFIER;
 import static seedu.address.logic.parser.ParserUtil.FIELD_PRODUCT_NAME;
-import static seedu.address.logic.parser.ParserUtil.NEWLINE;
+import static seedu.address.logic.parser.ParserUtil.SEPARATOR_NEW_LINE;
 import static seedu.address.testutil.TypicalProducts.AIRPODS;
 import static seedu.address.testutil.TypicalProducts.IPAD;
 
@@ -79,8 +79,8 @@ public class AddProductCommandParserTest {
         AddProductCommand result = parser.parse(IDENTIFIER_DESC_IPAD + PRODUCT_NAME_DESC_IPAD);
         assertEquals(new AddProductCommand(expectedProduct), result);
 
-        String expectedWarnings = AddProductCommandParser.MESSAGE_QUANTITY_DEFAULTED + NEWLINE
-                + AddProductCommandParser.MESSAGE_THRESHOLD_DEFAULTED + NEWLINE
+        String expectedWarnings = AddProductCommandParser.MESSAGE_QUANTITY_DEFAULTED + SEPARATOR_NEW_LINE
+                + AddProductCommandParser.MESSAGE_THRESHOLD_DEFAULTED + SEPARATOR_NEW_LINE
                 + AddProductCommandParser.MESSAGE_VENDOR_EMAIL_MISSING;
         assertEquals(expectedWarnings, result.getWarnings());
     }
@@ -96,7 +96,7 @@ public class AddProductCommandParserTest {
         assertEquals(new AddProductCommand(expectedProduct, expectedWarnings),
                 new AddProductCommand(expectedProduct, command.getWarnings()));
         assertEquals(expectedWarnings, command.getWarnings());
-        assertEquals(1, command.getWarnings().split(NEWLINE).length);
+        assertEquals(1, command.getWarnings().split(SEPARATOR_NEW_LINE).length);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class AddProductCommandParserTest {
         assertEquals(new AddProductCommand(expectedProduct, expectedWarnings),
                 new AddProductCommand(expectedProduct, command.getWarnings()));
         assertEquals(expectedWarnings, command.getWarnings());
-        assertEquals(1, command.getWarnings().split(NEWLINE).length);
+        assertEquals(1, command.getWarnings().split(SEPARATOR_NEW_LINE).length);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class AddProductCommandParserTest {
         assertEquals(new AddProductCommand(expectedProduct, expectedWarnings),
                 new AddProductCommand(expectedProduct, command.getWarnings()));
         assertEquals(expectedWarnings, command.getWarnings());
-        assertEquals(1, command.getWarnings().split(NEWLINE).length);
+        assertEquals(1, command.getWarnings().split(SEPARATOR_NEW_LINE).length);
     }
 
     @Test
@@ -209,7 +209,7 @@ public class AddProductCommandParserTest {
 
         assertEquals(expectedCommand, result);
 
-        String expectedWarnings = Identifier.MESSAGE_WARN + NEWLINE + Name.MESSAGE_WARN;
+        String expectedWarnings = Identifier.MESSAGE_WARN + SEPARATOR_NEW_LINE + Name.MESSAGE_WARN;
 
         assertEquals(expectedWarnings, result.getWarnings());
     }

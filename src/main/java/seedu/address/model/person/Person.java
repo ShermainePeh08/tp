@@ -90,7 +90,7 @@ public class Person {
     }
 
     private static Set<String> getNormalizedPhoneEntries(String phoneValue) {
-        return Arrays.stream(phoneValue.split(ParserUtil.COMMA_SEPARATOR))
+        return Arrays.stream(phoneValue.split(ParserUtil.SEPARATOR_COMMA))
                 .map(String::trim)
                 .map(Person::extractPhoneNumberPart)
                 .collect(Collectors.toSet());
@@ -128,8 +128,8 @@ public class Person {
             return true;
         }
 
-        String[] thisParts = thisName.split(ParserUtil.SPACE_SEPARATOR);
-        String[] otherParts = otherName.split(ParserUtil.SPACE_SEPARATOR);
+        String[] thisParts = thisName.split(ParserUtil.SEPARATOR_SPACE);
+        String[] otherParts = otherName.split(ParserUtil.SEPARATOR_SPACE);
 
         Set<String> nameParts = new HashSet<>(Arrays.asList(thisParts));
 

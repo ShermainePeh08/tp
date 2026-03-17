@@ -9,7 +9,7 @@ import seedu.address.model.product.RestockThreshold;
 /**
  * A utility class for constructing {@link EditProductDescriptor} objects in tests.
  *
- * This builder follows the builder pattern to simplify the creation of
+ * <p>This builder follows the builder pattern to simplify the creation of
  * {@code EditProductDescriptor} instances by allowing fields to be set
  * incrementally through chained method calls.</p>
  */
