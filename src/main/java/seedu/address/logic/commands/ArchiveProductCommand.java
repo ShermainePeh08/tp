@@ -1,7 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.ParserUtil.NEW_LINE;
+import static seedu.address.logic.parser.ParserUtil.SEPARATOR_NEW_LINE;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -58,7 +58,7 @@ public class ArchiveProductCommand extends Command {
         model.commitVendorVault();
 
         String message = String.format(
-                MESSAGE_ARCHIVE_SUCCESS + NEW_LINE + MESSAGE_ARCHIVE_WARNING,
+                MESSAGE_ARCHIVE_SUCCESS + SEPARATOR_NEW_LINE + MESSAGE_ARCHIVE_WARNING,
                 productToArchive.getName(),
                 productToArchive.getIdentifier().value
         );

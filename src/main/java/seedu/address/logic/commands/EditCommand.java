@@ -7,7 +7,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.logic.parser.ParserUtil.NEW_LINE;
+import static seedu.address.logic.parser.ParserUtil.SEPARATOR_NEW_LINE;
 import static seedu.address.model.Model.PREDICATE_SHOW_ACTIVE_PERSONS;
 import static seedu.address.model.person.warnings.DuplicatePersonWarning.MESSAGE_SIMILAR_ADDRESS;
 import static seedu.address.model.person.warnings.DuplicatePersonWarning.MESSAGE_SIMILAR_NAME;
@@ -177,7 +177,7 @@ public class EditCommand extends Command {
         model.updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
         model.commitVendorVault();
 
-        String formattedWarnings = allWarnings.isEmpty() ? "" : NEW_LINE + allWarnings;
+        String formattedWarnings = allWarnings.isEmpty() ? "" : SEPARATOR_NEW_LINE + allWarnings;
         String feedbackType = allWarnings.isEmpty()
                 ? CommandResult.FEEDBACK_TYPE_SUCCESS
                 : CommandResult.FEEDBACK_TYPE_WARN;
@@ -234,7 +234,7 @@ public class EditCommand extends Command {
 
     private void appendWarning(StringBuilder warnings, String message) {
         if (warnings.length() > 0) {
-            warnings.append(NEW_LINE);
+            warnings.append(SEPARATOR_NEW_LINE);
         }
         warnings.append(message);
     }

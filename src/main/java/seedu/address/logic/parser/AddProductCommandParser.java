@@ -11,7 +11,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_QUANTITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_THRESHOLD;
 import static seedu.address.logic.parser.ParserUtil.FIELD_IDENTIFIER;
 import static seedu.address.logic.parser.ParserUtil.FIELD_PRODUCT_NAME;
-import static seedu.address.logic.parser.ParserUtil.NEW_LINE;
+import static seedu.address.logic.parser.ParserUtil.SEPARATOR_NEW_LINE;
 import static seedu.address.logic.parser.ParserUtil.SEPARATOR_COMMA;
 
 import java.util.Arrays;
@@ -120,7 +120,7 @@ public class AddProductCommandParser implements Parser<AddProductCommand> {
     private static void appendWarning(StringBuilder warnings, Optional<String> warning) {
         warning.ifPresent(w -> {
             if (!warnings.isEmpty()) {
-                warnings.append(NEW_LINE);
+                warnings.append(SEPARATOR_NEW_LINE);
             }
             warnings.append(w);
         });

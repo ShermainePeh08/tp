@@ -44,7 +44,7 @@ import static seedu.address.logic.parser.ParserUtil.FIELD_ADDRESS;
 import static seedu.address.logic.parser.ParserUtil.FIELD_EMAIL;
 import static seedu.address.logic.parser.ParserUtil.FIELD_NAME;
 import static seedu.address.logic.parser.ParserUtil.FIELD_PHONE;
-import static seedu.address.logic.parser.ParserUtil.NEW_LINE;
+import static seedu.address.logic.parser.ParserUtil.SEPARATOR_NEW_LINE;
 import static seedu.address.testutil.TypicalPersons.AMY;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
@@ -240,14 +240,14 @@ public class AddCommandParserTest {
         assertEquals(expectedCommand, result);
 
         String expectedWarnings =
-                Name.MESSAGE_WARN + NEW_LINE
-                        + Phone.MESSAGE_WARN + NEW_LINE
+                Name.MESSAGE_WARN + SEPARATOR_NEW_LINE
+                        + Phone.MESSAGE_WARN + SEPARATOR_NEW_LINE
                         + Email.MESSAGE_WARN;
 
         CommandResult commandResult = result.execute(new ModelManager());
         assertEquals(CommandResult.FEEDBACK_TYPE_WARN, commandResult.getFeedbackType());
         assertEquals(
-                String.format(AddCommand.MESSAGE_SUCCESS + NEW_LINE
+                String.format(AddCommand.MESSAGE_SUCCESS + SEPARATOR_NEW_LINE
                         + expectedWarnings, Messages.format(expectedPerson)),
                 commandResult.getFeedbackToUser());
 

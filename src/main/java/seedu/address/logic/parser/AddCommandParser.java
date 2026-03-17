@@ -35,7 +35,6 @@ import seedu.address.model.tag.Tag;
  */
 public class AddCommandParser implements Parser<AddCommand> {
 
-
     private record RequiredField(Prefix prefix, String name) {}
 
     /**
@@ -70,15 +69,15 @@ public class AddCommandParser implements Parser<AddCommand> {
         StringBuilder warnings = new StringBuilder();
         ParseResult<Name> nameResult = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
         ParseResult<Phone> phoneResult = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get());
-        ParseResult<Email> email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
+        ParseResult<Email> emailResult = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
         Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
-        Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
+        Set<Tag> tags = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
 
         Person person = new Person(
-                nameResult.getValue(), phoneResult.getValue(), email.getValue(), address, tagList);
+                nameResult.getValue(), phoneResult.getValue(), emailResult.getValue(), address, tags);
         appendWarning(warnings, nameResult.getWarning());
         appendWarning(warnings, phoneResult.getWarning());
-        appendWarning(warnings, email.getWarning());
+        appendWarning(warnings, emailResult.getWarning());
 
         if (!warnings.isEmpty()) {
             return new AddCommand(person, warnings.toString());
@@ -94,7 +93,7 @@ public class AddCommandParser implements Parser<AddCommand> {
     private static void appendWarning(StringBuilder warnings, Optional<String> warning) {
         warning.ifPresent(w -> {
             if (!warnings.isEmpty()) {
-                warnings.append("\n");
+                warnings.append(ParserUtil.SEPARATOR_NEW_LINE);
             }
             warnings.append(w);
         });
@@ -104,12 +103,10 @@ public class AddCommandParser implements Parser<AddCommand> {
      * Throws a ParseException if any of the prefixes are missing in the given
      * {@code ArgumentMultimap}.
      */
-    private static void requirePrefixes(ArgumentMultimap map,
-                                        RequiredField... requiredFields) throws ParseException {
+    private static void requirePrefixes(ArgumentMultimap map, RequiredField... requiredFields)
+            throws ParseException {
 
-        List<RequiredField> missingFields = Arrays.stream(requiredFields)
-                .filter(field -> map.getValue(field.prefix).isEmpty())
-                .toList();
+        List<RequiredField> missingFields = getMissingFields(map, requiredFields);
 
         if (missingFields.isEmpty()) {
             return;
@@ -119,15 +116,19 @@ public class AddCommandParser implements Parser<AddCommand> {
             throw new ParseException(MESSAGE_ALL_PREFIXES_MISSING + AddCommand.MESSAGE_USAGE);
         }
 
-        String missingMessage = missingFields.stream()
-                .map(field -> String.format(
-                        MESSAGE_MISSING_FIELD_FORMAT,
-                        field.prefix,
-                        field.name))
+        throw new ParseException(MESSAGE_MISSING_PREFIX + formatMissingFields(missingFields));
+    }
+
+    private static List<RequiredField> getMissingFields(ArgumentMultimap map, RequiredField... fields) {
+        return Arrays.stream(fields)
+                .filter(field -> map.getValue(field.prefix).isEmpty())
+                .toList();
+    }
+
+    private static String formatMissingFields(List<RequiredField> missingFields) {
+        return missingFields.stream()
+                .map(f -> String.format(MESSAGE_MISSING_FIELD_FORMAT, f.prefix, f.name))
                 .collect(Collectors.joining(SEPARATOR_COMMA));
-
-        throw new ParseException(MESSAGE_MISSING_PREFIX + missingMessage);
-
     }
 
 }
