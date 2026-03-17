@@ -153,6 +153,15 @@ When in doubt, **archive, don't delete.**
 
 <box type="info" seamless>
 
+**Note about destructive commands:**
+
+* You can use undo to restore the data only **within the same app session**. 
+* If you may need the contact/product again in the future, consider using [`archive`](#archiving-a-contact-archive) / [`archiveproduct`](#archiving-a-product-archiveproduct) respectively.
+
+</box>
+
+<box type="info" seamless>
+
 **Notes about the command format:**<br>
 
 * To skip the confirmation prompt, use the `-y` flag: `deleteproduct -y PRODUCT_IDENTIFIER`
@@ -298,7 +307,7 @@ For more details on possible warnings and errors when editing a contact, refer t
 
 #### Locating contacts by name: `find`
 
-Finds contacts whose names contain any of the given keywords.
+Finds contacts whose names contain any of the given keywords (case-insensitive).
 
 Format: 
 
@@ -308,8 +317,8 @@ find KEYWORD [MORE_KEYWORDS]
 
 Examples:
 
-* `find Industries Technologies` finds the companies names that contains `Industries` or `Technologies`
-* `find Industries` finds the companies names that contains `Industries` 
+* `find Industries Technologies` finds the contacts names that contains `Industries` or `Technologies`
+* `find Industries` finds the contacts names that contains `Industries` 
 
 <box type="tip" seamless>
 
