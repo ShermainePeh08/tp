@@ -848,6 +848,17 @@ Use this section when `restore` fails.
 
 <div style="height: 30px;"></div>
 
+#### Troubleshooting `delete` contact
+
+Use this section when `delete` fails.
+
+| Scenario                               | Message shown                                         | How to fix                                  |
+|----------------------------------------|-------------------------------------------------------|---------------------------------------------|
+| No email provided                      | `Email should not be blank.`                          | Provide the vendor's email: `delete EMAIL`. |
+| Email Format is invalid                | `Email should be of the format local-part@domain ...` | Check the email if its correct.             |
+| Email provided but no matching contact | `No contact with the specified email was found.`      | Check the email if its correct.             |
+
+<div style="height: 30px;"></div>
 
 ### Managing inventory
 <div style="height: 30px;"></div>
@@ -908,11 +919,3 @@ Use this section when `deleteproduct` fails.
 | Identifier does not match any product | `No product found with the specified identifier.` | Ensure the product exists in the active list. Use `listproduct` to check. |
 
 <div style="height: 30px;"></div>
-
-#### Troubleshooting `clearproduct`
-
-Use this section when `clearproduct` fails.
-
-| Scenario                 | Message shown         | How to fix                                                    |
-|--------------------------|-----------------------|---------------------------------------------------------------|
-| Extra arguments provided | `Usage: clearproduct` | `clearproduct` takes no arguments. Run it as: `clearproduct`. |
