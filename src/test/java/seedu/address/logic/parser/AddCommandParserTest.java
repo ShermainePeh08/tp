@@ -44,7 +44,7 @@ import static seedu.address.logic.parser.ParserUtil.FIELD_ADDRESS;
 import static seedu.address.logic.parser.ParserUtil.FIELD_EMAIL;
 import static seedu.address.logic.parser.ParserUtil.FIELD_NAME;
 import static seedu.address.logic.parser.ParserUtil.FIELD_PHONE;
-import static seedu.address.logic.parser.ParserUtil.NEWLINE;
+import static seedu.address.logic.parser.ParserUtil.NEW_LINE;
 import static seedu.address.testutil.TypicalPersons.AMY;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
@@ -52,7 +52,10 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.CommandResult;
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.ModelManager;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -216,7 +219,7 @@ public class AddCommandParserTest {
     }
 
     @Test
-    public void parse_softValidationWarnings_success() throws ParseException {
+    public void parse_softValidationWarnings_success() throws ParseException, CommandException {
         // invalid name, phone and email that trigger warnings but are still accepted by the parser
         Person expectedPerson = new PersonBuilder()
                 .withName(INVALID_NAME_WARN)
@@ -237,11 +240,16 @@ public class AddCommandParserTest {
         assertEquals(expectedCommand, result);
 
         String expectedWarnings =
-                Name.MESSAGE_WARN + NEWLINE
-                        + Phone.MESSAGE_WARN + NEWLINE
+                Name.MESSAGE_WARN + NEW_LINE
+                        + Phone.MESSAGE_WARN + NEW_LINE
                         + Email.MESSAGE_WARN;
 
-        assertEquals(expectedWarnings, result.getWarnings());
+        CommandResult commandResult = result.execute(new ModelManager());
+        assertEquals(CommandResult.FEEDBACK_TYPE_WARN, commandResult.getFeedbackType());
+        assertEquals(
+                String.format(AddCommand.MESSAGE_SUCCESS + NEW_LINE
+                        + expectedWarnings, Messages.format(expectedPerson)),
+                commandResult.getFeedbackToUser());
 
     }
 }

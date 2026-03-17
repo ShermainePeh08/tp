@@ -8,7 +8,7 @@ import static seedu.address.logic.commands.CommandTestUtil.INVALID_EMAIL_WARN;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_WARN;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PHONE_WARN;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
-import static seedu.address.logic.parser.ParserUtil.NEWLINE;
+import static seedu.address.logic.parser.ParserUtil.NEW_LINE;
 import static seedu.address.model.person.warnings.DuplicatePersonWarning.MESSAGE_SIMILAR_ADDRESS;
 import static seedu.address.model.person.warnings.DuplicatePersonWarning.MESSAGE_SIMILAR_NAME;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -84,14 +84,14 @@ public class AddCommandTest {
                 .build();
 
         String warnings =
-                Name.MESSAGE_WARN + NEWLINE
+                Name.MESSAGE_WARN + NEW_LINE
                         + Email.MESSAGE_WARN;
         AddCommand addCommand = new AddCommand(validPersonWithWarnings, warnings);
 
         CommandResult result = addCommand.execute(modelStub);
 
         String expectedMessage = String.format(
-                AddCommand.MESSAGE_SUCCESS + NEWLINE + warnings,
+                AddCommand.MESSAGE_SUCCESS + NEW_LINE + warnings,
                 Messages.format(validPersonWithWarnings));
 
         assertEquals(expectedMessage, result.getFeedbackToUser());

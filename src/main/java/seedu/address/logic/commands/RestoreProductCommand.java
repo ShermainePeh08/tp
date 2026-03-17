@@ -1,7 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.ParserUtil.NEWLINE;
+import static seedu.address.logic.parser.ParserUtil.NEW_LINE;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -54,7 +54,7 @@ public class RestoreProductCommand extends Command {
             model.updateFilteredProductList(Product::isArchived);
 
             throw new CommandException(
-                    MESSAGE_IDENTIFIER_REQUIRED + NEWLINE + MESSAGE_ARCHIVED_LIST
+                    MESSAGE_IDENTIFIER_REQUIRED + NEW_LINE + MESSAGE_ARCHIVED_LIST
             );
         }
 
@@ -69,7 +69,7 @@ public class RestoreProductCommand extends Command {
 
             throw new CommandException(
                     String.format(MESSAGE_PRODUCT_NOT_FOUND, identifier)
-                            + NEWLINE + MESSAGE_ARCHIVED_LIST
+                            + NEW_LINE + MESSAGE_ARCHIVED_LIST
             );
         }
 

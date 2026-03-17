@@ -120,8 +120,8 @@ public class Product {
             return true;
         }
 
-        String[] thisParts = thisName.split(ParserUtil.SPACE_SEPARATOR);
-        String[] otherParts = otherName.split(ParserUtil.SPACE_SEPARATOR);
+        String[] thisParts = thisName.split(ParserUtil.SEPARATOR_SPACE);
+        String[] otherParts = otherName.split(ParserUtil.SEPARATOR_SPACE);
 
         java.util.Set<String> nameParts = new java.util.HashSet<>(java.util.Arrays.asList(thisParts));
         for (String part : otherParts) {

@@ -9,7 +9,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.logic.parser.ParserUtil.COMMA_SEPARATOR;
+import static seedu.address.logic.parser.ParserUtil.SEPARATOR_COMMA;
 import static seedu.address.logic.parser.ParserUtil.FIELD_ADDRESS;
 import static seedu.address.logic.parser.ParserUtil.FIELD_EMAIL;
 import static seedu.address.logic.parser.ParserUtil.FIELD_NAME;
@@ -124,7 +124,7 @@ public class AddCommandParser implements Parser<AddCommand> {
                         MESSAGE_MISSING_FIELD_FORMAT,
                         field.prefix,
                         field.name))
-                .collect(Collectors.joining(COMMA_SEPARATOR));
+                .collect(Collectors.joining(SEPARATOR_COMMA));
 
         throw new ParseException(MESSAGE_MISSING_PREFIX + missingMessage);
 

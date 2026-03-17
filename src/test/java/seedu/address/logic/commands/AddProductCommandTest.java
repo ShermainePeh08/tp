@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_DUPLICATE_PRODUCT;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_IDENTIFIER_WARN;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PRODUCT_NAME_WARN;
-import static seedu.address.logic.parser.ParserUtil.NEWLINE;
+import static seedu.address.logic.parser.ParserUtil.NEW_LINE;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.nio.file.Path;
@@ -72,12 +72,12 @@ public class AddProductCommandTest {
                 .withName(INVALID_PRODUCT_NAME_WARN)
                 .build();
 
-        String warnings = Identifier.MESSAGE_WARN + NEWLINE + Name.MESSAGE_WARN;
+        String warnings = Identifier.MESSAGE_WARN + NEW_LINE + Name.MESSAGE_WARN;
         AddProductCommand addProductCommand = new AddProductCommand(validProductWithWarnings, warnings);
 
         CommandResult result = addProductCommand.execute(modelStub);
 
-        String expectedMessage = String.format(AddProductCommand.MESSAGE_SUCCESS + NEWLINE + warnings,
+        String expectedMessage = String.format(AddProductCommand.MESSAGE_SUCCESS + NEW_LINE + warnings,
                 Messages.formatProduct(validProductWithWarnings));
 
         assertEquals(expectedMessage, result.getFeedbackToUser());

@@ -7,7 +7,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_IDENTIFIER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_QUANTITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_THRESHOLD;
-import static seedu.address.logic.parser.ParserUtil.NEWLINE;
+import static seedu.address.logic.parser.ParserUtil.NEW_LINE;
 import static seedu.address.model.product.warnings.DuplicateProductWarning.MESSAGE_SIMILAR_NAME;
 
 import java.util.Optional;
@@ -86,7 +86,7 @@ public class AddProductCommand extends Command {
         model.addProduct(toAdd);
         model.commitVendorVault();
 
-        String formattedWarnings = allWarnings.isEmpty() ? "" : NEWLINE + allWarnings;
+        String formattedWarnings = allWarnings.isEmpty() ? "" : NEW_LINE + allWarnings;
         String feedbackType = allWarnings.isEmpty()
                 ? CommandResult.FEEDBACK_TYPE_SUCCESS
                 : CommandResult.FEEDBACK_TYPE_WARN;
@@ -117,7 +117,7 @@ public class AddProductCommand extends Command {
 
     private void appendWarning(StringBuilder warnings, String message) {
         if (!warnings.isEmpty()) {
-            warnings.append(NEWLINE);
+            warnings.append(NEW_LINE);
         }
         warnings.append(message);
     }
