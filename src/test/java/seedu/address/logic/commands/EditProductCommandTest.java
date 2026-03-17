@@ -329,6 +329,23 @@ public class EditProductCommandTest {
     }
 
     @Test
+    public void equals_sameVendorEmail_true() {
+        EditProductDescriptor descriptor1 = new EditProductDescriptorBuilder()
+                .withName("iPad")
+                .withQuantity("10")
+                .withThreshold("5")
+                .withVendorEmail(VALID_EMAIL_AMY)
+                .build();
+        EditProductDescriptor descriptor2 = new EditProductDescriptorBuilder()
+                .withName("iPad")
+                .withQuantity("10")
+                .withThreshold("5")
+                .withVendorEmail(VALID_EMAIL_AMY)
+                .build();
+        assertTrue(descriptor1.equals(descriptor2));
+    }
+
+    @Test
     public void toStringMethod() {
         EditProductDescriptor descriptor =
                 new EditProductDescriptorBuilder()
