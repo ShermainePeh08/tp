@@ -1,7 +1,6 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.ParserUtil.NEWLINE;
 import static seedu.address.model.Model.PREDICATE_SHOW_ACTIVE_PERSONS;
 
 import java.util.ArrayList;
@@ -106,7 +105,7 @@ public class DeleteCommand extends Command {
                 .collect(Collectors.joining(", "));
         String warning = String.format(MESSAGE_PRODUCTS_DELINKED, linkedProducts.size(), linkedProductIds);
 
-        return new CommandResult(successMessage + NEWLINE + warning, CommandResult.FEEDBACK_TYPE_WARN);
+        return new CommandResult(successMessage + "/n" + warning, CommandResult.FEEDBACK_TYPE_WARN);
     }
 
     /**
