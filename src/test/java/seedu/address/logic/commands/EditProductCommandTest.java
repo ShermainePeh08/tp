@@ -314,15 +314,9 @@ public class EditProductCommandTest {
     @Test
     public void equals_differentVendorEmail_false() {
         EditProductDescriptor descriptor1 = new EditProductDescriptorBuilder()
-                .withName(VALID_PRODUCT_NAME_IPAD)
-                .withQuantity(VALID_QUANTITY_IPHONE)
-                .withThreshold(VALID_THRESHOLD_AIRPODS)
                 .withVendorEmail(VALID_EMAIL_AMY)
                 .build();
         EditProductDescriptor descriptor2 = new EditProductDescriptorBuilder()
-                .withName(VALID_PRODUCT_NAME_IPAD)
-                .withQuantity(VALID_QUANTITY_IPHONE)
-                .withThreshold(VALID_THRESHOLD_AIRPODS)
                 .withVendorEmail(VALID_EMAIL_BOB)
                 .build();
         assertFalse(descriptor1.equals(descriptor2));
@@ -331,15 +325,9 @@ public class EditProductCommandTest {
     @Test
     public void equals_sameVendorEmail_true() {
         EditProductDescriptor descriptor1 = new EditProductDescriptorBuilder()
-                .withName("iPad")
-                .withQuantity("10")
-                .withThreshold("5")
                 .withVendorEmail(VALID_EMAIL_AMY)
                 .build();
         EditProductDescriptor descriptor2 = new EditProductDescriptorBuilder()
-                .withName("iPad")
-                .withQuantity("10")
-                .withThreshold("5")
                 .withVendorEmail(VALID_EMAIL_AMY)
                 .build();
         assertTrue(descriptor1.equals(descriptor2));
