@@ -121,8 +121,7 @@ Some example commands you can try:
 
 * `help`: View available commands within the app.
 
-5\. Refer to the [Features](#features) below for details of each command. Or [Command Summary](#command-summary) for 
-a quick summary of all commands.
+5\. Refer to the [Features](#features) below for details of each command. Or [Command Summary](#command-summary) for a quick summary of all commands.
 
 <br>
 
@@ -151,6 +150,15 @@ When in doubt, **archive, don't delete.**
 </box>
 
 <div style="height: 20px;"></div>
+
+<box type="info" seamless>
+
+**Note about destructive commands:**
+
+* You can use undo to restore the data only **within the same app session**. 
+* If you may need the contact/product again in the future, consider using [`archive`](#archiving-a-contact-archive) / [`archiveproduct`](#archiving-a-product-archiveproduct) respectively.
+
+</box>
 
 <box type="info" seamless>
 
@@ -299,22 +307,29 @@ For more details on possible warnings and errors when editing a contact, refer t
 
 #### Locating contacts by name: `find`
 
-Finds contacts whose names contain any of the given keywords.
+Finds contacts whose names contain any of the given keywords (case-insensitive).
 
-Format: `find KEYWORD [MORE_KEYWORDS]`
+Format: 
 
-* The search is case-insensitive. e.g. `hans` will match `Hans`
-* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
-* Only the name is searched.
-* Only full words will be matched e.g. `Han` will not match `Hans`
-* contacts matching at least one keyword will be returned (i.e. `OR` search).
-  e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
+```
+find KEYWORD [MORE_KEYWORDS]
+```
 
 Examples:
 
-* `find John` returns `john` and `John Doe`
-* `find alex david` returns `Alex Yeoh`, `David Li`<br>
-  ![result for 'find alex david'](images/findAlexDavidResult.png)
+* `find Industries Technologies` finds the contacts names that contains `Industries` or `Technologies`
+* `find Industries` finds the contacts names that contains `Industries`
+
+<panel header="Can I search by part of the name?" type="seamless">
+
+No, the `find` command will match by full name, not partial name.
+
+Example:
+* If there is a company named `Adafruit Industries`
+* `find fruit` will not find the company
+* `find adafruit` will find the company
+
+</panel>
 
 <div style="height: 30px;"></div>
 
@@ -374,19 +389,15 @@ Only contacts that have been archived can be restored. If you try to restore an 
 Removes a contact from the address book using their email address as the _unique identifier_
 You will be prompted to confirm the deletion before any changes are made.
 
-Format: `delete EMAIL`
+Format: 
+
+```
+delete EMAIL
+```
 
 Examples:
 
 * `delete support@adafruit.com` deletes the contact associated with the email `support@adafruit.com`.
-
-<panel header="Why can't I delete using other fields?" type="seamless">
-
-Email addresses serve as the _unique identifier_ for each contact, so the `delete` command only accepts email as input to ensure the correct contact is targeted.
-
-</panel>
-
-<br>
 
 <div style="height: 30px;"></div>
 
@@ -395,15 +406,6 @@ Email addresses serve as the _unique identifier_ for each contact, so the `delet
 Permanently removes all contacts from the address book.
 
 Format: `clear`
-
-<box type="important" seamless>
-
-_This action will remove all stored contact information_.
-You can use undo to restore the data only within the same app session. Ensure you have backed up your data before proceeding.
-
-For instructions on how to backup your data, check out [How do I backup my data](#faq-backup-data)
-
-</box>
 
 <div style="height: 30px;"></div>
 
@@ -535,12 +537,6 @@ Examples:
 
 * `deleteproduct SKU-1003` deletes the product with identifier `SKU-1003`.
 
-<box type="important" seamless>
-
-You can use undo to restore the data only **within the same app session**. If you may need the product again in the future, consider using [`archiveproduct`](#archiving-a-product-archiveproduct) instead.
-
-</box>
-
 <div style="height: 30px;"></div>
 
 #### Clearing all products : `clearproduct`
@@ -549,15 +545,26 @@ Permanently removes **all** products from the inventory.
 
 Format: `clearproduct`
 
-<box type="important" seamless>
+<div style="height: 30px;"></div>
 
-_This action will remove all stored product information_. You can use undo to restore the data only within the same app session. Ensure you have [backed up your data](#faq-backup-data) before proceeding.
+### Utility Commands
 
-</box>
+#### Add a command alias : `alias`
+
+Create an alternative command word that triggers an existing command.
+
+Format:
+```
+alias ALIAS ORIGINAL_COMMAND
+```
+
+Example:
+* `alias` list all current aliases
+* `alias ls list` maps `ls` as an alias for the `list` command
 
 <div style="height: 30px;"></div>
 
-### Undoing the previous command : `undo`
+#### Undoing the previous command : `undo`
 
 Undoes the previous command that changed the data.
 
@@ -569,7 +576,7 @@ undo
 
 <div style="height: 30px;"></div>
 
-### Redoing the previous undone command : `redo`
+#### Redoing the previous undone command : `redo`
 
 Redoes the previous undone command that changed the data.
 
@@ -581,35 +588,11 @@ redo
 
 <div style="height: 30px;"></div>
 
-### Exiting the program : `exit`
+#### Exiting the program : `exit`
 
 Exits the program.
 
 Format: `exit`
-
-<div style="height: 30px;"></div>
-
-### Saving the data
-
-AddressBook data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
-
-<div style="height: 30px;"></div>
-
-### Editing data
-
-VendorVault data is saved automatically in `[JAR file location]/data/` as JSON files. Advanced users are welcome to update data directly by editing those files.
-
-<box type="warning" seamless>
-
-**Caution:**
-<br>
-If your changes to the file make its format invalid, VendorVault will **discard all data** and start with an empty 
-file at the next run. Hence, it is recommended to [back up your data](#faq-backup-data) before editing.
-<br>&nbsp;<br>
-Furthermore, certain changes can cause VendorVault to **behave unexpectedly** (e.g., if a value provided is outside the 
-acceptable range). Therefore, edit the file only if you are confident of doing so correctly.
-
-</box>
 
 <div style="height: 30px;"></div>
 
@@ -646,12 +629,13 @@ acceptable range). Therefore, edit the file only if you are confident of doing s
 
 ### General Commands
 
-| Action   | Command | What it does                   |
-|----------|---------|--------------------------------|
-| **Undo** | `undo`  | Undoes previous command        |
-| **Redo** | `redo`  | Redoes last undone command     |
-| **Help** | `help`  | Shows help message             |
-| **Exit** | `exit`  | Exits VendorVault              |
+| Action    | Command | What it does               |
+|-----------|---------|----------------------------|
+| **Alias** | `alias` | Add a new alias            |
+| **Undo**  | `undo`  | Undoes previous command    |
+| **Redo**  | `redo`  | Redoes last undone command |
+| **Help**  | `help`  | Shows help message         |
+| **Exit**  | `exit`  | Exits VendorVault          |
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -695,6 +679,71 @@ Follow these steps:
   * `inventory.json`: stores product details
   * `aliases.json`: stores alias details
 * Copy the `data` folder to a secure location of your choice
+
+</panel>
+
+<panel header="How do I edit my data directly?" type="seamless">
+
+* Open the folder where VendorVault's `.jar` file is located.
+* Inside, locate the `data` folder, which contains `.json` files.
+<box type="warning" seamless>
+
+Please follow this format carefully. Files that do not adhere to the required format will be considered invalid.
+
+</box>
+
+<panel header="`addressbook.json`: stores contact details" type="seamless">
+
+This is the json for address book: 
+
+```json
+{
+  "persons" : [ {
+    "name" : NAME,
+    "phone" : PHONE_NUMBER,
+    "email" : EMAIL,
+    "address" : ADDRESS,
+    "tags" : [ TAGS ]
+  } ]
+}
+```
+
+</panel>
+
+<panel header="`inventory.json`: stores product details" type="seamless">
+
+This is the json for inventory:
+
+```json
+{
+  "products" : [ {
+    "identifier" : IDENTIFIER(string),
+    "name" : NAME(string),
+    "quantity" : QUANTITY(integer),
+    "threshold" : THRESHOLD(interger),
+    "vendorEmail" : VENDOR_EMAIL(email),
+    "isArchived" : BOOLEAN(true/false)
+  } ]
+}
+```
+
+</panel>
+
+<panel header="`aliases.json`: stores alias details" type="seamless">
+
+This is the json for aliases:
+
+```json
+{
+  "aliasList" : [ {
+    "alias" : ALIAS,
+    "originalCommand" : ORIGINAL_COMMAND
+  } ]
+}
+```
+
+</panel>
+
 
 </panel>
 
