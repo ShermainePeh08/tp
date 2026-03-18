@@ -82,7 +82,8 @@ public class AddressBookParser {
         logger.fine("Command word: " + commandWord + "; Arguments: " + arguments);
 
         if (pendingConfirmation.getNeedConfirmation()) {
-            if (commandWord.equals(ConfirmCommand.COMMAND_WORD)) {
+            String lowerCaseCommandWord = commandWord.toLowerCase();
+            if (lowerCaseCommandWord.equals(ConfirmCommand.COMMAND_WORD)) {
                 return new ConfirmCommand(pendingConfirmation.getOnConfirm());
             } else {
                 return new CancelCommand(pendingConfirmation.getOnCancel());
