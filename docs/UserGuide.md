@@ -865,6 +865,14 @@ Use this section when `delete` fails.
 | Email Format is invalid                | `Email should be of the format local-part@domain ...` | Check the email if its correct.             |
 | Email provided but no matching contact | `No contact with the specified email was found.`      | Check the email if its correct.             |
 
+<br>
+
+Common `delete` warnings:
+
+| Warning trigger                             | Warning shown                                            | What it means                                        |
+|---------------------------------------------|----------------------------------------------------------|------------------------------------------------------|
+| Contact with existing product(s) is deleted | `... product(s) became unassociated from contact (...).` | The product(s) will not have a corresponding vendor. |
+
 <div style="height: 30px;"></div>
 
 ### Managing inventory
