@@ -416,7 +416,7 @@ Format: `clear`
 Adds a product to the inventory.
 
 Format: 
-```addproduct id/IDENTIFIER n/NAME [q/QUANTITY] [th/RESTOCK_THRESHOLD]```
+```addproduct id/IDENTIFIER n/NAME [q/QUANTITY] [th/RESTOCK_THRESHOLD] [e/VENDOR_EMAIL]```
 
 <box type="tip" seamless>
 
@@ -428,10 +428,16 @@ If threshold is not specified, it will default to 0.
 
 </box>
 
+<box type="info" seamless>
+
+`VENDOR_EMAIL` must match the email of an existing contact.
+
+</box>
+
 Examples:
 
 * `addproduct id/Pr1 n/HP LaserJet (M428fdw) q/50 th/10`
-* `addproduct id/DE/5 n/PlayStation`
+* `addproduct id/DE/5 n/PlayStation e/sg.sales@cytron.io`
 
 <panel header="What products are considered duplicates?" type="seamless" id="faq-duplicate-products">
 
@@ -617,15 +623,16 @@ Format: `exit`
 
 ### Product Commands
 
-| Action                  | Command                                                                 | Example                                                        | What it does                                                              |
-|-------------------------|-------------------------------------------------------------------------|----------------------------------------------------------------|---------------------------------------------------------------------------|
-| **Add Product**         | `addproduct id/IDENTIFIER n/NAME [q/QUANTITY] [th/RESTOCK_THRESHOLD]`  | `addproduct id/SKU-1003 n/Arduino Uno R4 q/50 th/10`          | Adds product                                                              |
-| **List Products**       | `listproduct`                                                           |                                                                | Lists all active products                                                 |
-| **Edit Product**        | `editproduct` _(coming soon)_                                           |                                                                | Edits a product's details                                                 |
-| **Archive Product**     | `archiveproduct IDENTIFIER`                                             | `archiveproduct SKU-1003`                                      | Archives product (hidden, not deleted)                                    |
-| **Restore Product**     | `restoreproduct [IDENTIFIER]`                                           | `restoreproduct SKU-1003`                                      | Restores archived product; lists all archived if no identifier given      |
-| **Delete Product**      | `deleteproduct IDENTIFIER`                                              | `deleteproduct SKU-1003`                                       | Permanently deletes product by identifier                                 |
-| **Clear Products**      | `clearproduct`                                                          |                                                                | Permanently clears all products                                           |
+| Action              | Command                                                                                | Example                                                                     | What it does                                                         |
+|---------------------|----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|----------------------------------------------------------------------|
+| **Add Product**     | `addproduct id/IDENTIFIER n/NAME [q/QUANTITY] [th/RESTOCK_THRESHOLD] [e/VENDOR_EMAIL]` | `addproduct id/SKU-1003 n/Arduino Uno R4 q/50 th/10 e/sales@techsource.com` | Adds product                                                         |
+| **List Products**   | `listproduct`                                                                          |                                                                             | Lists all active products                                            |
+| **Edit Product**    | `editproduct` _(coming soon)_                                                          |                                                                             | Edits a product's details                                            |
+| **Find Product**    | `findproduct` _(coming soon)_                                                          |                                                                             |
+| **Archive Product** | `archiveproduct IDENTIFIER`                                                            | `archiveproduct SKU-1003`                                                   | Archives product (hidden, not deleted)                               |
+| **Restore Product** | `restoreproduct [IDENTIFIER]`                                                          | `restoreproduct SKU-1003`                                                   | Restores archived product; lists all archived if no identifier given |
+| **Delete Product**  | `deleteproduct IDENTIFIER`                                                             | `deleteproduct SKU-1003`                                                    | Permanently deletes product by identifier                            |
+| **Clear Products**  | `clearproduct`                                                                         |                                                                             | Permanently clears all products                                      |
 
 ### General Commands
 
@@ -867,15 +874,16 @@ Use this section when `delete` fails.
 
 Use this section when `addproduct` fails or returns a warning.
 
-| Scenario                                            | Message shown                                                             | How to fix                                                    |
-|-----------------------------------------------------|---------------------------------------------------------------------------|---------------------------------------------------------------|
-| Missing one or more required prefixes (`id/`, `n/`) | `Missing required field(s): ...`                                          | Include all required prefixed fields in your command.         |
-| No prefixes at all                                  | `All required prefixes are missing, ...`                                  | Use the full prefixed format, e.g. `addproduct id/... n/...`. |
-| Text appears before the first prefix                | `No non-prefix characters before prefix(es) is allowed, ...`              | Remove any text before `id/`.                                 |
-| Same single-value field repeated (e.g. two `q/`)    | `Multiple values specified for the following single-valued field(s): ...` | Keep only one value for each of `id/`, `n/`, `q/`, `th/`.     |
-| Identifier is blank                                 | `Identifier should not be blank.`                                         | Provide a non-empty identifier after `id/`.                   |
-| Name is too long                                    | `Name should be at most 120 characters.`                                  | Shorten the name.                                             |
-| Product is a duplicate                              | `This product already exists with the same identifier.`                   | Change the identifier, or edit the existing product instead.  |
+| Scenario                                            | Message shown                                                             | How to fix                                                                      |
+|-----------------------------------------------------|---------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| Missing one or more required prefixes (`id/`, `n/`) | `Missing required field(s): ...`                                          | Include all required prefixed fields in your command.                           |
+| No prefixes at all                                  | `All required prefixes are missing, ...`                                  | Use the full prefixed format, e.g. `addproduct id/... n/...`.                   |
+| Text appears before the first prefix                | `No non-prefix characters before prefix(es) is allowed, ...`              | Remove any text before `id/`.                                                   |
+| Same single-value field repeated (e.g. two `q/`)    | `Multiple values specified for the following single-valued field(s): ...` | Keep only one value for each of `id/`, `n/`, `q/`, `th/`.                       |
+| Identifier is blank                                 | `Identifier should not be blank.`                                         | Provide a non-empty identifier after `id/`.                                     |
+| Name is too long                                    | `Name should be at most 120 characters.`                                  | Shorten the name.                                                               |
+| Product is a duplicate                              | `This product already exists with the same identifier.`                   | Change the identifier, or edit the existing product instead.                    |
+| Product's vendor does not exist                     | `Vendor email ... does not match any existing contact.`                   | Check that the email matches an existing contact's email, or add a new contact. |
 
 <br>
 
