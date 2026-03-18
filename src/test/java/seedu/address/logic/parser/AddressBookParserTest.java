@@ -108,8 +108,14 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_confirmationCommand() throws Exception {
+    public void parseCommand_confirmationCommandLowerCase() throws Exception {
         assertTrue(parser.parseCommand(ConfirmCommand.COMMAND_WORD, confirmation, new ModelManager())
+                instanceof ConfirmCommand);
+    }
+
+    @Test
+    public void parseCommand_confirmationCommandUpperCase() throws Exception {
+        assertTrue(parser.parseCommand(ConfirmCommand.COMMAND_WORD.toUpperCase(), confirmation, new ModelManager())
                 instanceof ConfirmCommand);
     }
 
