@@ -3,8 +3,6 @@ package seedu.address.model.person;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
-import java.util.regex.Pattern;
-
 /**
  * Represents a Person's phone number in the address book.
  * Guarantees: immutable; is valid as declared in {@link #isValidPhone(String)}
@@ -13,17 +11,9 @@ public class Phone {
 
     public static final String MESSAGE_CONSTRAINTS = "Phone number should not be empty and must be at least 3 digits.";
     public static final String MESSAGE_WARN =
-            "⚠ Warning: Phone number contains unusual symbols, is this intentional?\n"
-                    + "Phone number(s) should adhere to these constraints:\n"
-                    + "1. It should contain only digits, spaces, "
-                    + "'+' or '-' in the number part, optionally followed by a specification in parentheses.\n"
-                    + "2. Multiple phone numbers should be separated by commas. "
-                    + "\nExample: 12345678 (HP), 62345678 (Office)";
+            "⚠ Warning: Phone number contains unusual symbols, is this intentional?";
     public static final String SOFT_VALIDATION_REGEX = "\\d{3,}";
     public static final String VALIDATION_REGEX = "^(?=(?:.*\\d){3,}).*$";
-    private static final Pattern PHONE_ENTRY_PATTERN =
-            Pattern.compile("^(?<number>[0-9 +\\-]+?)(?:\\s*\\((?<spec>[^()]+)\\))?$");
-    private static final Pattern PHONE_NUMBER_CHAR_PATTERN = Pattern.compile("^[0-9 +\\-]+$");
     public final String value;
 
     /**
@@ -50,18 +40,21 @@ public class Phone {
             return isValidPhoneEntry(test.trim());
         }
 
-        if (test.trim().endsWith(",")) { // end with , means last entry is empty
-            return isValidPhoneEntry("");
-        }
-
         String[] phoneEntries = test.trim().split(",");
+        boolean hasNonEmptyEntry = false;
         for (String phoneEntry : phoneEntries) {
-            if (!isValidPhoneEntry(phoneEntry)) {
+            String trimmedPhoneEntry = phoneEntry.trim();
+            if (trimmedPhoneEntry.isEmpty()) {
+                continue;
+            }
+
+            hasNonEmptyEntry = true;
+            if (!isValidPhoneEntry(trimmedPhoneEntry)) {
                 return false;
             }
         }
 
-        return true;
+        return hasNonEmptyEntry;
     }
 
     private static boolean isValidPhoneEntry(String phoneEntry) {
@@ -83,13 +76,20 @@ public class Phone {
         }
 
         String[] phoneEntries = test.trim().split(",");
+        boolean hasNonEmptyEntry = false;
         for (String phoneEntry : phoneEntries) {
-            if (!isValidPhoneEntryWarn(phoneEntry.trim())) {
+            String trimmedPhoneEntry = phoneEntry.trim();
+            if (trimmedPhoneEntry.isEmpty()) {
+                continue;
+            }
+
+            hasNonEmptyEntry = true;
+            if (!isValidPhoneEntryWarn(trimmedPhoneEntry)) {
                 return false;
             }
         }
 
-        return true;
+        return hasNonEmptyEntry;
     }
 
     private static boolean isValidPhoneEntryWarn(String phoneEntry) {

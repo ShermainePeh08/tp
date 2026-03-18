@@ -34,15 +34,19 @@ public class PhoneTest {
         assertFalse(Phone.isValidPhoneWarn("61234567 (Mobile), 12345678 (Home)"));
 
         assertFalse(Phone.isValidPhone("61234567, 12 (Home)")); // one too short
-        assertFalse(Phone.isValidPhone("61234567,")); // one empty
+        assertFalse(Phone.isValidPhone(",,")); // all entries empty
 
         // valid phone numbers
         assertTrue(Phone.isValidPhoneWarn("911")); // exactly 3 numbers
         assertTrue(Phone.isValidPhoneWarn("93121534"));
         assertTrue(Phone.isValidPhoneWarn("124293842033123")); // long phone numbers
         assertTrue(Phone.isValidPhoneWarn("61234567, 12345678")); // multiple phone numbers separated by comma
+        assertTrue(Phone.isValidPhoneWarn("12345678,,12345679")); // empty middle entry ignored
+        assertTrue(Phone.isValidPhoneWarn("12345678,")); // trailing empty entry ignored
 
         assertTrue(Phone.isValidPhone("61234567 (Mobile), 12345678 (Home)"));
+        assertTrue(Phone.isValidPhone("12345678,,12345679"));
+        assertTrue(Phone.isValidPhone("12345678,"));
     }
 
     @Test

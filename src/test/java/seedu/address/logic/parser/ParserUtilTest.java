@@ -159,10 +159,19 @@ public class ParserUtilTest {
     }
 
     @Test
-    public void parsePhone_multiplePhonesEmpty_throwsParseException() {
-        // test for multiple phones, one missing
+    public void parsePhone_multiplePhonesWithTrailingEmpty_returnsPhoneWithoutWarning() throws Exception {
         String multiplePhones = "61234567,";
-        assertThrows(ParseException.class, () -> ParserUtil.parsePhone(multiplePhones));
+        ParseResult<Phone> result = ParserUtil.parsePhone(multiplePhones);
+        assertEquals(new Phone(multiplePhones), result.getValue());
+        assertTrue(result.getWarning().isEmpty());
+    }
+
+    @Test
+    public void parsePhone_multiplePhonesWithMiddleEmpty_returnsPhoneWithoutWarning() throws Exception {
+        String multiplePhones = "12345678,,12345679";
+        ParseResult<Phone> result = ParserUtil.parsePhone(multiplePhones);
+        assertEquals(new Phone(multiplePhones), result.getValue());
+        assertTrue(result.getWarning().isEmpty());
     }
 
     @Test
