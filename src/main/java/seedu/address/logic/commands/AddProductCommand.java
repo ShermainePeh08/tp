@@ -8,7 +8,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_IDENTIFIER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_QUANTITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_THRESHOLD;
-import static seedu.address.model.product.warnings.DuplicateProductWarning.MESSAGE_SIMILAR_NAME;
+import static seedu.address.model.product.warnings.DuplicateProductWarning.formatNameWarning;
 
 import java.util.Optional;
 
@@ -109,8 +109,7 @@ public class AddProductCommand extends Command {
      */
     private void appendSimilarProductWarnings(Model model, StringBuilder warnings) {
         model.getInventory().findSimilarNameMatch(toAdd, null).ifPresent(match ->
-                appendWarning(warnings, String.format(
-                        MESSAGE_SIMILAR_NAME, match.getIdentifier(), match.getName())));
+                appendWarning(warnings, formatNameWarning(match.getIdentifier(), match.getName())));
     }
 
     private void appendWarning(StringBuilder warnings, String message) {

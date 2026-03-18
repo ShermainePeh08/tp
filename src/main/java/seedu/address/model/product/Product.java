@@ -116,7 +116,6 @@ public class Product {
      */
     public DuplicateProductWarning isSameProductWarn(Product otherProduct) {
         return new DuplicateProductWarning(
-                hasSimilarName(otherProduct),
                 DuplicateProductWarning.MESSAGE_SIMILAR_NAME);
     }
 
