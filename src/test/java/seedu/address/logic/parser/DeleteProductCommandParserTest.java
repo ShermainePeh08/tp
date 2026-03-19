@@ -1,16 +1,19 @@
 package seedu.address.logic.parser;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_CONFIRMATION_FLAG;
+import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
+import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.DeleteProductCommand;
-import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
  * Tests for {@link DeleteProductCommandParser}.
  */
 public class DeleteProductCommandParserTest {
+
+    private static final String VALID_ID = "id";
 
     private final DeleteProductCommandParser parser = new DeleteProductCommandParser();
 
@@ -20,7 +23,18 @@ public class DeleteProductCommandParserTest {
     }
 
     @Test
-    public void parse_emptyArgs_throwsParseException() {
-        assertThrows(ParseException.class, () -> parser.parse(""));
+    public void parse_validArgsWithConfirmationFlag_returnsDeleteCommand() {
+        assertParseSuccess(parser, "-y " + VALID_ID, new DeleteProductCommand(VALID_ID, false));
+    }
+
+    @Test
+    public void parse_validArgsWithConfirmationFlagAfterIndex_returnsDeleteCommand() {
+        assertParseSuccess(parser, VALID_ID + " -y", new DeleteProductCommand(VALID_ID, false));
+    }
+
+    @Test
+    public void parse_wronglyFormedFlagAttachedToIndex_throwsParseException() {
+        assertParseFailure(parser, "-y" + VALID_ID, MESSAGE_INVALID_CONFIRMATION_FLAG);
+        assertParseFailure(parser, "-y1" + VALID_ID, MESSAGE_INVALID_CONFIRMATION_FLAG);
     }
 }

@@ -1,6 +1,8 @@
 package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_CONFIRMATION_FLAG;
+import static seedu.address.logic.parser.ConfirmationFlagIndicator.containsConfirmationFlag;
 
 import seedu.address.logic.commands.ClearProductCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -13,14 +15,21 @@ public class ClearProductCommandParser implements Parser<ClearProductCommand> {
     public static final String MESSAGE_INVALID_FORMAT =
             "Usage: clearproduct";
 
+    public static final String CLEAR_CONFIRMATION_FLAG = "-y";
+
     @Override
     public ClearProductCommand parse(String args) throws ParseException {
         requireNonNull(args);
+        String argsTrimmed = args.trim();
 
-        if (!args.trim().isEmpty()) {
-            throw new ParseException(MESSAGE_INVALID_FORMAT);
+        if (argsTrimmed.isEmpty()) {
+            return new ClearProductCommand(true);
         }
 
-        return new ClearProductCommand(true);
+        String[] tokens = argsTrimmed.split(ParserUtil.SEPARATOR_SPACE);
+        boolean hasConfirmFlag = containsConfirmationFlag(
+                tokens, CLEAR_CONFIRMATION_FLAG, MESSAGE_INVALID_CONFIRMATION_FLAG);
+
+        return new ClearProductCommand(!hasConfirmFlag);
     }
 }

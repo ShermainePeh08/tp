@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
-import java.util.Arrays;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_CONFIRMATION_FLAG;
+import static seedu.address.logic.parser.ConfirmationFlagIndicator.containsConfirmationFlag;
 
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -9,10 +10,6 @@ import seedu.address.logic.parser.exceptions.ParseException;
  * Parses input arguments and creates a new ClearCommand object.
  */
 public class ClearCommandParser implements Parser<ClearCommand> {
-
-    public static final String MESSAGE_INVALID_CONFIRMATION_FLAG =
-            "Invalid format. The '-y' flag must be standalone.\n"
-                    + "Example: clear -y";
 
     public static final String CLEAR_CONFIRMATION_FLAG = "-y";
 
@@ -33,23 +30,11 @@ public class ClearCommandParser implements Parser<ClearCommand> {
         }
 
         String[] tokens = argsTrimmed.split(ParserUtil.SEPARATOR_SPACE);
-        boolean hasConfirmFlag = containsConfirmationFlag(tokens);
+        boolean hasConfirmFlag = containsConfirmationFlag(
+                tokens, CLEAR_CONFIRMATION_FLAG, MESSAGE_INVALID_CONFIRMATION_FLAG);
 
         return new ClearCommand(!hasConfirmFlag);
     }
 
-    private boolean containsConfirmationFlag(String[] tokens) throws ParseException {
-        boolean hasWronglyFormedFlag = Arrays.stream(tokens)
-                .anyMatch(this::isMalformedConfirmationFlag);
-        if (hasWronglyFormedFlag) {
-            throw new ParseException(MESSAGE_INVALID_CONFIRMATION_FLAG);
-        }
-        return Arrays.asList(tokens).contains(CLEAR_CONFIRMATION_FLAG);
-    }
-
-    private boolean isMalformedConfirmationFlag(String token) {
-        return token.startsWith(CLEAR_CONFIRMATION_FLAG)
-                && !token.equals(CLEAR_CONFIRMATION_FLAG);
-    }
 }
 

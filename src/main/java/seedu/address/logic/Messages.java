@@ -43,6 +43,10 @@ public class Messages {
     public static final String MESSAGE_ALIAS_IS_NOT_FOUND =
             "No alias found in AliasList.";
 
+    public static final String MESSAGE_INVALID_CONFIRMATION_FLAG =
+            "Invalid format. The '-y' flag must be standalone.\n"
+                    + "Example: clear -y";
+
     /**
      * Returns an error message indicating the duplicate prefixes.
      */
