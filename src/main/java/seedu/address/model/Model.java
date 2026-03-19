@@ -128,7 +128,7 @@ public interface Model {
      *
      * @param candidate the person whose name is being compared against the list.
      * @param exclude the person to exclude from the search (may be null).
-     * @return Optional<Person> the matched person (if any).
+     * @return Optional Person the matched person (if any).
      */
     Optional<Person> findSimilarNameMatch(Person candidate, Person exclude);
 
@@ -138,7 +138,7 @@ public interface Model {
      *
      * @param candidate the product whose name is being compared against the list.
      * @param exclude the product to exclude from the search (may be null).
-     * @return Optional<Product> the matched product (if any).
+     * @return Optional Product the matched product (if any).
      */
     Optional<Product> findSimilarNameMatch(Product candidate, Product exclude);
 
@@ -148,7 +148,7 @@ public interface Model {
      *
      * @param candidate the person whose phone number is being compared against the list.
      * @param exclude the person to exclude from the search (may be null).
-     * @return Optional<Person> the matched person (if any).
+     * @return Optional Person the matched person (if any).
      */
     Optional<Person> findSimilarPhoneMatch(Person candidate, Person exclude);
 

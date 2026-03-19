@@ -22,7 +22,7 @@ public interface ReadOnlyAddressBook {
      *
      * @param candidate the person whose name is being compared against the list.
      * @param exclude the person to exclude from the search (may be null).
-     * @return Optional<Person> the matched person (if any).
+     * @return Optional Person the matched person (if any).
      */
     Optional<Person> findSimilarNameMatch(Person candidate, Person exclude);
 
