@@ -47,6 +47,10 @@ public class EditProductCommand extends Command {
             "At least one field to edit must be provided.";
     public static final String MESSAGE_VENDOR_EMAIL_NOT_FOUND =
             "No contact with the specified email was found.";
+    public static final String MESSAGE_WARN_SIMLAR_NAME =
+            "⚠ Warning: There's a product with a similar name (id: %s, name: %s), is this intentional?";
+    public static final String MESSAGE_WARN_BELOW_THRESHOLD =
+            "⚠ Warning: Product stock is below threshold.";
 
     private final String targetIdentifier;
     private final EditProductDescriptor editProductDescriptor;
@@ -90,22 +94,66 @@ public class EditProductCommand extends Command {
             throw new CommandException(Messages.MESSAGE_DUPLICATE_PRODUCT);
         }
 
-        model.setProduct(productToEdit, editedProduct);
+        // ================= WARNINGS =================
+        StringBuilder warnings = new StringBuilder();
 
+        // similar name warning (ONLY if name edited)
+        if (editProductDescriptor.getName().isPresent()) {
+            model.getInventory().findSimilarNameMatch(editedProduct, productToEdit)
+                    .ifPresent(match ->
+                            appendWarning(warnings, String.format(
+                                    MESSAGE_WARN_SIMLAR_NAME,
+                                    match.getIdentifier(),
+                                    match.getName()
+                            )));
+        }
+
+        // low stock warning (ONLY if quantity or threshold edited)
+        if (editProductDescriptor.getQuantity().isPresent()
+                || editProductDescriptor.getThreshold().isPresent()) {
+
+            if (editedProduct.getQuantity().value
+                    <= editedProduct.getRestockThreshold().value) {
+                appendWarning(warnings, MESSAGE_WARN_BELOW_THRESHOLD);
+            }
+        }
+
+        model.setProduct(productToEdit, editedProduct);
         model.updateFilteredProductList(Model.PREDICATE_SHOW_ACTIVE_PRODUCTS);
         model.commitVendorVault();
 
+        String successMessage = String.format(
+                MESSAGE_EDIT_PRODUCT_SUCCESS,
+                editedProduct
+        );
+
+        String formattedWarnings = warnings.length() == 0
+                ? ""
+                : "\n" + warnings;
+
+        String feedbackType = warnings.length() == 0
+                ? CommandResult.FEEDBACK_TYPE_SUCCESS
+                : CommandResult.FEEDBACK_TYPE_WARN;
+
         return new CommandResult(
-            String.format(MESSAGE_EDIT_PRODUCT_SUCCESS,
-                    editedProduct));
+                successMessage + formattedWarnings,
+                feedbackType
+        );
+    }
+
+    private void appendWarning(StringBuilder warnings, String message) {
+        if (warnings.length() > 0) {
+            warnings.append("\n");
+        }
+        warnings.append(message);
     }
 
     /**
      * Creates the edited product based on descriptor values.
      */
     private static Product createEditedProduct(Product productToEdit,
-                                               EditProductDescriptor descriptor,
-                                               Model model)
+                                            EditProductDescriptor descriptor,
+                                            Model model)
             throws CommandException {
 
 
