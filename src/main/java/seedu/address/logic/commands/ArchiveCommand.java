@@ -12,8 +12,8 @@ import seedu.address.model.person.Person;
  * Archives a vendor in the address book.
  * The vendor is identified using the index from the currently displayed vendor list.
  *
- * Usage: archive vendor INDEX
- * Example: archive vendor 1
+ * Usage: archive vendor email
+ * Example: archive vendor abc@123.com
  *
  * Note: Internally vendors are represented as {@code Person}.
  */
@@ -22,8 +22,8 @@ public class ArchiveCommand extends Command {
     public static final String COMMAND_WORD = "archive";
 
     public static final String MESSAGE_USAGE =
-            COMMAND_WORD + " INDEX\n"
-            + "Archives the vendor identified by the index number in the displayed vendor list.\n"
+            COMMAND_WORD + " EMAIL\n"
+            + "Archives the vendor identified by the email in the displayed vendor list.\n"
             + "Example: " + COMMAND_WORD + " 1";
 
     public static final String MESSAGE_ARCHIVE_SUCCESS =
