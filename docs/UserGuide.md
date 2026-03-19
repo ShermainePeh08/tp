@@ -295,31 +295,11 @@ For more details on possible warnings and errors when editing a contact, refer t
 
 <div style="height: 30px;"></div>
 
-#### Locating contacts by name: `find`
+#### Locating contacts: `find` (coming soon)
 
-Finds contacts whose names contain any of the given keywords (case-insensitive).
+**This feature is currently in progress** and will be available in a future release. `find` will allow you to view a contact details in **full**.
 
-Format:
-
-```
-find KEYWORD [MORE_KEYWORDS]
-```
-
-Examples:
-
-* `find Industries Technologies` finds the contacts names that contains `Industries` or `Technologies`
-* `find Industries` finds the contacts names that contains `Industries`
-
-<panel header="Can I search by part of the name?" type="seamless">
-
-No, the `find` command will match by full name, not partial name.
-
-Example:
-* If there is a company named `Adafruit Industries`
-* `find fruit` will not find the company
-* `find adafruit` will find the company
-
-</panel>
+</box>
 
 <div style="height: 30px;"></div>
 
@@ -499,7 +479,7 @@ For more details on possible warnings and errors when editing a product, refer t
 
 <box type="info" seamless>
 
-**This feature is currently in progress** and will be available in a future release.
+**This feature is currently in progress** and will be available in a future release. `findproduct` will allow you to view a product details in **full**.
 
 </box>
 
