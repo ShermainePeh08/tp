@@ -581,7 +581,7 @@ help
 
 #### Add a command alias : `alias`
 
-Create an alternative command word that triggers an existing command.
+Create an alternative command word that triggers an existing command (excluding `alias`).
 
 Format:
 ```
