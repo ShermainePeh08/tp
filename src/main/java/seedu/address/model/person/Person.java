@@ -141,15 +141,31 @@ public class Person {
             return false;
         }
 
-        String thisPhoneDigits = this.phone.value.replaceAll(VALIDATION_EXCLUDE_DIGITS_REGEX, "");
-        String otherPhoneDigits = otherPerson.getPhone().value.replaceAll(VALIDATION_EXCLUDE_DIGITS_REGEX, "");
+        String[] thisPhones = this.phone.value.split(",");
+        String[] otherPhones = otherPerson.getPhone().value.split(",");
 
-        if (thisPhoneDigits.isEmpty() || otherPhoneDigits.isEmpty()
-                || thisPhoneDigits.length() < Phone.MIN_LENGTH || otherPhoneDigits.length() < Phone.MIN_LENGTH) {
-            return false;
+        // Check each phone number from this person against each from the other person
+        for (String thisPhone : thisPhones) {
+            String thisPhoneDigits = thisPhone.trim().replaceAll(VALIDATION_EXCLUDE_DIGITS_REGEX, "");
+            
+            if (thisPhoneDigits.length() < Phone.MIN_LENGTH) {
+                continue;
+            }
+
+            for (String otherPhone : otherPhones) {
+                String otherPhoneDigits = otherPhone.trim().replaceAll(VALIDATION_EXCLUDE_DIGITS_REGEX, "");
+                
+                if (otherPhoneDigits.length() < Phone.MIN_LENGTH) {
+                    continue;
+                }
+
+                if (hasContiguousMatch(thisPhoneDigits, otherPhoneDigits)) {
+                    return true;
+                }
+            }
         }
 
-        return hasContiguousMatch(thisPhoneDigits, otherPhoneDigits);
+        return false;
     }
 
     private boolean hasContiguousMatch(String str1, String str2) {

@@ -30,7 +30,6 @@ public class PhoneTest {
         assertFalse(Phone.isValidPhoneWarn("91")); // less than 3 numbers
         assertFalse(Phone.isValidPhoneWarn("phone")); // non-numeric
         assertFalse(Phone.isValidPhoneWarn("9011p041")); // alphabets within digits
-        assertFalse(Phone.isValidPhoneWarn("9312 1534")); // spaces within digits
         assertFalse(Phone.isValidPhoneWarn("61234567 (Mobile), 12345678 (Home)"));
 
         assertFalse(Phone.isValidPhone("61234567, 12 (Home)")); // one too short
@@ -44,6 +43,8 @@ public class PhoneTest {
         assertFalse(Phone.isValidPhoneWarn("12345678,,12345679")); // empty middle entry ignored
         // should warn but not error
         assertFalse(Phone.isValidPhoneWarn("12345678,")); // trailing empty entry ignored, should warn but not error
+        assertTrue(Phone.isValidPhoneWarn("9312 1534")); // spaces within digits
+        assertTrue(Phone.isValidPhoneWarn("+65 1234-5678")); // spaces + and - are allowed
 
         assertTrue(Phone.isValidPhone("61234567 (Mobile), 12345678 (Home)"));
         assertTrue(Phone.isValidPhone("12345678,,12345679"));
