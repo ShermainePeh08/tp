@@ -47,7 +47,7 @@ public class EditProductCommand extends Command {
             "At least one field to edit must be provided.";
     public static final String MESSAGE_VENDOR_EMAIL_NOT_FOUND =
             "No contact with the specified email was found.";
-    public static final String MESSAGE_WARN_SIMLAR_NAME =
+    public static final String MESSAGE_WARN_SIMILAR_NAME =
             "⚠ Warning: There's a product with a similar name (id: %s, name: %s), is this intentional?";
     public static final String MESSAGE_WARN_BELOW_THRESHOLD =
             "⚠ Warning: Product stock is below threshold.";
@@ -102,7 +102,7 @@ public class EditProductCommand extends Command {
             model.getInventory().findSimilarNameMatch(editedProduct, productToEdit)
                     .ifPresent(match ->
                             appendWarning(warnings, String.format(
-                                    MESSAGE_WARN_SIMLAR_NAME,
+                                    MESSAGE_WARN_SIMILAR_NAME,
                                     match.getIdentifier(),
                                     match.getName()
                             )));
