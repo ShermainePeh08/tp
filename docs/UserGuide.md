@@ -299,7 +299,7 @@ For more details on possible warnings and errors when editing a contact, refer t
 
 <box type="info" seamless>
 
-**This feature is currently in progress** and will be available in a future release.
+**This feature is currently in progress** and will be available in a future release. `find` will allow you to view a contact details in **full**.
 
 </box>
 
@@ -449,7 +449,7 @@ listproduct
 
 <box type="info" seamless>
 
-**This feature is currently in progress** and will be available in a future release.
+**This feature is currently in progress** and will be available in a future release. `findproduct` will allow you to view a product details in **full**.
 
 </box>
 
