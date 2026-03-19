@@ -3,6 +3,7 @@ package seedu.address.logic.parser;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_IDENTIFIER;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_QUANTITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_THRESHOLD;
@@ -26,7 +27,8 @@ public class EditProductCommandParser implements Parser<EditProductCommand> {
         requireNonNull(args);
 
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_QUANTITY, PREFIX_THRESHOLD, PREFIX_EMAIL);
+                ArgumentTokenizer.tokenize(
+                    args, PREFIX_IDENTIFIER, PREFIX_NAME, PREFIX_QUANTITY, PREFIX_THRESHOLD, PREFIX_EMAIL);
 
         String targetIdentifier = argMultimap.getPreamble().trim();
 
@@ -35,9 +37,16 @@ public class EditProductCommandParser implements Parser<EditProductCommand> {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditProductCommand.MESSAGE_USAGE));
         }
 
-        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_QUANTITY, PREFIX_THRESHOLD, PREFIX_EMAIL);
+        argMultimap.verifyNoDuplicatePrefixesFor(
+            PREFIX_IDENTIFIER, PREFIX_NAME, PREFIX_QUANTITY, PREFIX_THRESHOLD, PREFIX_EMAIL);
 
         EditProductDescriptor editProductDescriptor = new EditProductDescriptor();
+
+        if (argMultimap.getValue(PREFIX_IDENTIFIER).isPresent()) {
+            editProductDescriptor.setIdentifier(
+                ParserUtil.parseIdentifier(argMultimap.getValue(PREFIX_IDENTIFIER).get()).getValue());
+        }
+
 
         if (argMultimap.getValue(PREFIX_NAME).isPresent()) {
             editProductDescriptor.setName(

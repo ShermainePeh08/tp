@@ -34,9 +34,9 @@ Follow these steps to get VendorVault up and running:
 
 1. Ensure Java 17 or above is installed.
    * Full guide for installation [here](https://se-education.org/guides/tutorials/javaInstallation.html). If you are familiar with the process, you can download Java directly [here](https://www.oracle.com/asean/java/technologies/downloads/).<br>
-   
+
    <box type="important" seamless>
-   
+
      Mac users: Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
    </box>
@@ -155,7 +155,7 @@ When in doubt, **archive, don't delete.**
 
 **Note about destructive commands:**
 
-* You can use undo to restore the data only **within the same app session**. 
+* You can use undo to restore the data only **within the same app session**.
 * If you may need the contact/product again in the future, consider using [`archive`](#archiving-a-contact-archive) / [`archiveproduct`](#archiving-a-product-archiveproduct) respectively.
 
 </box>
@@ -294,31 +294,11 @@ For more details on possible warnings and errors when editing a contact, refer t
 
 <div style="height: 30px;"></div>
 
-#### Locating contacts by name: `find`
+#### Locating contacts: `find` (coming soon)
 
-Finds contacts whose names contain any of the given keywords (case-insensitive).
+**This feature is currently in progress** and will be available in a future release. `find` will allow you to view a contact details in **full**.
 
-Format: 
-
-```
-find KEYWORD [MORE_KEYWORDS]
-```
-
-Examples:
-
-* `find Industries Technologies` finds the contacts names that contains `Industries` or `Technologies`
-* `find Industries` finds the contacts names that contains `Industries`
-
-<panel header="Can I search by part of the name?" type="seamless">
-
-No, the `find` command will match by full name, not partial name.
-
-Example:
-* If there is a company named `Adafruit Industries`
-* `find fruit` will not find the company
-* `find adafruit` will find the company
-
-</panel>
+</box>
 
 <div style="height: 30px;"></div>
 
@@ -378,7 +358,7 @@ Only contacts that have been archived can be restored. If you try to restore an 
 Removes a contact from the address book using their email address as the _unique identifier_.
 You will be prompted to confirm the deletion before any changes are made.
 
-Format: 
+Format:
 
 ```
 delete EMAIL
@@ -404,7 +384,7 @@ Format: `clear`
 
 Adds a product to the inventory.
 
-Format: 
+Format:
 ```addproduct id/IDENTIFIER n/NAME [q/QUANTITY] [th/RESTOCK_THRESHOLD] [e/VENDOR_EMAIL]```
 
 <box type="tip" seamless>
@@ -452,7 +432,39 @@ listproduct
 
 <div style="height: 30px;"></div>
 
-#### Editing a product : `editproduct` _(coming soon)_
+#### Editing a product : `editproduct`
+
+Edits the details of an existing product in the inventory. Only the fields you specify will be updated, all others stay the same.
+
+Format:
+```
+editproduct IDENTIFIER [id/NEW_IDENTIFIER] [n/NAME] [q/QUANTITY] [th/RESTOCK_THRESHOLD] [e/VENDOR_EMAIL]
+```
+
+<box type="info" seamless>
+
+**Note:** `VENDOR_EMAIL` must match the email of an existing contact. If the contact does not exist in VendorVault, the edit will **not** go through.
+
+</box>
+
+Examples:
+
+* `editproduct SKU-1003 id/SKU-1002 n/Arduino Uno R4 q/50`
+* `editproduct SKU-1003 e/support@adafruit.com`
+
+<panel header="How do I remove the vendor email from a product?" type="seamless">
+
+Simply type `e/` without specifying any email.
+
+For example, `editproduct SKU-1003 e/` will remove the vendor email from the product with identifier `SKU-1003`.
+
+</panel>
+
+<br>
+
+For more details on possible warnings and errors when editing a product, refer to the [troubleshooting guide for editproduct](#troubleshooting-editproduct) below.
+
+<div style="height: 30px;"></div>
 
 <box type="info" seamless>
 
@@ -466,7 +478,7 @@ listproduct
 
 <box type="info" seamless>
 
-**This feature is currently in progress** and will be available in a future release.
+**This feature is currently in progress** and will be available in a future release. `findproduct` will allow you to view a product details in **full**.
 
 </box>
 
@@ -558,7 +570,7 @@ Format: `clearproduct`
 
 Shows a message explaining how to access the help page.
 
-Format: 
+Format:
 ```
 help
 ```
@@ -567,7 +579,7 @@ help
 
 #### Add a command alias : `alias`
 
-Create an alternative command word that triggers an existing command. 
+Create an alternative command word that triggers an existing command.
 
 Format:
 ```
@@ -604,11 +616,22 @@ redo
 
 <div style="height: 30px;"></div>
 
+#### Listing all contacts and products : `listall`
+
+Shows a list of all **active** contacts and products at once. Useful for getting a full overview of your data after using `find` or `findproduct` and `restore` or `restoreproduct`.
+
+Format:
+```
+listall
+```
+
+<div style="height: 30px;"></div>
+
 #### Exiting the program : `exit`
 
 Exits the program.
 
-Format: 
+Format:
 ```
 exit
 ```
@@ -639,9 +662,11 @@ exit
 | Action              | Command                                                                                | Example                                                                     | What it does                                                         |
 |---------------------|----------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|----------------------------------------------------------------------|
 | **Add Product**     | `addproduct id/IDENTIFIER n/NAME [q/QUANTITY] [th/RESTOCK_THRESHOLD] [e/VENDOR_EMAIL]` | `addproduct id/SKU-1003 n/Arduino Uno R4 q/50 th/10 e/sales@techsource.com` | Adds product                                                         |
+| **Edit Product**    | `editproduct IDENTIFIER [id/NEW_IDENTIFIER] [n/NAME] [q/QUANTITY] [th/RESTOCK_THRESHOLD] [e/VENDOR_EMAIL]` | `editproduct SKU-1003 n/Arduino Uno R4 q/50` | Edits a product's details  |
+| **Delete Product**  | `deleteproduct PRODUCT_IDENTIFIER`    | `deleteproduct SKU-1003`  | Permanently deletes product by identifier; prompts for confirmation |
 | **List Products**   | `listproduct`                                                                          |                                                                             | Lists all active products                                            |
-| **Edit Product**    | `editproduct` _(coming soon)_                                                          |                                                                             | Edits a product's details                                            |
 | **Find Product**    | `findproduct` _(coming soon)_                                                          |                                                                             |
+| **Clear Products**  | `clearproduct`                        |                           | Permanently clears all active products; prompts for confirmation    |
 | **Archive Product** | `archiveproduct IDENTIFIER`                                                            | `archiveproduct SKU-1003`                                                   | Archives product (hidden, not deleted)                               |
 | **Restore Product** | `restoreproduct [IDENTIFIER]`                                                          | `restoreproduct SKU-1003`                                                   | Restores archived product; lists all archived if no identifier given |
 | **Delete Product**  | `deleteproduct IDENTIFIER`                                                             | `deleteproduct SKU-1003`                                                    | Permanently deletes product by identifier                            |
@@ -654,6 +679,7 @@ exit
 | **Alias** | `alias` | Add a new alias            |
 | **Undo**  | `undo`  | Undoes previous command    |
 | **Redo**  | `redo`  | Redoes last undone command |
+| **List All** | `listall` | Lists all active contacts and products |
 | **Help**  | `help`  | Shows help message         |
 | **Exit**  | `exit`  | Exits VendorVault          |
 
@@ -715,7 +741,7 @@ Please follow this format carefully. Files that do not adhere to the required fo
 
 <panel header="`addressbook.json`: stores contact details" type="seamless">
 
-This is the json for address book: 
+This is the json for address book:
 
 ```json
 {
@@ -918,6 +944,46 @@ Common `addproduct` warnings:
 
 <div style="height: 30px;"></div>
 
+#### Troubleshooting `editproduct`
+
+Use this section when `editproduct` fails or returns a warning.
+
+<box type="info" seamless>
+
+If you assign a vendor email to a product, the contact **must already exist** in VendorVault. If the contact is later deleted, the product will retain the email but the vendor will be unassociated. To fix this, either re-add the contact or clear the vendor email using `editproduct IDENTIFIER e/`.
+
+</box>
+
+| Scenario                                             | Message shown                                                             | How to fix                                                                               |
+|------------------------------------------------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| No fields specified to edit                          | `At least one field to edit must be provided.`                            | Include at least one of `id/`, `n/`, `q/`, `th/`, or `e/`.                               |
+| Identifier does not match any active product         | `No product found with the specified identifier.`                         | Ensure the product exists in the active list. Use `listproduct` to check.                |
+| New identifier is already used by another product    | `This product already exists with the same identifier.`                   | Choose a unique identifier.                                                              |
+| Vendor email does not match any existing contact     | `No contact with the specified email was found.`                          | Check that the email matches an existing contact, or add the contact first using `add`.  |
+
+<br>
+
+Common `editproduct` warnings:
+
+| Warning trigger                          | Warning shown                                                                                                        | What it means                                                                                                                              |
+|------------------------------------------|----------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| Edited name is similar to another product | `⚠ Warning: There's a product with a similar name (id: <id>, name: <similar-name>), is this intentional?`           | Possible duplicate by similar name. Check if the flagged product is the same as the one you are editing.                                   |
+| Edited quantity is at or below threshold  | `⚠ Warning: Product stock is below threshold.`                                                                       | The product's stock has fallen to or below its restock threshold. Consider restocking.                                                     |
+
+<box type="tip" seamless>
+
+Tip: Warnings only appear for **fields you are actually editing**. For example, if you edit only the vendor email and the quantity is already below threshold, you will not see a stock warning. This prevents unnecessary alerts for unchanged fields.
+
+</box>
+
+<box type="tip" seamless>
+
+Tip: If multiple warnings apply, VendorVault shows all of them (one per line) together with the success message.
+
+</box>
+
+<div style="height: 30px;"></div>
+
 #### Troubleshooting `archiveproduct`
 
 Use this section when `archiveproduct` fails.
@@ -966,8 +1032,8 @@ You may see a warning if the vendor name includes special characters. This is on
 <panel header="What is the recommended phone number format?" type="seamless" id="contact-phone-format">
 
 Phone number(s) is recommended to meet the following guidelines:
-1. It should contain only digits, spaces, '+' or '-' in the number part. 
-2. Multiple phone numbers should be separated by commas. 
+1. It should contain only digits, spaces, '+' or '-' in the number part.
+2. Multiple phone numbers should be separated by commas.
 Example: 12345678, 62345678
 
 You may see a warning if your phone number contains unusual symbols or format, but you can safely ignore it if you are providing labels for the phone number (e.g. `61234567 (Office)`).
@@ -978,7 +1044,7 @@ You may see a warning if your phone number contains unusual symbols or format, b
 
 **Contact and Product Names** warnings are shown when a new entry **shares words** with an existing one. For example, “Cytron Technologies” and “Cytron T.” is flagged because the first part matches.
 
-**Contact Addresses** warnings appear when one address **fully contains** the other. For example, “123 Main Street” and “123 Main St” are flagged because they point to the same place. 
+**Contact Addresses** warnings appear when one address **fully contains** the other. For example, “123 Main Street” and “123 Main St” are flagged because they point to the same place.
 
 </panel>
 

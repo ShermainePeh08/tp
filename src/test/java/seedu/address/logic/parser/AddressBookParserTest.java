@@ -8,11 +8,9 @@ import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -27,13 +25,13 @@ import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandType;
 import seedu.address.logic.commands.ConfirmCommand;
+import seedu.address.logic.commands.DeleteAliasCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.DeleteProductCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.EditProductCommand;
 import seedu.address.logic.commands.ExitCommand;
-import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListAllCommand;
 import seedu.address.logic.commands.ListCommand;
@@ -54,7 +52,6 @@ import seedu.address.model.alias.Alias;
 import seedu.address.model.alias.exceptions.DuplicateAliasException;
 import seedu.address.model.alias.exceptions.NoAliasFoundInAliasListException;
 import seedu.address.model.person.Email;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.product.Product;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
@@ -176,16 +173,6 @@ public class AddressBookParserTest {
         assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD + " 3",
                 new PendingConfirmation(),
                 new ModelManager()) instanceof ExitCommand);
-    }
-
-    @Test
-    public void parseCommand_find() throws Exception {
-        List<String> keywords = Arrays.asList("foo", "bar", "baz");
-        FindCommand command = (FindCommand) parser.parseCommand(
-                FindCommand.COMMAND_WORD + " " + keywords.stream().collect(Collectors.joining(" ")),
-                new PendingConfirmation(),
-                new ModelManager());
-        assertEquals(new FindCommand(new NameContainsKeywordsPredicate(keywords)), command);
     }
 
     @Test
@@ -317,6 +304,32 @@ public class AddressBookParserTest {
     public void parseCommand_aliasNewAliasHasSpace_throwsParseException() {
         assertThrows(ParseException.class, ()
                 -> parser.parseCommand(AliasCommand.COMMAND_WORD + " list ls ls",
+                    new PendingConfirmation(),
+                    new ModelManager()));
+    }
+
+    @Test
+    public void parseCommand_deletealias() throws Exception {
+        Command command = parser.parseCommand(DeleteAliasCommand.COMMAND_WORD + " "
+                    + CommandType.LIST.getCommandWord() + "ls",
+                    new PendingConfirmation(),
+                    new ModelManager());
+
+        assertTrue(command instanceof DeleteAliasCommand);
+    }
+
+    @Test
+    public void parseCommand_deletealiasNoArguments_throwsParseException() {
+        assertThrows(ParseException.class, ()
+                -> parser.parseCommand(DeleteAliasCommand.COMMAND_WORD,
+                    new PendingConfirmation(),
+                    new ModelManager()));
+    }
+
+    @Test
+    public void parseCommand_deletealiasMoreThanOneArguments_throwsParseException() {
+        assertThrows(ParseException.class, ()
+                -> parser.parseCommand(DeleteAliasCommand.COMMAND_WORD + " a a",
                     new PendingConfirmation(),
                     new ModelManager()));
     }
@@ -493,6 +506,11 @@ public class AddressBookParserTest {
 
         @Override
         public Alias findAlias(String aliasStr) throws NoAliasFoundInAliasListException {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void removeAlias(String aliasStr) throws NoAliasFoundInAliasListException {
             throw new AssertionError("This method should not be called.");
         }
 

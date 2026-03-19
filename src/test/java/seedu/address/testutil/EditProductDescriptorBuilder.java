@@ -2,6 +2,7 @@ package seedu.address.testutil;
 
 import seedu.address.logic.commands.EditProductCommand.EditProductDescriptor;
 import seedu.address.model.person.Email;
+import seedu.address.model.product.Identifier;
 import seedu.address.model.product.Name;
 import seedu.address.model.product.Quantity;
 import seedu.address.model.product.RestockThreshold;
@@ -42,6 +43,17 @@ public class EditProductDescriptorBuilder {
      */
     public EditProductDescriptorBuilder withName(String name) {
         descriptor.setName(new Name(name));
+        return this;
+    }
+
+    /**
+     * Sets the {@link Identifier} of the product in the descriptor.
+     *
+     * @param identifier The product identifier.
+     * @return This builder instance for chaining.
+     */
+    public EditProductDescriptorBuilder withIdentifier(String identifier) {
+        descriptor.setIdentifier(new Identifier(identifier));
         return this;
     }
 
