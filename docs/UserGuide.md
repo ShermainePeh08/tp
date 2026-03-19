@@ -186,16 +186,6 @@ When in doubt, **archive, don't delete.**
 
 <div style="height: 20px;"></div>
 
-### Viewing help : `help`
-
-Shows a message explaining how to access the help page.
-
-![help message](images/helpMessage.png)
-
-Format: `help`
-
-<div style="height: 30px;"></div>
-
 ### Managing Vendor Contacts
 
 <div style="height: 10px;"></div>
@@ -237,7 +227,7 @@ add n/DigiKey Singapore p/61234567, 87654321 e/sg.sales@digikey.com a/71 Ayer Ra
 
 A contact is considered a duplicate if:
 
-* It has the **same email and phone number as an existing contact** in VendorVault.
+* It has the **same email or phone number as an existing contact** in VendorVault.
 * Phone numbers are compared while ignoring labels (such as “(Office)” or “(HP)”). Multiple phone numbers should be separated by commas.
 
 For example, these contacts are considered duplicates because they share the same phone number `61234567` and email `contact@company.com`:<br>
@@ -282,9 +272,9 @@ Examples:
 * `edit support@adafruit.com p/98196742 a/New York, USA` Updates the phone number and address for `support@adafruit.com`. The name, email, and tags remain unchanged.
 * `edit sg.sales@cytron.io n/Cytron t/` Updates the name to Cytron for `sg.sales@cytron.io` and clears all existing tags.
 
-<panel header="What happens to a contact's existing tags when I edit them?" type="seamless">
+<panel header="What happens when I edit a contact's tag?" type="seamless">
 
-The existing tags are **replaced with the new tags you specified**, adding new tags is not cumulative.
+The existing tags are **removed and replaced with the new tags you specified**, new tags are not cumulative.
 
 For example, if a contact has existing tags `t/electronics t/supplier` and you edit it with `edit EMAIL t/wholesale`, the contact's tags will be updated to only have `t/wholesale` and the previous tags will be removed.
 
@@ -565,9 +555,20 @@ Format: `clearproduct`
 
 ### Utility Commands
 
+#### Viewing help : `help`
+
+Shows a message explaining how to access the help page.
+
+Format: 
+```
+help
+```
+
+<div style="height: 30px;"></div>
+
 #### Add a command alias : `alias`
 
-Create an alternative command word that triggers an existing command.
+Create an alternative command word that triggers an existing command. 
 
 Format:
 ```
@@ -582,7 +583,7 @@ Example:
 
 #### Undoing the previous command : `undo`
 
-Undoes the previous command that changed the data.
+Undoes the last change you made to your contacts or products. You can repeat `undo` to go back through multiple changes in the current app session.
 
 Format:
 
@@ -594,7 +595,7 @@ undo
 
 #### Redoing the previous undone command : `redo`
 
-Redoes the previous undone command that changed the data.
+Redoes the last change you undid on your contacts or products. You can repeat `redo` to go forward through multiple undone changes in the current app session.
 
 Format:
 
@@ -608,7 +609,10 @@ redo
 
 Exits the program.
 
-Format: `exit`
+Format: 
+```
+exit
+```
 
 <div style="height: 30px;"></div>
 
@@ -787,29 +791,29 @@ This is the json for aliases:
 
 Use this section when `add` fails or returns a warning.
 
-| Scenario                                                                         | Message shown                                                             | How to fix                                                        |
-|----------------------------------------------------------------------------------|---------------------------------------------------------------------------|-------------------------------------------------------------------|
-| Missing one or more required prefixes (`n/`, `p/`, `e/`, `a/`)                   | `Missing required field(s): ...`                                          | Include all required prefixed fields in your command.             |
-| No prefixes at all                                                               | `All required prefixes are missing, ...`                                  | Use the full prefixed format, e.g. `add n/... p/... e/... a/...`. |
-| Text appears before the first prefix                                             | `No non-prefix characters before prefix(es) is allowed, ...`              | Remove any text before `n/`.                                      |
-| Same single-value field repeated (e.g. two `n/` or two `e/`)                     | `Multiple values specified for the following single-valued field(s): ...` | Keep only one value for each of `n/`, `p/`, `e/`, `a/`.           |
-| Name is blank                                                                    | `Name should not be blank.`                                               | Provide a non-empty name after `n/`.                              |
-| Name is too long                                                                 | `Name should be at most 256 characters.`                                  | Shorten the name.                                                 |
-| Phone is blank/too short                                                         | `Phone number should not be empty and must be at least 3 digits.`         | Ensure each phone entry has at least 3 digits.                    |
-| Email is blank                                                                   | `Email should not be blank.`                                              | Provide a non-empty email after `e/`.                             |
-| Email format is invalid                                                          | `Email should be of the format local-part@domain ...`                     | Use a valid email format (e.g. `sales@vendor.com`).               |
-| Address is blank                                                                 | `Address can take any values, and it should not be blank`                 | Provide a non-empty address after `a/`.                           |
-| Address is too long                                                              | `Address should be at most 500 characters.`                               | Shorten the address.                                              |
-| Tag contains non-alphanumeric characters                                         | `Tag names should be alphanumeric`                                        | Use letters/numbers only for each `t/` value.                     |
-| Contact duplicates an existing contact by same email or overlapping phone number | `This vendor contact already exists with the same email or phone number.` | Change the phone/email, or edit the existing contact instead.     |
+| Scenario                                                                         | Message shown                                                             | How to fix                                                                      |
+|----------------------------------------------------------------------------------|---------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| Missing one or more required prefixes (`n/`, `p/`, `e/`, `a/`)                   | `Missing required field(s): ...`                                          | Include all required prefixed fields in your command.                           |
+| No prefixes at all                                                               | `All required prefixes are missing, ...`                                  | Use the full prefixed format, e.g. `add n/... p/... e/... a/...`.               |
+| Text appears before the first prefix                                             | `No non-prefix characters before prefix(es) is allowed, ...`              | Remove any text before `n/`.                                                    |
+| Same single-value field repeated (e.g. two `n/` or two `e/`)                     | `Multiple values specified for the following single-valued field(s): ...` | Keep only one value for each of `n/`, `p/`, `e/`, `a/`.                         |
+| Name is blank                                                                    | `Name should not be blank.`                                               | Provide a non-empty name after `n/`.                                            |
+| Name is too long                                                                 | `Name should be at most 256 characters.`                                  | Shorten the name.                                                               |
+| Phone is blank/too short                                                         | `Phone number should not be empty and must be at least 3 digits.`         | Ensure each phone entry has at least 3 digits.                                  |
+| Email is blank                                                                   | `Email should not be blank.`                                              | Provide a non-empty email after `e/`.                                           |
+| Email format is invalid                                                          | `Email should be of the format local-part@domain ...`                     | Use a valid email format (e.g. `sales@vendor.com`) less than 320 characters.    |
+| Address is blank                                                                 | `Address can take any values, and it should not be blank`                 | Provide a non-empty address after `a/`.                                         |
+| Address is too long                                                              | `Address should be at most 500 characters.`                               | Shorten the address.                                                            |
+| Tag contains non-alphanumeric characters                                         | `Tag names should be alphanumeric`                                        | Use letters/numbers only for each `t/` value.                                   |
+| Contact duplicates an existing contact by same email or overlapping phone number | `This vendor contact already exists with the same email or phone number.` | Change the phone/email, or edit the existing contact instead.                   |
 
 Common `add` warnings:
 
 | Warning trigger                        | Warning shown                                                                                                          | What it means                                                                                                                                                                            |
 |----------------------------------------|------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Name has unusual symbols               | `⚠ Warning: Name contains unusual symbols, is this intentional?`                                                       | Name is accepted, but looks unusual. You can verify if you entered the correct name.                                                                                                     |
-| Phone includes unusual symbols/format  | `⚠ Warning: Phone number contains unusual symbols, is this intentional?`                                               | Phone is accepted, but format may be unintended. You can safely ignore it if you're providing labels eg. `61234567 (Office)`                                                             |
-| Email is unusually long                | `⚠ Warning: This email address is unusually long, is this intentional?`                                                | Email is accepted, but unusually long. You can verify if the email entered is correct.                                                                                                   |
+| Name has unusual symbols               | `⚠ Warning: Name contains unusual symbols, is this intentional?`                                                       | Name is accepted, but [looks unusual](#contact-name-format). You can verify if you entered the correct name.                                                                             |
+| Phone includes unusual symbols/format  | `⚠ Warning: Phone number contains unusual symbols, is this intentional?`                                               | Phone is accepted, but [format may be unintended](#contact-phone-format). You can safely ignore it if you're providing labels eg. `61234567 (Office)`                                    |
+| Email is unusually long                | `⚠ Warning: This email address is unusually long, is this intentional?`                                                | Email is accepted, but more than 256 characters. You can verify if the email entered is correct.                                                                                         |
 | Similar name to an existing contact    | `⚠ Warning: There's a contact with a similar name (name: <similar-name>), is this intentional?`                        | Possible duplicate by similar name. You can check if the name in the warning message is the same vendor as what you were about to add.                                                   |
 | Similar address to an existing contact | `⚠ Warning: There's a contact with a similar address (name: <name>, address: <similar-address>), is this intentional?` | Possible duplicate/related location by address similarity. You can check if the vendor name and address in the warning message belongs to the same vendor as what you were about to add. |
 
@@ -944,5 +948,39 @@ Use this section when `deleteproduct` fails.
 |---------------------------------------|---------------------------------------------------|---------------------------------------------------------------------------|
 | No identifier provided                | `Invalid command format! ...`                     | Provide the product identifier: `deleteproduct IDENTIFIER`.               |
 | Identifier does not match any product | `No product found with the specified identifier.` | Ensure the product exists in the active list. Use `listproduct` to check. |
+
+<div style="height: 30px;"></div>
+
+### Why am I seeing warnings?
+
+Warnings are shown when the command succeeds but the provided information do not meet the recommended format. This is to help you catch possible mistakes or unintended data formats. You can choose to ignore the warning if the data is correct as intended.
+
+<panel header="What is the recommended contact name format?" type="seamless" id="contact-name-format">
+
+Name is recommended to meet the following guidelines:
+- It can contain letters, numbers and spaces
+
+You may see a warning if the vendor name includes special characters. This is only a recommendation, you may safely ignore the warning if the name is correct (e.g. `Cytron Technologies Pte. Ltd.`).
+
+</panel>
+
+<panel header="What is the recommended phone number format?" type="seamless" id="contact-phone-format">
+
+Phone number(s) is recommended to meet the following guidelines:
+1. It should contain only digits, spaces, '+' or '-' in the number part. 
+2. Multiple phone numbers should be separated by commas. 
+Example: 12345678, 62345678
+
+You may see a warning if your phone number contains unusual symbols or format, but you can safely ignore it if you are providing labels for the phone number (e.g. `61234567 (Office)`).
+
+</panel>
+
+<panel header="Why am I seeing warnings for possible duplicates?" type="seamless" id="duplicate-warnings">
+
+**Contact and Product Names** warnings are shown when a new entry **shares words** with an existing one. For example, “Cytron Technologies” and “Cytron T.” is flagged because the first part matches.
+
+**Contact Addresses** warnings appear when one address **fully contains** the other. For example, “123 Main Street” and “123 Main St” are flagged because they point to the same place. 
+
+</panel>
 
 <div style="height: 30px;"></div>
