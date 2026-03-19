@@ -47,13 +47,13 @@ public class ClearCommandParserTest {
 
     @Test
     public void parse_malformedFlagAttached_throwsParseException() {
-        assertParseFailure(parser, "-yabc", ClearCommandParser.MESSAGE_WRONGLY_FORMED_FLAG);
-        assertParseFailure(parser, "-y1", ClearCommandParser.MESSAGE_WRONGLY_FORMED_FLAG);
+        assertParseFailure(parser, "-yabc", ClearCommandParser.MESSAGE_INVALID_CONFIRMATION_FLAG);
+        assertParseFailure(parser, "-y1", ClearCommandParser.MESSAGE_INVALID_CONFIRMATION_FLAG);
     }
 
     @Test
     public void parse_malformedFlagInToken_throwsParseException() {
-        assertParseFailure(parser, "foo -ybar", ClearCommandParser.MESSAGE_WRONGLY_FORMED_FLAG);
+        assertParseFailure(parser, "foo -ybar", ClearCommandParser.MESSAGE_INVALID_CONFIRMATION_FLAG);
     }
 }
 

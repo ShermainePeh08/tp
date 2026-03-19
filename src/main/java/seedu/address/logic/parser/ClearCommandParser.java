@@ -10,11 +10,13 @@ import seedu.address.logic.parser.exceptions.ParseException;
  */
 public class ClearCommandParser implements Parser<ClearCommand> {
 
-    public static final String MESSAGE_WRONGLY_FORMED_FLAG =
+    public static final String MESSAGE_INVALID_CONFIRMATION_FLAG =
             "Invalid format. The '-y' flag must be standalone.\n"
                     + "Example: clear -y";
 
-    public static final String CONFIRMATION_INDICATOR = "-y";
+    public static final String CLEAR_CONFIRMATION_FLAG = "-y";
+
+    public static final boolean REQUIRE_CONFIRMATION = true;
 
     /**
      * Parses the given {@code String} of arguments in the context of the ClearCommand
@@ -22,26 +24,32 @@ public class ClearCommandParser implements Parser<ClearCommand> {
      *
      * @throws ParseException if the user input does not conform the expected format
      */
+    @Override
     public ClearCommand parse(String args) throws ParseException {
         String argsTrimmed = args.trim();
 
         if (argsTrimmed.isEmpty()) {
-            return new ClearCommand(true);
+            return new ClearCommand(REQUIRE_CONFIRMATION);
         }
 
-        String[] tokens = argsTrimmed.split("\\s+");
-        boolean hasConfirmFlag = checkConfirmationIndicator(tokens);
+        String[] tokens = argsTrimmed.split(ParserUtil.SEPARATOR_SPACE);
+        boolean hasConfirmFlag = containsConfirmationFlag(tokens);
 
         return new ClearCommand(!hasConfirmFlag);
     }
 
-    private boolean checkConfirmationIndicator(String[] tokens) throws ParseException {
+    private boolean containsConfirmationFlag(String[] tokens) throws ParseException {
         boolean hasWronglyFormedFlag = Arrays.stream(tokens)
-                .anyMatch(t -> t.startsWith(CONFIRMATION_INDICATOR) && !t.equals(CONFIRMATION_INDICATOR));
+                .anyMatch(this::isMalformedConfirmationFlag);
         if (hasWronglyFormedFlag) {
-            throw new ParseException(MESSAGE_WRONGLY_FORMED_FLAG);
+            throw new ParseException(MESSAGE_INVALID_CONFIRMATION_FLAG);
         }
-        return Arrays.asList(tokens).contains(CONFIRMATION_INDICATOR);
+        return Arrays.asList(tokens).contains(CLEAR_CONFIRMATION_FLAG);
+    }
+
+    private boolean isMalformedConfirmationFlag(String token) {
+        return token.startsWith(CLEAR_CONFIRMATION_FLAG)
+                && !token.equals(CLEAR_CONFIRMATION_FLAG);
     }
 }
 

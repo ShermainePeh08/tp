@@ -32,7 +32,7 @@ public class ParserUtil {
     public static final String FIELD_PRODUCT_NAME = "product name";
 
     public static final String SEPARATOR_COMMA = ", ";
-    public static final String SEPARATOR_SPACE = " ";
+    public static final String SEPARATOR_SPACE = "\\s+";
     public static final String SEPARATOR_NEW_LINE = "\n";
 
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";

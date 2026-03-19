@@ -10,7 +10,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.model.Model.PREDICATE_SHOW_ACTIVE_PERSONS;
 import static seedu.address.model.person.warnings.DuplicatePersonWarning.MESSAGE_SIMILAR_ADDRESS;
-import static seedu.address.model.person.warnings.DuplicatePersonWarning.MESSAGE_SIMILAR_NAME;
+import static seedu.address.model.person.warnings.DuplicatePersonWarning.formatNameWarning;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -238,7 +238,7 @@ public class EditCommand extends Command {
                                          StringBuilder warnings, EditPersonDescriptor descriptor) {
         if (descriptor.getName().isPresent()) {
             model.getAddressBook().findSimilarNameMatch(editedPerson, personToEdit).ifPresent(match ->
-                    appendWarning(warnings, String.format(MESSAGE_SIMILAR_NAME, match.getName())));
+                    appendWarning(warnings, formatNameWarning(match.getName())));
         }
 
         if (descriptor.getAddress().isPresent()) {

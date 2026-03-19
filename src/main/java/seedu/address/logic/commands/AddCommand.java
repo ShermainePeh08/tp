@@ -9,8 +9,8 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.model.person.warnings.DuplicatePersonWarning.MESSAGE_SIMILAR_ADDRESS;
-import static seedu.address.model.person.warnings.DuplicatePersonWarning.MESSAGE_SIMILAR_NAME;
+import static seedu.address.model.person.warnings.DuplicatePersonWarning.formatAddressWarning;
+import static seedu.address.model.person.warnings.DuplicatePersonWarning.formatNameWarning;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -107,11 +107,10 @@ public class AddCommand extends Command {
      */
     private void appendSimilarContactWarnings(Model model, StringBuilder warnings) {
         model.getAddressBook().findSimilarNameMatch(toAdd, null).ifPresent(match ->
-                appendWarning(warnings, String.format(MESSAGE_SIMILAR_NAME, match.getName())));
+                appendWarning(warnings, formatNameWarning(match.getName())));
 
         model.getAddressBook().findSimilarAddressMatch(toAdd, null).ifPresent(match ->
-                appendWarning(warnings, String.format(
-                        MESSAGE_SIMILAR_ADDRESS, match.getName(), match.getAddress())));
+                appendWarning(warnings, formatAddressWarning(match.getName(), match.getAddress())));
     }
 
     private void appendWarning(StringBuilder warnings, String message) {
