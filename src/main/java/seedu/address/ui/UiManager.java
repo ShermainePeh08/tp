@@ -1,7 +1,10 @@
 package seedu.address.ui;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +32,7 @@ public class UiManager implements Ui {
     private static final Logger logger = LogsCenter.getLogger(UiManager.class);
     private static final String ICON_APPLICATION = "/images/vendor_vault.png";
 
+    private static final String DARK_THEME_RESOURCE_PATH = "/view/DarkTheme.css";
     private static final String[] UI_FONT_CANDIDATES = {"Segoe UI", "Helvetica", "Helvetica Neue", "Arial"};
     private static final String[] SEMIBOLD_FONT_CANDIDATES = {"Segoe UI Semibold", "Helvetica Neue Medium",
         "Helvetica Neue Bold", "Arial Bold"};
@@ -39,6 +43,7 @@ public class UiManager implements Ui {
     private String uiFontSemibold;
     private String uiFontLight;
     private String monoFont;
+    private String resolvedDarkThemeUrl;
 
     private Logic logic;
     private MainWindow mainWindow;
@@ -62,7 +67,8 @@ public class UiManager implements Ui {
             resolvedDarkThemeUrl = buildResolvedDarkThemeStylesheetUrl();
 
             mainWindow = new MainWindow(primaryStage, logic);
-            mainWindow.show(); //This should be called before creating other UI parts
+            replaceDarkThemeStylesheet(mainWindow.getPrimaryStage());
+            mainWindow.show();
             mainWindow.fillInnerParts();
 
         } catch (Throwable e) {
@@ -155,6 +161,21 @@ public class UiManager implements Ui {
 
     private String escapeFontForCss(String family) {
         return family.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
+
+    private void replaceDarkThemeStylesheet(Stage stage) {
+        if (stage.getScene() == null || stage.getScene().getRoot() == null) {
+            return;
+        }
+
+        List<String> stylesheets = stage.getScene().getStylesheets();
+        for (int i = 0; i < stylesheets.size(); i++) {
+            if (stylesheets.get(i).endsWith("DarkTheme.css")) {
+                stylesheets.set(i, resolvedDarkThemeUrl);
+                return;
+            }
+        }
+        stylesheets.add(resolvedDarkThemeUrl);
     }
 
     void showAlertDialogAndWait(Alert.AlertType type, String title, String headerText, String contentText) {
