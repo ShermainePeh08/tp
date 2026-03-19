@@ -32,7 +32,7 @@ public interface ReadOnlyAddressBook {
      *
      * @param candidate the person whose phone number is being compared against the list.
      * @param exclude the person to exclude from the search (may be null).
-     * @return Optional<Person> the matched person (if any).
+     * @return Optional Person the matched person (if any).
      */
     Optional<Person> findSimilarPhoneMatch(Person candidate, Person exclude);
 
@@ -42,7 +42,7 @@ public interface ReadOnlyAddressBook {
      *
      * @param candidate the person whose address is being compared against the list.
      * @param exclude the person to exclude from the search (may be null).
-     * @return Optional<Person> the matched person (if any).
+     * @return Optional Person the matched person (if any).
      */
     Optional<Person> findSimilarAddressMatch(Person candidate, Person exclude);
 

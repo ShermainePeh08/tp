@@ -22,7 +22,7 @@ public interface ReadOnlyInventory {
      *
      * @param candidate the product whose name is being compared against the list.
      * @param exclude the product to exclude from the search (may be null).
-     * @return Optional<Product> the matched product (if any).
+     * @return Optional Product the matched product (if any).
      */
     Optional<Product> findSimilarNameMatch(Product candidate, Product exclude);
 
