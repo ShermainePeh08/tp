@@ -76,7 +76,7 @@ public class CommandHistory {
     }
 
     private void moveIndexBack() {
-        if (!atLatestPosition() && currentIndex > 0) {
+        if (currentIndex > 0) {
             currentIndex--;
         }
     }
@@ -93,7 +93,10 @@ public class CommandHistory {
     }
 
     private String getCurrentCommandOrDraft() {
-        if (atLatestPosition() || currentIndex < 0 || currentIndex >= commandTexts.size()) {
+        assert currentIndex >= -1 && currentIndex < commandTexts.size()
+                : "currentIndex out of bounds: " + currentIndex;
+
+        if (atLatestPosition()) {
             return draftCommandText;
         }
         return commandTexts.get(currentIndex);
