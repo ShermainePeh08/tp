@@ -43,7 +43,7 @@ public class InventoryStatsPanel {
     }
 
     private HBox buildRoot(ObservableList<Product> products) {
-        Region left  = buildDonutCard(products);
+        Region left = buildDonutCard(products);
         Region right = buildEmptyCard();
 
         HBox box = new HBox(10, left, right);
@@ -63,13 +63,13 @@ public class InventoryStatsPanel {
     }
 
     private Region buildDonutCard(ObservableList<Product> products) {
-        long total    = products.size();
+        long total = products.size();
         long lowStock = products.stream()
                 .filter(p -> p.getQuantity().value <= p.getRestockThreshold().value)
                 .count();
-        long inStock  = total - lowStock;
+        long inStock = total - lowStock;
 
-        PieChart.Data sliceIn  = new PieChart.Data("In stock",  Math.max(inStock,  0));
+        PieChart.Data sliceIn = new PieChart.Data("In stock", Math.max(inStock, 0));
         PieChart.Data sliceLow = new PieChart.Data("Low stock", Math.max(lowStock, 0));
 
         PieChart pie = new PieChart(FXCollections.observableArrayList(sliceIn, sliceLow));
@@ -85,7 +85,7 @@ public class InventoryStatsPanel {
         pie.setStyle(
                 "-fx-background-color: transparent;"
                 + "CHART_COLOR_1: " + COLOR_GREEN + ";"
-                + "CHART_COLOR_2: " + COLOR_RED   + ";");
+                + "CHART_COLOR_2: " + COLOR_RED + ";");
 
         // Also apply directly to slice nodes once created (belt-and-suspenders)
         sliceIn.nodeProperty().addListener((obs, o, node) -> {
@@ -119,8 +119,8 @@ public class InventoryStatsPanel {
         clip.setArcHeight(PIE_SIZE);
         donutPane.setClip(clip);
 
-        HBox legendIn  = legendDot(COLOR_GREEN, "In stock ("  + inStock  + ")");
-        HBox legendLow = legendDot(COLOR_RED,   "Low stock (" + lowStock + ")");
+        HBox legendIn = legendDot(COLOR_GREEN, "In stock (" + inStock + ")");
+        HBox legendLow = legendDot(COLOR_RED, "Low stock (" + lowStock + ")");
         VBox legend = new VBox(6, legendIn, legendLow);
         legend.setAlignment(Pos.CENTER_LEFT);
 
