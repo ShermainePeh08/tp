@@ -18,7 +18,7 @@ public class Name {
             "⚠ Warning: Name contains unusual symbols, is this intentional?";
 
     public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} ]*";
-    public static final String SOFT_VALIDATION_REGEX = "[^\\s].{0,255}";
+    public static final String WARNING_VALIDATION_REGEX = "[^\\s].{0,255}";
 
     public final String fullName;
 
@@ -37,7 +37,7 @@ public class Name {
      * Returns true if a given string is a valid name.
      */
     public static boolean isValidName(String test) {
-        return test.matches(SOFT_VALIDATION_REGEX);
+        return test.matches(WARNING_VALIDATION_REGEX);
     }
 
     /**

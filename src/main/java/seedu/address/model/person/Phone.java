@@ -13,7 +13,7 @@ public class Phone {
             + "and must be at least 3 digits.";
     public static final String MESSAGE_WARN =
             "⚠ Warning: Phone number contains unusual symbols, is this intentional?";
-    public static final String SOFT_VALIDATION_REGEX =
+    public static final String WARNING_VALIDATION_REGEX =
             "^(?=(?:.*\\d){3,})[\\d+\\- ]+$";
     public static final String VALIDATION_REGEX = "^(?=(?:.*\\d){3,}).*$";
     public static final String VALIDATION_EXCLUDE_DIGITS_REGEX = "[^0-9]";
@@ -95,7 +95,7 @@ public class Phone {
     }
 
     private static boolean isValidPhoneEntryWarn(String phoneEntry) {
-        return phoneEntry.trim().matches(SOFT_VALIDATION_REGEX);
+        return phoneEntry.trim().matches(WARNING_VALIDATION_REGEX);
     }
 
 

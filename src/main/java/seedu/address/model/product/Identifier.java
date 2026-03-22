@@ -16,7 +16,7 @@ public class Identifier {
             "⚠ Warning: Identifier contains unusual symbols, is this intentional?";
 
     public static final String VALIDATION_REGEX = "[A-Za-z0-9][A-Za-z0-9/-]{0,119}";
-    public static final String SOFT_VALIDATION_REGEX = "[^\\s].{0,119}";
+    public static final String WARNING_VALIDATION_REGEX = "[^\\s].{0,119}";
 
     public final String value;
 
@@ -35,7 +35,7 @@ public class Identifier {
      * Returns true if a given string is a valid identifier.
      */
     public static boolean isValidIdentifier(String test) {
-        return test.matches(SOFT_VALIDATION_REGEX);
+        return test.matches(WARNING_VALIDATION_REGEX);
     }
 
     /**
