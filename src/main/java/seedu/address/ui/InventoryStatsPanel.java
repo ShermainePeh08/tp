@@ -7,7 +7,6 @@ import javafx.geometry.Pos;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -19,7 +18,6 @@ import seedu.address.model.product.Product;
 /**
  * Displays a donut chart (stock status) on the left and an empty
  * placeholder on the right, above the inventory list.
- * Plain class — no FXML, no UiPart.
  */
 public class InventoryStatsPanel {
 
@@ -31,6 +29,12 @@ public class InventoryStatsPanel {
     private static final double STRIP_HEIGHT = 220;
     private static final double PIE_SIZE = 160;
     private static final double HOLE_RADIUS = 40;
+
+    private static final int CARD_SPACING = 10;
+    private static final int PADDING_TOP = 10;
+    private static final int PADDING_RIGHT = 10;
+    private static final int PADDING_BOTTOM = 20;
+    private static final int PADDING_LEFT = 10;
 
     private final HBox root;
 
@@ -46,14 +50,20 @@ public class InventoryStatsPanel {
         Region left = buildDonutCard(products);
         Region right = buildEmptyCard();
 
-        HBox box = new HBox(10, left, right);
+        HBox box = new HBox(CARD_SPACING, left, right);
         box.widthProperty().addListener((obs, oldVal, newVal) -> {
-            double half = (newVal.doubleValue() - 10) / 2.0;
+            double half = (newVal.doubleValue() - CARD_SPACING) / 2.0;
             left.setPrefWidth(half);
             right.setPrefWidth(half);
         });
 
-        box.setPadding(new Insets(10, 10, 20, 10));
+        box.setPadding(new Insets(
+                PADDING_TOP,
+                PADDING_RIGHT,
+                PADDING_BOTTOM,
+                PADDING_LEFT
+        ));
+
         box.setPrefHeight(STRIP_HEIGHT);
         box.setFillHeight(true);
         box.setMaxHeight(STRIP_HEIGHT);
@@ -87,7 +97,6 @@ public class InventoryStatsPanel {
                 + "CHART_COLOR_1: " + COLOR_GREEN + ";"
                 + "CHART_COLOR_2: " + COLOR_RED + ";");
 
-        // Also apply directly to slice nodes once created (belt-and-suspenders)
         sliceIn.nodeProperty().addListener((obs, o, node) -> {
             if (node != null) {
                 node.setStyle("-fx-pie-color: " + COLOR_GREEN + ";");
@@ -112,8 +121,7 @@ public class InventoryStatsPanel {
 
         StackPane donutPane = new StackPane(pie, hole, centreBox);
         donutPane.setPrefSize(PIE_SIZE, PIE_SIZE);
-        donutPane.setMaxSize(PIE_SIZE, PIE_SIZE);
-        donutPane.setMinSize(PIE_SIZE, PIE_SIZE);
+
         Rectangle clip = new Rectangle(PIE_SIZE, PIE_SIZE);
         clip.setArcWidth(PIE_SIZE);
         clip.setArcHeight(PIE_SIZE);
@@ -126,7 +134,6 @@ public class InventoryStatsPanel {
 
         HBox row = new HBox(12, donutPane, legend);
         row.setAlignment(Pos.CENTER);
-        HBox.setHgrow(row, Priority.ALWAYS);
 
         return card("Stock Status", row);
     }
@@ -141,8 +148,6 @@ public class InventoryStatsPanel {
         card.setStyle(
             "-fx-background-color: " + COLOR_BG + ";"
             + "-fx-background-radius: 8;");
-        VBox.setVgrow(content, Priority.NEVER);
-        HBox.setHgrow(content, Priority.NEVER);
 
         if (!title.isEmpty()) {
             Label titleLabel = new Label(title);
@@ -154,8 +159,6 @@ public class InventoryStatsPanel {
             card.getChildren().add(content);
         }
 
-        VBox.setVgrow(card, Priority.NEVER);
-        HBox.setHgrow(card, Priority.NEVER);
         card.setPrefWidth(0);
         card.setMaxHeight(Double.MAX_VALUE);
         return card;

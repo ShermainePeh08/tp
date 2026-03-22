@@ -63,7 +63,11 @@ public class InventoryListPanel extends UiPart<Region> {
     }
 
     /**
-     * Comparator: low-stock items bubble to the top, then sorted by quantity ascending.
+     * Comparator:
+     * Products that are low-stock (based on their individual restock thresholds)
+     * are shown first, followed by the remaining products.
+     * Within the low-stock and non low-stock groups,
+     * products are sorted by quantity in ascending order.
      */
     private int compareInventoryItems(Product a, Product b) {
         int qtyA = a.getQuantity().value;
