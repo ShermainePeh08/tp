@@ -21,6 +21,9 @@ public class FindCommand extends Command {
             + "Parameters: KEYWORD [MORE_KEYWORDS]...\n"
             + "Example: " + COMMAND_WORD + " adafruit cytron";
 
+    public static final String MESSAGE_DISPLAY_PRODUCTS = " Products associated with these contacts listed on "
+            + "the right!";
+
     private final NameContainsKeywordsPredicate predicate;
 
     public FindCommand(NameContainsKeywordsPredicate predicate) {
@@ -38,7 +41,8 @@ public class FindCommand extends Command {
         model.updateFilteredProductList(productPredicate);
 
         return new CommandResult(
-                String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, model.getFilteredPersonList().size()));
+                String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW + MESSAGE_DISPLAY_PRODUCTS,
+                        model.getFilteredPersonList().size()));
     }
 
     @Override
