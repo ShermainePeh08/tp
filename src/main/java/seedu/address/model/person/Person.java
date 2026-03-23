@@ -1,5 +1,6 @@
 package seedu.address.model.person;
 
+import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 import static seedu.address.model.person.Phone.VALIDATION_EXCLUDE_DIGITS_REGEX;
 
@@ -88,6 +89,7 @@ public class Person {
      * @return {@code true} if the names are similar, {@code false} otherwise
      */
     public boolean isSimilarNameTo(Person otherPerson) {
+        requireNonNull(otherPerson);
         return hasSimilarName(otherPerson);
     }
 
@@ -101,6 +103,7 @@ public class Person {
      * @return {@code true} if the addresses are considered similar, {@code false} otherwise
      */
     public boolean isSimilarAddressTo(Person otherPerson) {
+        requireNonNull(otherPerson);
         return hasSimilarAddress(otherPerson);
     }
 
@@ -115,14 +118,11 @@ public class Person {
      * @return {@code true} if the phone numbers are similar, {@code false} otherwise
      */
     public boolean isSimilarPhoneTo(Person otherPerson) {
+        requireNonNull(otherPerson);
         return hasSimilarPhone(otherPerson);
     }
 
     private boolean hasSimilarName(Person otherPerson) {
-        if (otherPerson == null) {
-            return false;
-        }
-
         String thisName = normalizeName(this.name.fullName);
         String otherName = normalizeName(otherPerson.getName().fullName);
 
@@ -151,10 +151,6 @@ public class Person {
     }
 
     private boolean hasSimilarPhone(Person otherPerson) {
-        if (otherPerson == null) {
-            return false;
-        }
-
         String[] thisPhoneNumbers = splitAndCleanPhoneNumbers(this.phone.value);
         String[] otherPhoneNumbers = splitAndCleanPhoneNumbers(otherPerson.getPhone().value);
 
