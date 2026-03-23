@@ -20,9 +20,9 @@
   <scene>
     <Scene>
       <stylesheets>
-        <URL value="@HelpWindow.css" />
         <URL value="@DarkTheme.css"/>
         <URL value="@Extensions.css"/>
+        <URL value="@HelpWindow.css" />
       </stylesheets>
 
 

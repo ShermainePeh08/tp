@@ -3,10 +3,14 @@ package seedu.address.ui;
 import java.util.logging.Logger;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import seedu.address.commons.core.LogsCenter;
@@ -74,23 +78,41 @@ public class HelpWindow extends UiPart<Stage> {
     public void populateCommandsToCommandListContainer() {
         commandListContainer.getChildren().addAll(
                 createSectionHeadingLabel(DISPLAY_CONTACT_COMMANDS),
-                new Label("Command 1"),
-                new Label("Command 2"),
-                new Label("Command 3"),
+                createCommandBox("Command 1", "command 1 example", "description"),
+                createCommandBox("Command 2", "command 2 example", "description"),
+                createCommandBox("Command 3", "command 3 example", "description"),
                 createSectionHeadingLabel(DISPLAY_INVENTORY_COMMANDS),
-                new Label("Command 4"),
-                new Label("Command 5"),
-                new Label("Command 6"),
-                new Label("Command 7"),
+                createCommandBox("Command 4", "command 4 example", "description"),
+                createCommandBox("Command 5", "command 5 example", "description"),
+                createCommandBox("Command 6", "command 6 example", "description"),
+                createCommandBox("Command 7", "command 7 example", "description"),
                 createSectionHeadingLabel(DISPLAY_GENERAL_COMMANDS),
-                new Label("Command 8")
-        );
+                createCommandBox("Command 8", "command 8 example", "description"),
+                createCommandBox("Command 9", "command 9 example", "description")
+                );
     }
 
     private Label createSectionHeadingLabel(String text) {
         Label label = new Label(text);
-        label.getStyleClass().add("sectionHeaderLabel");
+        label.getStyleClass().add("label-help-header");
         return label;
+    }
+
+    private HBox createCommandBox(String name, String commandEg, String description) {
+        Label nameLabel = new Label(name);
+        nameLabel.getStyleClass().add("success");
+
+        Label commandEgLabel= new Label(commandEg);
+        commandEgLabel.getStyleClass().add("warn");
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Label descriptionLabel = new Label(description);
+
+        HBox row = new HBox(10, nameLabel, commandEgLabel, spacer, descriptionLabel);
+        row.setAlignment(Pos.CENTER_LEFT);
+        return row;
     }
 
     /**
