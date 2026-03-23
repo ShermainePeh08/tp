@@ -10,6 +10,7 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyInventory;
+import seedu.address.model.ReadOnlyVendorVault;
 import seedu.address.model.person.Person;
 import seedu.address.model.product.Product;
 
@@ -35,6 +36,11 @@ public interface Logic {
 
     /** Returns the Inventory. */
     ReadOnlyInventory getInventory();
+
+    /**
+     * Returns the VendorVault.
+     */
+    ReadOnlyVendorVault getVendorVault();
 
     /** Returns an unmodifiable view of the filtered list of persons */
     ObservableList<Person> getFilteredPersonList();

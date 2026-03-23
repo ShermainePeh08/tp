@@ -136,50 +136,57 @@ public class InventoryStatsPanel extends UiPart<Region> {
 
     /** Wire all labels and charts to live ObservableLists. */
     private void bindData(ObservableList<Product> filteredProducts,
-                          ObservableList<Person> activePersons,
-                          ObservableList<Person> allPersons,
-                          ObservableList<Product> allProducts) {
+                        ObservableList<Person> activePersons,
+                        ObservableList<Person> allPersons,
+                        ObservableList<Product> allProducts) {
 
-        updateContacts(activePersons, allPersons);
-        activePersons.addListener((ListChangeListener<Person>) c ->
-                updateContacts(activePersons, allPersons));
+        updateContacts(allPersons);
         allPersons.addListener((ListChangeListener<Person>) c ->
-                updateContacts(activePersons, allPersons));
+                updateContacts(allPersons));
 
-        updateProducts(filteredProducts, allProducts);
-        filteredProducts.addListener((ListChangeListener<Product>) c ->
-                updateProducts(filteredProducts, allProducts));
+        updateProducts(allProducts);
         allProducts.addListener((ListChangeListener<Product>) c ->
-                updateProducts(filteredProducts, allProducts));
+                updateProducts(allProducts));
 
-        refreshDonut(filteredProducts);
-        filteredProducts.addListener((ListChangeListener<Product>) c ->
-                refreshDonut(filteredProducts));
+        refreshDonut(allProducts);
+        allProducts.addListener((ListChangeListener<Product>) c ->
+                refreshDonut(allProducts));
     }
 
-    private void updateContacts(ObservableList<Person> active,
-                                ObservableList<Person> all) {
-        contactValue.setText(String.valueOf(active.size()));
-        contactTotal.setText("/ " + all.size() + " total");
-        drawMiniDonut(contactMiniChart, active.size(), all.size());
-    }
-
-    private void updateProducts(ObservableList<Product> active,
-                                ObservableList<Product> all) {
-        productValue.setText(String.valueOf(active.size()));
-        productTotal.setText("/ " + all.size() + " total");
-        drawMiniDonut(productMiniChart, active.size(), all.size());
-    }
-
-    private void refreshDonut(ObservableList<Product> products) {
-        long low = products.stream()
-                .filter(p -> p.getQuantity().value <= p.getRestockThreshold().value)
+    private void updateContacts(ObservableList<Person> allPersons) {
+        long activeCount = allPersons.stream()
+                .filter(person -> !person.isArchived())
                 .count();
-        long in = products.size() - low;
+
+        contactValue.setText(String.valueOf(activeCount));
+        contactTotal.setText("/ " + allPersons.size() + " total");
+        drawMiniDonut(contactMiniChart, (int) activeCount, allPersons.size());
+    }
+
+    private void updateProducts(ObservableList<Product> allProducts) {
+        long activeCount = allProducts.stream()
+                .filter(product -> !product.isArchived())
+                .count();
+
+        productValue.setText(String.valueOf(activeCount));
+        productTotal.setText("/ " + allProducts.size() + " total");
+        drawMiniDonut(productMiniChart, (int) activeCount, allProducts.size());
+    }
+
+    private void refreshDonut(ObservableList<Product> allProducts) {
+        long low = allProducts.stream()
+                .filter(product -> !product.isArchived())
+                .filter(product -> product.getQuantity().value <= product.getRestockThreshold().value)
+                .count();
+
+        long activeProducts = allProducts.stream()
+                .filter(product -> !product.isArchived())
+                .count();
+
+        long in = activeProducts - low;
 
         ObservableList<PieChart.Data> data = pieChart.getData();
         if (data != null && data.size() == 2) {
-
             data.get(0).setPieValue(Math.max(in + 0.0001, 0));
             data.get(1).setPieValue(Math.max(low, 0));
         }

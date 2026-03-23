@@ -120,8 +120,8 @@ public class MainWindow extends UiPart<Stage> {
         inventoryListPanel = new InventoryListPanel(
                 logic.getFilteredProductList(),
                 logic.getFilteredPersonList(),
-                logic.getAddressBook().getPersonList(),
-                logic.getInventory().getProductList());
+                logic.getVendorVault().getPersonList(),
+                logic.getVendorVault().getProductList());
         inventoryListPanelPlaceholder.getChildren().add(inventoryListPanel.getRoot());
 
         resultDisplay = new ResultDisplay();

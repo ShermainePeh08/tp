@@ -18,6 +18,7 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyInventory;
+import seedu.address.model.ReadOnlyVendorVault;
 import seedu.address.model.person.Person;
 import seedu.address.model.product.Product;
 import seedu.address.storage.Storage;
@@ -120,6 +121,11 @@ public class LogicManager implements Logic {
     @Override
     public Path getAddressBookFilePath() {
         return model.getAddressBookFilePath();
+    }
+
+    @Override
+    public ReadOnlyVendorVault getVendorVault() {
+        return model.getVendorVault();
     }
 
     @Override
