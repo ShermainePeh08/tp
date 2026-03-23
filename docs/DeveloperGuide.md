@@ -754,7 +754,7 @@ Accessibility:
 
 2. Saving window preferences
 
-   - Resize the window to an optimum size. Move the window to a different location. Close the window.
+   - Resize the window as desired. Move the window to a different location. Close the window.
 
    - Re-launch app.<br> Expected: The most recent window size and location is retained.
 
