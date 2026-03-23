@@ -85,14 +85,17 @@ public class HelpWindow extends UiPart<Stage> {
                         new String[]{"Command 3", "command 3 example", "description"}
                 )),
                 createSectionHeadingLabel(DISPLAY_INVENTORY_COMMANDS),
-                createCommandBox("Command 4", "command 4 example", "description"),
-                createCommandBox("Command 5", "command 5 example", "description"),
-                createCommandBox("Command 6", "command 6 example", "description"),
-                createCommandBox("Command 7", "command 7 example", "description"),
+                createCommandGroup(List.of(
+                        new String[]{"Command 4", "command 4 example", "description"},
+                        new String[]{"Command 5", "command 5 example", "description"},
+                        new String[]{"Command 6", "command 6 example", "description"},
+                        new String[]{"Command 7", "command 7 example", "description"}
+                )),
                 createSectionHeadingLabel(DISPLAY_GENERAL_COMMANDS),
-                createCommandBox("Command 8", "command 8 example", "description"),
-                createCommandBox("Command 9", "command 9 example", "description")
-                );
+                createCommandGroup(List.of(
+                        new String[]{"Command 8", "command 8 example", "description"},
+                        new String[]{"Command 9", "command 9 example", "description"}
+                )));
     }
 
     private Label createSectionHeadingLabel(String text) {
@@ -110,6 +113,7 @@ public class HelpWindow extends UiPart<Stage> {
             group.getChildren().add(createCommandBox(cmd[0], cmd[1], cmd[2]));
             if (i < commands.size() - 1) {
                 Region separator = new Region();
+                separator.getStyleClass().add("command-separator");
                 group.getChildren().add(separator);
             }
         }
@@ -128,9 +132,11 @@ public class HelpWindow extends UiPart<Stage> {
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         Label descriptionLabel = new Label(description);
+        descriptionLabel.getStyleClass().add("command-desc");
 
         HBox row = new HBox(10, nameLabel, commandEgLabel, spacer, descriptionLabel);
         row.setAlignment(Pos.CENTER_LEFT);
+        row.getStyleClass().add("command-row");
         return row;
     }
 
