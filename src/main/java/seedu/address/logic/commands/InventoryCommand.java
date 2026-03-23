@@ -2,6 +2,9 @@ package seedu.address.logic.commands;
 
 import java.util.List;
 
+/**
+ * Represents the types of commands related to Inventory.
+ */
 public enum InventoryCommand implements CommandWord {
     ADDPRODUCT(AddProductCommand.COMMAND_WORD,
             AddProductCommand.COMMAND_USAGE, AddProductCommand.COMMAND_DESCRIPTION),

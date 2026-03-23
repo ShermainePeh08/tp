@@ -2,6 +2,9 @@ package seedu.address.logic.commands;
 
 import java.util.List;
 
+/**
+ * Represents the types of commands related to Contact.
+ */
 public enum ContactCommand implements CommandWord {
     ADD(AddCommand.COMMAND_WORD, AddCommand.COMMAND_USAGE, AddCommand.COMMAND_DESCRIPTION),
     ARCHIVE(ArchiveCommand.COMMAND_WORD, ArchiveCommand.COMMAND_USAGE, ArchiveCommand.COMMAND_DESCRIPTION),

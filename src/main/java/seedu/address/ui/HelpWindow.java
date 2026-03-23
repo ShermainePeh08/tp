@@ -1,6 +1,7 @@
 package seedu.address.ui;
 
 import static seedu.address.logic.commands.ContactCommand.getContactCommands;
+import static seedu.address.logic.commands.GeneralCommand.getGeneralCommands;
 import static seedu.address.logic.commands.InventoryCommand.getInventoryCommands;
 
 import java.util.List;
@@ -19,7 +20,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.CommandWord;
-import seedu.address.logic.commands.ContactCommand;
 
 /**
  * Controller for a help page
@@ -101,7 +101,8 @@ public class HelpWindow extends UiPart<Stage> {
                 createCommandGroup(getContactCommands()),
                 createSectionHeadingLabel(DISPLAY_INVENTORY_COMMANDS),
                 createCommandGroup(getInventoryCommands()),
-                createSectionHeadingLabel(DISPLAY_GENERAL_COMMANDS));
+                createSectionHeadingLabel(DISPLAY_GENERAL_COMMANDS),
+                createCommandGroup(getGeneralCommands()));
     }
 
     private Label createSectionHeadingLabel(String text) {

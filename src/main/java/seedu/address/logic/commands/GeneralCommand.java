@@ -2,6 +2,9 @@ package seedu.address.logic.commands;
 
 import java.util.List;
 
+/**
+ * Represents the types of general commands.
+ */
 public enum GeneralCommand implements CommandWord {
     ALIAS(AliasCommand.COMMAND_WORD, AliasCommand.COMMAND_USAGE, AliasCommand.COMMAND_DESCRIPTION),
     EXIT(ExitCommand.COMMAND_WORD, ExitCommand.COMMAND_USAGE, ExitCommand.COMMAND_DESCRIPTION),
@@ -35,7 +38,7 @@ public enum GeneralCommand implements CommandWord {
         return commandDescription;
     }
 
-    public static List<CommandWord> getContactCommands() {
+    public static List<CommandWord> getGeneralCommands() {
         return List.of(values());
     }
 }
