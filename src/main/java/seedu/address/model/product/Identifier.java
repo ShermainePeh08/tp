@@ -35,6 +35,7 @@ public class Identifier {
      * Returns true if a given string is a valid identifier.
      */
     public static boolean isValidIdentifier(String test) {
+        requireNonNull(test);
         return test.matches(WARNING_VALIDATION_REGEX);
     }
 
@@ -48,6 +49,7 @@ public class Identifier {
      *         validation criteria.
      */
     public static boolean isValidIdentifierWarn(String test) {
+        requireNonNull(test);
         return test.matches(VALIDATION_REGEX);
     }
 

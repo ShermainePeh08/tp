@@ -3,8 +3,11 @@ package seedu.address.model.product;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import seedu.address.logic.parser.ParserUtil;
 import seedu.address.model.person.Email;
@@ -114,7 +117,9 @@ public class Product {
     /**
      * Returns a {@code DuplicateProductWarning} if this product has a similar name to {@code otherProduct}.
      */
-    public DuplicateProductWarning isSameProductWarn(Product otherProduct) {
+    public DuplicateProductWarning generateDuplicateWarning(Product otherProduct) {
+        requireNonNull(otherProduct);
+
         return new DuplicateProductWarning(
                 hasSimilarName(otherProduct),
                 DuplicateProductWarning.MESSAGE_SIMILAR_NAME);
@@ -130,6 +135,7 @@ public class Product {
      * @return {@code true} if the names are similar, {@code false} otherwise
      */
     public boolean isSimilarNameTo(Product otherProduct) {
+        requireNonNull(otherProduct);
         return hasSimilarName(otherProduct);
     }
 
@@ -144,13 +150,9 @@ public class Product {
         String[] thisParts = thisName.split(ParserUtil.SEPARATOR_SPACE);
         String[] otherParts = otherName.split(ParserUtil.SEPARATOR_SPACE);
 
-        java.util.Set<String> nameParts = new java.util.HashSet<>(java.util.Arrays.asList(thisParts));
-        for (String part : otherParts) {
-            if (nameParts.contains(part)) {
-                return true;
-            }
-        }
-        return false;
+        Set<String> nameParts = new HashSet<>(java.util.Arrays.asList(thisParts));
+
+        return Arrays.stream(otherParts).anyMatch(nameParts::contains);
     }
 
     /**

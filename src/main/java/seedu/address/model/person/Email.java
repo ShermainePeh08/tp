@@ -53,6 +53,8 @@ public class Email {
      * Returns if a given string is a valid email.
      */
     public static boolean isValidEmail(String test) {
+        requireNonNull(test);
+
         if (test.length() > MAX_LENGTH) {
             return false;
         }
@@ -60,14 +62,15 @@ public class Email {
     }
 
     /**
-     * Returns true if a given string is a valid email.
-     * Additional validation to {@link #isValidEmail(String)}.
+     * Returns true if a given string is a valid email with stronger validation.
      * Used for warning users about potential issues with their input.
      *
      * @param test the string to test.
      * @return true if the string is a valid email according to the length validation criteria.
      */
     public static boolean isValidEmailWarn(String test) {
+        requireNonNull(test);
+
         return test.matches(WARNING_VALIDATION_REGEX);
     }
 
