@@ -36,7 +36,7 @@ public enum ContactCommand implements CommandWord {
         return commandDescription;
     }
 
-    public List<ContactCommand> getContactCommands() {
+    public static List<ContactCommand> getContactCommands() {
         return List.of(values());
     }
 }
