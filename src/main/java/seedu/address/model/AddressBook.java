@@ -2,6 +2,7 @@ package seedu.address.model;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.UniquePersonList;
+import seedu.address.model.util.SimilarityScoringUtil;
 
 /**
  * Wraps all data at the address-book level
@@ -128,7 +130,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         return persons.asUnmodifiableObservableList().stream()
                 .filter(p -> !p.equals(exclude))
                 .filter(candidate::isSimilarNameTo)
-                .max(Comparator.comparingInt(p -> countCommonCharsMultiset(
+                .max(Comparator.comparingInt(p -> SimilarityScoringUtil.longestContiguousMatch(
                         candidate.getName().fullName, p.getName().fullName)));
     }
 
@@ -137,7 +139,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         return persons.asUnmodifiableObservableList().stream()
                 .filter(p -> !p.equals(exclude))
                 .filter(candidate::isSimilarPhoneTo)
-                .max(Comparator.comparingInt(p -> countCommonCharsMultiset(
+                .max(Comparator.comparingInt(p -> SimilarityScoringUtil.longestContiguousMatch(
                         candidate.getPhone().value, p.getPhone().value)));
     }
 
@@ -146,31 +148,8 @@ public class AddressBook implements ReadOnlyAddressBook {
         return persons.asUnmodifiableObservableList().stream()
                 .filter(p -> !p.equals(exclude))
                 .filter(candidate::isSimilarAddressTo)
-                .max(Comparator.comparingInt(p -> countCommonCharsMultiset(
+                .max(Comparator.comparingInt(p -> SimilarityScoringUtil.longestContiguousMatch(
                         candidate.getAddress().value, p.getAddress().value)));
-    }
-
-    /**
-     * Count the number of common characters between two strings, treating them as multisets (i.e. counting duplicates).
-     */
-    private int countCommonCharsMultiset(String a, String b) {
-        Map<Character, Long> freqB = b.toLowerCase()
-                .chars()
-                .mapToObj(c -> (char) c)
-                .collect(Collectors.groupingBy(c -> c, Collectors.counting()));
-
-        return (int) a.toLowerCase()
-                .chars()
-                .mapToObj(c -> (char) c)
-                .filter(c -> {
-                    long count = freqB.getOrDefault(c, 0L);
-                    if (count > 0) {
-                        freqB.put(c, count - 1);
-                        return true;
-                    }
-                    return false;
-                })
-                .count();
     }
 
     //// util methods

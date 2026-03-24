@@ -2,6 +2,7 @@ package seedu.address.model;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.product.Product;
 import seedu.address.model.product.UniqueProductList;
+import seedu.address.model.util.SimilarityScoringUtil;
 
 /**
  * Wraps all data at the inventory level
@@ -125,31 +127,8 @@ public class Inventory implements ReadOnlyInventory {
         return products.asUnmodifiableObservableList().stream()
                 .filter(p -> !p.equals(exclude))
                 .filter(candidate::isSimilarNameTo)
-                .max(Comparator.comparingInt(p -> countCommonCharsMultiset(
+                .max(Comparator.comparingInt(p -> SimilarityScoringUtil.longestContiguousMatch(
                         candidate.getName().fullName, p.getName().fullName)));
-    }
-
-    /**
-     * Count the number of common characters between two strings, treating them as multisets (i.e. counting duplicates).
-     */
-    private int countCommonCharsMultiset(String a, String b) {
-        Map<Character, Long> freqB = b.toLowerCase()
-                .chars()
-                .mapToObj(c -> (char) c)
-                .collect(Collectors.groupingBy(c -> c, Collectors.counting()));
-
-        return (int) a.toLowerCase()
-                .chars()
-                .mapToObj(c -> (char) c)
-                .filter(c -> {
-                    long count = freqB.getOrDefault(c, 0L);
-                    if (count > 0) {
-                        freqB.put(c, count - 1);
-                        return true;
-                    }
-                    return false;
-                })
-                .count();
     }
 
     @Override
