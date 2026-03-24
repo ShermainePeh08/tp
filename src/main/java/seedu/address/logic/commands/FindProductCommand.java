@@ -5,10 +5,12 @@ import static java.util.Objects.requireNonNull;
 import seedu.address.logic.Messages;
 import seedu.address.model.Model;
 import seedu.address.model.product.ProductNameContainsKeywordsPredicate;
+import seedu.address.model.person.VendorEmailMatchesProductsPredicate;
 
 /**
  * Finds and lists all products in inventory whose name contains any of the argument keywords.
  * Keyword matching is case insensitive.
+ * Updates contact list to show vendors associated with the listed products.
  */
 public class FindProductCommand extends Command {
 
@@ -22,6 +24,8 @@ public class FindProductCommand extends Command {
             + "Example: " + COMMAND_WORD + " motherboard ssd";
 
     private final ProductNameContainsKeywordsPredicate predicate;
+    public static final String MESSAGE_DISPLAY_CONTACTS = " Contact(s) associated with these products listed on "
+            + "the left!";
 
     public FindProductCommand(ProductNameContainsKeywordsPredicate predicate) {
         this.predicate = predicate;
@@ -32,9 +36,12 @@ public class FindProductCommand extends Command {
         requireNonNull(model);
 
         model.updateFilteredProductList(predicate);
+        VendorEmailMatchesProductsPredicate personPredicate = new VendorEmailMatchesProductsPredicate(
+                model.getFilteredProductList());
+        model.updateFilteredPersonList(personPredicate);
 
         return new CommandResult(
-                String.format(Messages.MESSAGE_PRODUCTS_LISTED_OVERVIEW,
+                String.format(Messages.MESSAGE_PRODUCTS_LISTED_OVERVIEW + MESSAGE_DISPLAY_CONTACTS,
                         model.getFilteredProductList().size()));
     }
 
