@@ -29,6 +29,13 @@ Class JsonSerializableInventory
 Class JsonAdaptedProduct
 }
 
+package "Alias Storage" #F4F6F6{
+Class "<<interface>>\nAliasStorage" as AliasStorage
+Class JsonAliasStorage
+Class JsonSerializableAlias
+class JsonAdaptedAlias
+}
+
 Class HiddenOutside #FFFFFF
 HiddenOutside ..> Storage
 
@@ -36,10 +43,12 @@ StorageManager .up.|> Storage
 StorageManager -down-> "1" UserPrefsStorage
 StorageManager -down-> "1" AddressBookStorage
 StorageManager -down-> "1" InventoryStorage
+StorageManager -down-> "1" AliasStorage
 
 Storage -down-|> UserPrefsStorage
 Storage -down-|> AddressBookStorage
 Storage -down-|> InventoryStorage
+Storage -down-|> AliasStorage
 
 JsonUserPrefsStorage .up.|> UserPrefsStorage
 
@@ -51,5 +60,9 @@ JsonAdaptedPerson --> "*" JsonAdaptedTag
 JsonInventoryStorage .up.|> InventoryStorage
 JsonInventoryStorage ..> JsonSerializableInventory
 JsonSerializableInventory --> "*" JsonAdaptedProduct
+
+JsonAliasStorage .up.|> AliasStorage
+JsonAliasStorage ..> JsonSerializableAlias
+JsonSerializableAlias --> "*" JsonAdaptedAlias
 
 @enduml
