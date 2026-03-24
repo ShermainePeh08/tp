@@ -1018,6 +1018,8 @@ Product name is recommended to meet the following guidelines, otherwise you will
 
 **Contact and Product Names** warnings appear when a new name **shares words** with an existing one. For example, “Cytron Technologies” and “Cytron T.”.
 
+**Contact Phone Numbers** warnings appear when a new phone number **shares at least 3 consecutive digits** with an existing one. For example, “91245678” and “91234783”.
+
 **Contact Addresses** warnings appear when one address **fully contains** the other. For example, “123 Main Street” and “123 Main St”.
 
 </panel>
