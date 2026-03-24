@@ -186,6 +186,13 @@ Examples:
 * `add n/Cytron Technologies Pte. Ltd. p/65480668 (Office), 91234567 (Sales) e/sg.sales@cytron.io a/09 Collyer Quay 
 t/electronics t/wholesale`
 
+<box type="info" seamless>
+
+**Expected output:**<br>
+![add](images/v1.4/add.png =600x)
+
+</box>
+
 <box type="tip" seamless>
 
 **Tip:** A contact can have any number of tags or none at all.
@@ -226,6 +233,13 @@ Format:
 ```
 list
 ```
+
+<box type="info" seamless>
+
+**Expected output:**<br>
+![list](images/v1.4/list.png =600x)
+
+</box>
 
 <div style="height: 30px;"></div>
 
@@ -329,6 +343,13 @@ Examples:
 * `restore`: shows all archived contacts.
 * `restore sg.sales@cytron.io`
 
+<box type="info" seamless>
+
+**Expected output:**<br>
+![restore](images/v1.4/restore%20cytron.png =600x)
+
+</box>
+
 <box type="tip" seamless>
 
 If `EMAIL` is omitted or invalid, all archived contacts will be displayed, so you can find what you want to restore.
@@ -396,6 +417,13 @@ Examples:
 
 <box type="info" seamless>
 
+**Expected output:**<br>
+![addprod](images/v1.4/addprod.png =600x)
+
+</box>
+
+<box type="info" seamless>
+
 If quantity and/or threshold is omitted, it will default to 0.
 If vendor email is omitted, product will not be associated with a vendor.
 
@@ -425,6 +453,13 @@ Format:
 ```
 listproduct
 ```
+
+<box type="info" seamless>
+
+**Expected output:**<br>
+![listprod](images/v1.4/listprod.png =600x)
+
+</box>
 
 <box type="tip" seamless>
 
@@ -469,7 +504,8 @@ The same rules for email that apply to add also apply to edit. For more details 
 
 <box type="info" seamless>
 
-**This feature is currently in progress** and will be available in a future release.
+**Expected output:**<br>
+![findprod](images/v1.4/findprod.png =600x)
 
 `findproduct` will allow you to search for products and view their **full details**, including the associated vendor email — without any text being cut off.
 
@@ -611,6 +647,13 @@ Example:
 * `alias` list all current aliases.
 * `alias list ls` maps `ls` as an alias for the `list` command.
 
+<box type="info" seamless>
+
+**Expected output:**<br>
+![alias](images/v1.4/alias.png =600x)
+
+</box>
+
 <div style="height: 30px;"></div>
 
 #### Undoing the previous change : `undo`
@@ -635,6 +678,17 @@ Format:
 redo
 ```
 
+<box type="info" seamless>
+
+**Expected output:**<br>
+![undo](images/v1.4/undo.png =500x)
+
+<br>
+
+![redo](images/v1.4/redo.png =500x)
+
+</box>
+
 <div style="height: 30px;"></div>
 
 #### Listing all contacts and products : `listall`
@@ -645,6 +699,13 @@ Format:
 ```
 listall
 ```
+
+<box type="info" seamless>
+
+**Expected output:**<br>
+![listall](images/v1.4/listall.png =600x)
+
+</box>
 
 <div style="height: 30px;"></div>
 
