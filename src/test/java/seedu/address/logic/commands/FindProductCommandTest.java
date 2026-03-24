@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_PRODUCTS_LISTED_OVERVIEW;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.logic.commands.FindProductCommand.MESSAGE_DISPLAY_CONTACTS;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalProducts.EGGS;
 import static seedu.address.testutil.TypicalProducts.OIL;
@@ -13,6 +14,7 @@ import static seedu.address.testutil.TypicalProducts.getTypicalInventory;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,6 +24,11 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.VendorVault;
 import seedu.address.model.product.ProductNameContainsKeywordsPredicate;
+import seedu.address.model.person.Person;
+import seedu.address.model.person.VendorEmailMatchesProductsPredicate;
+import seedu.address.model.product.Product;
+import seedu.address.testutil.PersonBuilder;
+import seedu.address.testutil.ProductBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FindProductCommand}.
@@ -61,22 +68,102 @@ public class FindProductCommandTest {
 
     @Test
     public void execute_zeroKeywords_noProductFound() {
-        String expectedMessage = String.format(MESSAGE_PRODUCTS_LISTED_OVERVIEW, 0);
         ProductNameContainsKeywordsPredicate predicate = preparePredicate(" ");
+        String expectedMessage = String.format(MESSAGE_PRODUCTS_LISTED_OVERVIEW + MESSAGE_DISPLAY_CONTACTS, 0);
         FindProductCommand command = new FindProductCommand(predicate);
+
         expectedModel.updateFilteredProductList(predicate);
+        expectedModel.updateFilteredPersonList(
+                new VendorEmailMatchesProductsPredicate(expectedModel.getFilteredProductList()));
+
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(Collections.emptyList(), model.getFilteredProductList());
     }
 
     @Test
     public void execute_multipleKeywords_multiplePersonsFound() {
-        String expectedMessage = String.format(MESSAGE_PRODUCTS_LISTED_OVERVIEW, 3);
         ProductNameContainsKeywordsPredicate predicate = preparePredicate("Rice Oil Eggs");
+        String expectedMessage = String.format(MESSAGE_PRODUCTS_LISTED_OVERVIEW + MESSAGE_DISPLAY_CONTACTS, 3);
         FindProductCommand command = new FindProductCommand(predicate);
+
         expectedModel.updateFilteredProductList(predicate);
+        expectedModel.updateFilteredPersonList(
+                new VendorEmailMatchesProductsPredicate(expectedModel.getFilteredProductList()));
+
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(Arrays.asList(RICE, OIL, EGGS), model.getFilteredProductList());
+    }
+
+    @Test
+    public void execute_findProduct_updatesFilteredPersonListToMatchedVendors() {
+        Person matchedVendor = new PersonBuilder()
+                .withName("Matched Vendor")
+                .withEmail("vendor@example.com")
+                .build();
+        Person unmatchedVendor = new PersonBuilder()
+                .withName("Unmatched Vendor")
+                .withEmail("other@example.com")
+                .build();
+
+        Product matchedProduct = new ProductBuilder()
+                .withIdentifier("SKU-MATCH")
+                .withName("Acme Board")
+                .withVendorEmail("vendor@example.com")
+                .build();
+
+        Model localModel = new ModelManager(new VendorVault(), new UserPrefs(), new Aliases());
+        localModel.addPerson(matchedVendor);
+        localModel.addPerson(unmatchedVendor);
+        localModel.addProduct(matchedProduct);
+
+        FindProductCommand command = new FindProductCommand(preparePredicate("Acme"));
+        command.execute(localModel);
+
+        assertEquals(1, localModel.getFilteredProductList().size());
+        assertEquals(List.of(matchedVendor), localModel.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_noVendorEmail_noContactShown() {
+        Product productWithoutVendor = new ProductBuilder()
+                .withIdentifier("SKU-NOVENDOR")
+                .withName("No Vendor Board")
+                .withoutVendorEmail()
+                .build();
+
+        Model localModel = new ModelManager(new VendorVault(), new UserPrefs(), new Aliases());
+        localModel.addPerson(new PersonBuilder().withEmail("vendor@example.com").build());
+        localModel.addProduct(productWithoutVendor);
+
+        FindProductCommand command = new FindProductCommand(preparePredicate("No Vendor"));
+        command.execute(localModel);
+
+        assertEquals(List.of(productWithoutVendor), localModel.getFilteredProductList());
+        assertEquals(Collections.emptyList(), localModel.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_archivedMatchedVendor_contactExcluded() {
+        Person archivedMatchedVendor = new PersonBuilder()
+                .withName("Archived Vendor")
+                .withEmail("archived@example.com")
+                .build()
+                .archive();
+        Product matchedProduct = new ProductBuilder()
+                .withIdentifier("SKU-ARCH")
+                .withName("Archived Vendor Board")
+                .withVendorEmail("archived@example.com")
+                .build();
+
+        Model localModel = new ModelManager(new VendorVault(), new UserPrefs(), new Aliases());
+        localModel.addPerson(archivedMatchedVendor);
+        localModel.addProduct(matchedProduct);
+
+        FindProductCommand command = new FindProductCommand(preparePredicate("Archived Vendor"));
+        command.execute(localModel);
+
+        assertEquals(List.of(matchedProduct), localModel.getFilteredProductList());
+        assertEquals(Collections.emptyList(), localModel.getFilteredPersonList());
     }
 
     @Test
