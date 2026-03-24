@@ -53,16 +53,15 @@ public class StringUtil {
     }
 
     /**
-     * Returns a token-level partial match score between {@code sentenceWord} and {@code word}, ignoring case.
-     * Score ordering is: exact (3) &gt; prefix (2) &gt; substring (1) &gt; no match (0).
+     * Returns a token-level partial match score between {@code sentenceWord} and {@code word}. Ignores case.
      *
      * @param sentenceWord cannot be null, cannot be empty, must be a single word
      * @param word cannot be null, cannot be empty, must be a single word
      */
     public static int getWordPartialMatchScoreIgnoreCase(String sentenceWord, String word) {
-        String preppedSentenceWord = normalizeAndValidateSingleWord(sentenceWord, ERROR_SENTENCE_WORD_EMPTY,
+        String preppedSentenceWord = normalizeSingleWord(sentenceWord, ERROR_SENTENCE_WORD_EMPTY,
                 ERROR_SENTENCE_WORD_SINGLE);
-        String preppedWord = normalizeAndValidateSingleWord(word, ERROR_WORD_EMPTY, ERROR_WORD_SINGLE);
+        String preppedWord = normalizeSingleWord(word, ERROR_WORD_EMPTY, ERROR_WORD_SINGLE);
 
         String sentenceWordLower = preppedSentenceWord.toLowerCase(Locale.ROOT);
         String wordLower = preppedWord.toLowerCase(Locale.ROOT);
@@ -79,7 +78,7 @@ public class StringUtil {
         return WORD_MATCH_SCORE_NO_MATCH;
     }
 
-    private static String normalizeAndValidateSingleWord(String value, String emptyMessage, String singleWordMessage) {
+    private static String normalizeSingleWord(String value, String emptyMessage, String singleWordMessage) {
         requireNonNull(value);
 
         String preppedValue = value.trim();

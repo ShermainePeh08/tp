@@ -122,9 +122,8 @@ public class StringUtilTest {
 
     @Test
     public void getWordPartialMatchScoreIgnoreCase_multipleSentenceWords_throwsIllegalArgumentException() {
-        assertThrows(IllegalArgumentException.class,
-            ERROR_SENTENCE_WORD_SINGLE, () ->
-                        StringUtil.getWordPartialMatchScoreIgnoreCase("two words", "typical"));
+        assertThrows(IllegalArgumentException.class, ERROR_SENTENCE_WORD_SINGLE, () ->
+                StringUtil.getWordPartialMatchScoreIgnoreCase("two words", "typical"));
     }
 
     @Test

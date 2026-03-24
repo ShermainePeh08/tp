@@ -1,5 +1,7 @@
 package seedu.address.model.person;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.function.Predicate;
 
 /**
@@ -8,8 +10,13 @@ import java.util.function.Predicate;
 public class NameEqualsKeywordsPredicate implements Predicate<Person> {
     private final Person person;
 
+    /**
+     * Creates a predicate that matches a person's name exactly.
+     *
+     * @param person cannot be null
+     */
     public NameEqualsKeywordsPredicate(Person person) {
-        this.person = person;
+        this.person = requireNonNull(person);
     }
 
     @Override
