@@ -668,7 +668,7 @@ clearproduct
 
 #### Viewing help : `help`
 
-Shows a message (tbd) explaining how to access the help page.
+Opens a window with summary of commands.
 
 Format:
 ```
