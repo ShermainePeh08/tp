@@ -10,17 +10,17 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import seedu.address.model.person.Person;
 import seedu.address.model.product.Product;
-
 /**
- * Displays the inventory list in the right panel,
- * with an {@link InventoryStatsPanel} injected at the top.
+ * Displays the inventory list in the right panel.
  */
 public class InventoryListPanel extends UiPart<Region> {
 
     private static final String FXML = "InventoryListPanel.fxml";
+    private static final int NAME_COLUMN_MAX_WIDTH = 600;
 
     private static final String LOW_STOCK_STYLE =
             "-fx-background-color: #e55d5d;"
@@ -42,17 +42,21 @@ public class InventoryListPanel extends UiPart<Region> {
     private ListView<Product> inventoryListView;
 
     @FXML
-    private StackPane statsPlaceholder;
+    private VBox statsContainer;
 
     /**
      * Creates an InventoryListPanel using real product data.
      */
-    public InventoryListPanel(ObservableList<Product> productList) {
+    public InventoryListPanel(ObservableList<Product> productList,
+                              ObservableList<Person> activePersonList,
+                              ObservableList<Person> allPersonList,
+                              ObservableList<Product> allProductList) {
         super(FXML);
 
-        // Inject the stats panel into the top placeholder
-        InventoryStatsPanel statsPanel = new InventoryStatsPanel(productList);
-        statsPlaceholder.getChildren().setAll(statsPanel.getRoot());
+        // Inject stats panel into the top container
+        InventoryStatsPanel statsPanel = new InventoryStatsPanel(
+                productList, activePersonList, allPersonList, allProductList);
+        statsContainer.getChildren().setAll(statsPanel.getRoot());
 
         SortedList<Product> sortedInventory =
                 new SortedList<>(productList, this::compareInventoryItems);
@@ -63,11 +67,8 @@ public class InventoryListPanel extends UiPart<Region> {
     }
 
     /**
-     * Comparator:
-     * Products that are low-stock (based on their individual restock thresholds)
-     * are shown first, followed by the remaining products.
-     * Within the low-stock and non low-stock groups,
-     * products are sorted by quantity in ascending order.
+     * Comparator used to sort inventory items.
+     * Low-stock items appear first, then sorted by quantity.
      */
     private int compareInventoryItems(Product a, Product b) {
         int qtyA = a.getQuantity().value;
@@ -81,14 +82,17 @@ public class InventoryListPanel extends UiPart<Region> {
         if (lowA && !lowB) {
             return -1;
         }
+
         if (!lowA && lowB) {
             return 1;
         }
+
         return Integer.compare(qtyA, qtyB);
     }
 
-    // ── List cell ─────────────────────────────────────────────────────────────
-
+    /**
+     * Creates a custom cell for displaying inventory rows.
+     */
     private ListCell<Product> createInventoryCell() {
         return new ListCell<>() {
             @Override
@@ -115,7 +119,7 @@ public class InventoryListPanel extends UiPart<Region> {
                 nameLabel.setTextFill(Color.WHITE);
                 nameLabel.setWrapText(true);
                 nameLabel.setMinWidth(NAME_COLUMN_MIN_WIDTH);
-                nameLabel.setMaxWidth(Double.MAX_VALUE);
+                nameLabel.setMaxWidth(NAME_COLUMN_MAX_WIDTH);
                 HBox.setHgrow(nameLabel, Priority.ALWAYS);
 
                 Label qtyLabel = new Label(String.valueOf(qty));
@@ -144,7 +148,13 @@ public class InventoryListPanel extends UiPart<Region> {
         };
     }
 
+    /**
+     * Returns the correct style depending on stock level.
+     */
     private String getStockStyle(int qty, int threshold) {
-        return qty <= threshold ? LOW_STOCK_STYLE : NORMAL_STOCK_STYLE;
+        if (qty <= threshold) {
+            return LOW_STOCK_STYLE;
+        }
+        return NORMAL_STOCK_STYLE;
     }
 }
