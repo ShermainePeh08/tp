@@ -293,7 +293,7 @@ Examples:
 
 <box type="info" seamless>
 
-**Expected output:** The contact is removed from the active list and will no longer appear on the home page. However, it will still be available in the archived vendors page.
+**Expected output:** The contact will no longer appear on the home page. However, it will still be available in the archived vendors page.
 
 </box>
 
@@ -373,7 +373,7 @@ clear
 
 <box type="info" seamless>
 
-**Expected output:** Once confirmed, all contacts are permanently removed. The home page will now be empty.
+**Expected output:** Once confirmed, all contacts are permanently removed. The contact list on the home page will now be empty.
 
 </box>
 
@@ -495,7 +495,7 @@ Examples:
 
 <box type="info" seamless>
 
-**Expected output:** The product is removed from the active list and will no longer appear on the home page. However, it will still be available in the archived products page.
+**Expected output:** The product will no longer appear on the home page. However, it will still be available in the archived products page.
 
 </box>
 
@@ -562,7 +562,7 @@ Examples:
 
 <box type="info" seamless>
 
-**Expected output:** Once confirmed, the product is permanently removed from the list. This action cannot be undone — consider using [`archiveproduct`](#archiving-a-product-archiveproduct) instead.
+**Expected output:** Once confirmed, the product is permanently removed from the list.
 
 </box>
 
@@ -581,7 +581,7 @@ clearproduct
 
 <box type="info" seamless>
 
-**Expected output:** Once confirmed, all products are permanently removed. This action cannot be undone.
+**Expected output:** Once confirmed, all products are permanently removed. The product list on the home page will now be empty.
 
 </box>
 
