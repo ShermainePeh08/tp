@@ -152,6 +152,38 @@ public class FindCommandTest {
     }
 
     @Test
+    public void execute_keywordMatchesArchivedContact_excludesArchivedAndLinkedProducts() {
+        Person archivedCarl = CARL.archive();
+        Person activeOther = new PersonBuilder().withName("Active").withPhone("55555")
+                .withEmail("active@example.com").withAddress("Active Street").build();
+
+        Product archivedLinkedProduct = new ProductBuilder().withIdentifier("SKU-7777")
+                .withName("Archived Item").withVendorEmail(archivedCarl.getEmail().toString()).build();
+
+        AddressBook addressBook = new AddressBook();
+        addressBook.addPerson(archivedCarl);
+        addressBook.addPerson(activeOther);
+
+        Inventory inventory = new Inventory();
+        inventory.addProduct(archivedLinkedProduct);
+
+        Model localModel = new ModelManager(
+                new VendorVault(addressBook, inventory), new UserPrefs(), new Aliases());
+        Model localExpectedModel = new ModelManager(
+                new VendorVault(addressBook, inventory), new UserPrefs(), new Aliases());
+
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW + MESSAGE_DISPLAY_PRODUCTS, 0);
+        NameContainsKeywordsScoredPredicate predicate = preparePredicate("Carl");
+        FindCommand command = new FindCommand(predicate);
+
+        localExpectedModel.updateFilteredPersonList(predicate);
+        updateExpectedProductFilter(localExpectedModel);
+
+        assertCommandSuccess(command, localModel, expectedMessage, localExpectedModel);
+        assertEquals(Collections.emptyList(), localModel.getFilteredPersonList());
+    }
+
+    @Test
     public void getPendingConfirmation_returnsInactivePendingConfirmation() {
         NameContainsKeywordsScoredPredicate predicate = preparePredicate(" ");
         FindCommand command = new FindCommand(predicate);
