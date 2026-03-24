@@ -112,9 +112,9 @@ Some example commands you can try:
 
 * `delete sales@techsource.com` : Deletes `TechSource Electronics`.
 
-* `addproduct id/SKU-1003 n/Arduino Uno R4 q/50 th/10 e/sales@techsource.com`: Adds a product `Arduino Uno`.
+* `addproduct id/SKU-1003 n/Arduino Uno R4 q/50 th/10 e/sales@techsource.com`: Adds a product `Arduino Uno R4`.
 
-* `deleteproduct SKU-1003`: Deletes `Arduino Uno`.
+* `deleteproduct SKU-1003`: Deletes `Arduino Uno R4`.
 
 5\. Refer to the [Features](#features) below for details of each command, or [Command Summary](#command-summary) for a quick summary of all commands.
 
