@@ -284,9 +284,31 @@ The same rules for multiple phone numbers and duplicates that apply to `add` als
 
 <div style="height: 30px;"></div>
 
-#### Locating contacts: `find` (coming soon)
+#### Locating contacts: `find`
 
-**This feature is currently in progress** and will be available in a future release. `find` will allow you to view a contact details in **full**.
+Finds contacts whose name matches the given keyword(s).
+
+Format:
+
+```
+find KEYWORD [MORE_KEYWORDS]
+```
+
+Examples:
+* `find syn`
+
+<box type="info" seamless>
+
+**Expected output:**<br>
+![find](images/v1.4/find.png =600x)
+
+</box>
+
+<box type="info" seamless>
+
+Matching is partial and case-insensitive. The order of the keywords does not matter.
+
+</box>
 
 <div style="height: 30px;"></div>
 
@@ -728,16 +750,16 @@ exit
 
 ### Contact Commands
 
-| Action                | Command                                                                 | Example                                                                                                    | What it does                                                           |
-|-----------------------|-------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
-| **Add Contact**       | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`                 | `add n/TechSource Electronics p/61234567 e/sales@techsource.com a/15 Kallang Way, Singapore t/electronics` | Adds a contact                                                         |
-| **Edit Contact**      | `edit EMAIL [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`  | `edit sales@techsource.com n/TechSource p/61234568`                                                        | Edits a contact's details                                              |
-| **Delete Contact**    | `delete EMAIL`                                                          | `delete sales@techsource.com`                                                                              | Deletes a contact                                                      |
-| **List Contacts**     | `list`                                                                  | &nbsp;                                                                                                     | Lists active contacts                                                  |
-| **Find Contacts**     | `find KEYWORD [MORE_KEYWORDS]`                                          | `find TechSource`                                                                                          | Lists all contacts matching `KEYWORD`                                  |
-| **Archive Contact**   | `archive EMAIL`                                                         | `archive sales@techsource.com`                                                                             | Archives a contact                                                     |
-| **Restore Contact**   | `restore [EMAIL]`                                                       | `restore sales@techsource.com`                                                                             | Restores an archived contact; lists all archived if no email given     |
-| **Clear Contacts**    | `clear`                                                                 | &nbsp;                                                                                                     | Clears all contacts                                                    |
+| Action                | Command                                                                 | Example                                                                                                    | What it does                                                       |
+|-----------------------|-------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
+| **Add Contact**       | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`                 | `add n/TechSource Electronics p/61234567 e/sales@techsource.com a/15 Kallang Way, Singapore t/electronics` | Adds a contact                                                     |
+| **Edit Contact**      | `edit EMAIL [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`  | `edit sales@techsource.com n/TechSource p/61234568`                                                        | Edits a contact's details                                          |
+| **Delete Contact**    | `delete EMAIL`                                                          | `delete sales@techsource.com`                                                                              | Deletes a contact                                                  |
+| **List Contacts**     | `list`                                                                  | &nbsp;                                                                                                     | Lists active contacts                                              |
+| **Find Contacts**     | `find KEYWORD [MORE_KEYWORDS]`                                          | `find TechSource`                                                                                          | Lists contacts whose name matches `KEYWORD`                        |
+| **Archive Contact**   | `archive EMAIL`                                                         | `archive sales@techsource.com`                                                                             | Archives a contact                                                 |
+| **Restore Contact**   | `restore [EMAIL]`                                                       | `restore sales@techsource.com`                                                                             | Restores an archived contact; lists all archived if no email given |
+| **Clear Contacts**    | `clear`                                                                 | &nbsp;                                                                                                     | Clears all contacts                                                |
 
 <div style="height: 30px;"></div>
 
