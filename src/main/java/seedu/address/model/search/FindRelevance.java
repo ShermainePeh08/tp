@@ -1,4 +1,4 @@
-package seedu.address.model.person;
+package seedu.address.model.search;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.StringUtil.WORD_MATCH_SCORE_EXACT;
@@ -12,7 +12,7 @@ import java.util.Locale;
 /**
  * This class defines the ranking contract for find results:
  * exact token match &gt; prefix token match &gt; substring token match,
- * then fewer unmatched characters, then alphabetical by full name.
+ * then fewer unmatched characters, then alphabetical by sort key.
  */
 public final class FindRelevance {
     /**
@@ -21,7 +21,7 @@ public final class FindRelevance {
     public static final Comparator<Score> SCORE_COMPARATOR =
             Comparator.comparingInt((Score score) -> score.tier().getWeight()).reversed()
                     .thenComparingInt(Score::unmatchedChars)
-                    .thenComparing(score -> score.fullName().toLowerCase(Locale.ROOT));
+                    .thenComparing(score -> score.sortKey().toLowerCase(Locale.ROOT));
 
     private static final String MESSAGE_UNMATCHED_CHARS_NEGATIVE = "unmatchedChars must be non-negative";
 
@@ -51,14 +51,14 @@ public final class FindRelevance {
     /**
      * Immutable relevance score.
      */
-    public record Score(MatchTier tier, int unmatchedChars, String fullName) {
+    public record Score(MatchTier tier, int unmatchedChars, String sortKey) {
 
         /**
          * Creates a relevance score tuple.
          */
         public Score {
             requireNonNull(tier);
-            requireNonNull(fullName);
+            requireNonNull(sortKey);
             if (unmatchedChars < 0) {
                 throw new IllegalArgumentException(MESSAGE_UNMATCHED_CHARS_NEGATIVE);
             }
