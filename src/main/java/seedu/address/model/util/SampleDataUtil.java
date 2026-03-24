@@ -43,7 +43,9 @@ public class SampleDataUtil {
             new Person(personName("Soonheng Retail & Logistics"), new Phone("+60 22 3650 7080"),
                     new Email("orders@soonheng.com.my"), new Address("Jalan Ciku No. 03, Kluang"), getTagSet()),
             new Person(personName("Audio House"), new Phone("68412122"), new Email("sales@ah.com"),
-                    new Address("Audio House Building #01-01"), getTagSet("electronics", "home"))
+                    new Address("Audio House Building #01-01"), getTagSet("electronics", "home")),
+            new Person(personName("Synapse Supply (Germany)"), new Phone("+49 30 9212 8543"),
+                    new Email("hello@synapse.de"), new Address("Beroemde Straat 62"), getTagSet())
         };
     }
 
@@ -79,7 +81,11 @@ public class SampleDataUtil {
             new Product(new Identifier("CAM-817"), productName("Nikon 24-70MM Camera"), new Quantity("1"),
                     new RestockThreshold("3"), new Email("sales@ah.com")),
             new Product(new Identifier("DE/339"), productName("NVMe SSD 2TB"), new Quantity("10"),
-                    new RestockThreshold("10"), new Email("support.rochor@yahoo.com"))
+                    new RestockThreshold("10"), new Email("support.rochor@yahoo.com")),
+            new Product(new Identifier("CAM-818"), productName("Fujifilm Instax Camera"), new Quantity("5"),
+                    new RestockThreshold("6"), new Email("sales@ah.com")),
+            new Product(new Identifier("CAM-819"), productName("Canon EOS R5 Camera"), new Quantity("6"),
+                    new RestockThreshold("4"), new Email("sales@ah.com"))
         };
     }
 
