@@ -134,7 +134,7 @@ Some example commands you can try:
 
 VendorVault keeps your data in one of three states:
 
-| <div style="width:200px">State</div>| <div style="width:300px">What it means</div>| <div style="width:300px">Related commands</div>                                           |
+| <div style="width:200px">State</div>| <div style="width:250px">What it means</div>| <div style="width:250px">Related commands</div>                                           |
 |--------------|------------------------------------------------|-----------------------------------------------------------|
 | **Active**   | Visible on the home page        | `listall`                    |
 | **Archived** | Hidden but recoverable           | `archive` / `archiveproduct`                              |
@@ -183,7 +183,7 @@ add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​
 Examples:
 
 * `add n/Adafruit Industries p/64601234 e/support@adafruit.com a/151 Varick St, New York, NY 10013, USA`
-* `add n/Cytron Technologies Pte. Ltd. p/65480668 (Office), 91234567 (Sales) e/sg.sales@cytron.io a/09 Collyer Quay 
+* `add n/Cytron Technologies Pte. Ltd. p/65480668 (Office), 91234567 (Sales) e/sg.sales@cytron.io a/09 Collyer Quay
 t/electronics t/wholesale`
 
 <box type="info" seamless>
@@ -401,7 +401,7 @@ Examples:
 
 </box>
 
-For more details on possible warnings and errors, refer to the [troubleshooting guide](#troubleshooting-delete-contact) 
+For more details on possible warnings and errors, refer to the [troubleshooting guide](#troubleshooting-delete-contact)
 below.
 
 <div style="height: 30px;"></div>
@@ -575,7 +575,7 @@ Examples:
 
 <box type="tip" seamless>
 
-**Tip:** Tip: Archive a product you no longer have, but may bring back in future. To permanently delete a product, use `deleteproduct`.
+**Tip:** Archive a product you no longer have, but may bring back in future. To permanently delete a product, use `deleteproduct`.
 
 </box>
 
@@ -640,7 +640,7 @@ Examples:
 
 </box>
 
-For more details on possible warnings and errors, refer to the [troubleshooting guide](#troubleshooting-deleteproduct) 
+For more details on possible warnings and errors, refer to the [troubleshooting guide](#troubleshooting-deleteproduct)
 below.
 
 <div style="height: 30px;"></div>
@@ -677,13 +677,13 @@ help
 
 <div style="height: 30px;"></div>
 
-#### Add a command alias : `alias`
+#### Adding a command alias : `alias`
 
 Creates a shortcut to an existing command (excluding `alias`).
 
 Format:
 ```
-alias ORIGINAL_COMMAND ALIAS
+alias [ORIGINAL_COMMAND] [ALIAS]
 ```
 
 Example:
@@ -694,6 +694,27 @@ Example:
 
 **Expected output:**<br>
 ![alias](images/v1.4/alias.png =600x)
+
+</box>
+
+<div style="height: 30px;"></div>
+
+#### Deleting a command alias : `deletealias`
+
+Removes an existing shortcut.
+
+Format:
+```
+deletealias ALIAS
+```
+
+Example:
+* `deletealias ls` removes `ls` as an alias
+
+<box type="info" seamless>
+
+**Expected output:**
+Removes alias given.
 
 </box>
 
@@ -724,11 +745,7 @@ redo
 <box type="info" seamless>
 
 **Expected output:**<br>
-![undo](images/v1.4/undo.png =500x)
-
-<br>
-
-![redo](images/v1.4/redo.png =500x)
+![undo](images/v1.4/undo.png =445x) ![redo](images/v1.4/redo.png =445x)
 
 </box>
 
@@ -801,14 +818,15 @@ exit
 
 ### General Commands
 
-| <div style="width:100px">Action</div>| <div style="width:200px">Command</div>| <div style="width:200px">Example</div>| What it does|
-|--------------|--------------------------------------------------|---------------------------------|-----------------------------------------------------------|
-| **Alias**           | `alias [ORIGINAL_COMMAND] [ALIAS]`                  | `alias list ls` | Adds a new alias; lists all aliases if no arguments given |
-| **Undo**            | `undo`                             | &nbsp;          | Undoes previous change                                    |
-| **Redo**     | `redo`                             | &nbsp;          | Redoes last undone change                                 |
-| **List All** | `listall`                          | &nbsp;          | Lists all active contacts and products                    |
-| **Help**     | `help`                             | &nbsp;          | Shows help message                                        |
-| **Exit**     | `exit`                             | &nbsp;          | Exits VendorVault                                         |
+| <div style="width:100px">Action</div> | <div style="width:200px">Command</div> | <div style="width:200px">Example</div> | What it does                                              |
+|---------------------------------------|----------------------------------------|---------------------------------------|-----------------------------------------------------------|
+| **Alias**                             | `alias [ORIGINAL_COMMAND] [ALIAS]`     | `alias list ls`                       | Adds a new alias; lists all aliases if no arguments given |
+| **Delete Alias**                      | `deletealias [ALIAS]`                  | `deletealias ls`                      | Deletes an existing alias                                 |
+| **Undo**                              | `undo`                                 | &nbsp;                                | Undoes previous change                                    |
+| **Redo**                              | `redo`                                 | &nbsp;                                | Redoes last undone change                                 |
+| **List All**                          | `listall`                              | &nbsp;                                | Lists all active contacts and products                    |
+| **Help**                              | `help`                                 | &nbsp;                                | Shows a summary of commands                               |
+| **Exit**                              | `exit`                                 | &nbsp;                                | Exits VendorVault                                         |
 
 --------------------------------------------------------------------------------------------------------------------
 

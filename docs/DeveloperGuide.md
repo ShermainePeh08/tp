@@ -130,6 +130,10 @@ The `Model` component
 * stores a `UserPref` object that represents the user’s preferences. This is exposed as a `ReadOnlyUserPref` object.
 * does not depend on any of the other three components.
 
+**Archived records** are kept in the same data structures rather than moved to a separate list:
+* A `Person` is considered archived when its tag set contains the reserved `"archived"` tag. `Person#archive()` / `Person#restore()` return new immutable copies with the tag added or removed.
+* A `Product` carries a dedicated `boolean isArchived` field. `Product#archive()` / `Product#restore()` return new immutable copies with the flag toggled.
+
 <box type="info" seamless>
 
 **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
@@ -260,11 +264,11 @@ Given that VendorVault’s data size is expected to remain relatively small (e.g
 **Aspect: Granularity of undo/redo scope:**
 
 * **Alternative 1 (current choice):** Single unified VendorVault snapshot per commit.
-    * Pros: One consistent state per commit makes it simple to reason about as one undo always undoes exactly one user action regardless of whether it touched contacts, products, or both. 
+    * Pros: One consistent state per commit makes it simple to reason about as one undo always undoes exactly one user action regardless of whether it touched contacts, products, or both.
     * Cons: Even if only contacts are modified, the full inventory snapshot is stored too, wasting memory.
 
 * **Alternative 2:** Separate versioned histories for AddressBook and Inventory.
-    * Pros: More fine-grained memory usage.  
+    * Pros: More fine-grained memory usage.
     * Cons: Significantly increases complexity. A single user action that touches both (e.g. clear) would need to commit to both histories atomically, and undo would need to roll back both in sync, increasing the risk of histories becoming desynchronised.
 
 Since VendorVault’s data size is expected to be small and the number of undoable actions per session is unlikely to be large, the additional memory usage from storing full snapshots of both internally is acceptable, to get more consistent undo behaviour.
@@ -276,7 +280,7 @@ Since VendorVault’s data size is expected to be small and the number of undoab
     * Cons: Future command implementors must remember to call commit.
 
 * **Alternative 2:** LogicManager automatically commits after every successful command execution.
-    * Pros: Centralises the responsibility in one place. 
+    * Pros: Centralises the responsibility in one place.
     * Cons: Read-only commands (e.g. list, find) would create unnecessary snapshots unless they are explicitly excluded, requiring a marker interface or flag on the Command class.
 
 Given that only certain commands should create undoable states, we chose Alternative 1 as it gives each command explicit control over when a snapshot is created. This avoids unnecessary snapshots for read-only commands and keeps the undo history meaningful.
@@ -353,103 +357,137 @@ Preserving draft input improves user experience and is easy to implement with mi
 <div style="height: 10px;"></div>
 
 ### Data Archiving Feature
+
 #### Implementation
-{currently for vendor only}
 
-The archive feature allows vendor contacts to be hidden from the main list without permanently deleting them. Archived vendors remain stored in the system and can be restored later.
+The archive feature allows both vendor contacts and products to be hidden from the main lists without permanently deleting them. Archived records remain stored in the system and can be restored at any time.
 
-The feature introduces two commands:
+The feature introduces four commands:
 ```
-archive EMAIL
-restore EMAIL
+archive EMAIL                 — archives a vendor contact
+restore [EMAIL]               — restores an archived vendor; lists all archived vendors if no email given
+archiveproduct IDENTIFIER     — archives a product
+restoreproduct [IDENTIFIER]   — restores an archived product; lists all archived products if no identifier given
 ```
 
-Internally, vendors are represented using the `Person` class. A boolean field `archived` is introduced in the `Person` model to track whether a vendor is archived.
+**Vendor archiving** — `Person` uses a tag-based approach: `isArchived()` checks whether the person's tag set contains an `"archived"` tag. `Person#archive()` returns a new `Person` with the tag added; `Person#restore()` returns a new `Person` with the tag removed.
 
+**Product archiving** — `Product` uses a dedicated `boolean isArchived` field. `Product#archive()` and `Product#restore()` return new instances with the flag toggled accordingly.
 
-Archived vendors are stored in the same `AddressBook` data structure as active vendors. Instead of deleting vendors, the `archived` field is set to `true`.
-
-The archive and restore operations are exposed through the `Model` interface:
+Both sets of operations are exposed through the `Model` interface:
 ```
 Model#archivePerson(Person person)
 Model#restorePerson(Person person)
+Model#archiveProduct(Product product)
+Model#restoreProduct(Product product)
 ```
 
-These operations update the `Person` object.
+The `ModelManager` implementations call `addressBook.setPerson()` and `inventory.setProduct()` respectively to swap the old record for the newly created immutable copy.
 
-#### Command Flow
+#### Usage Scenario
+##### Vendor Archiving
 
-The following sequence occurs when executing `archive support@adafruit.com`:
+Given below is an example of the vendor archive/restore lifecycle.
+
+**Step 1.** The vendor list contains two active vendors, Alice and Bob.
+
+<puml src="diagrams/ArchiveState0.puml" />
+
+**Step 2.** The user executes `archive alice@example.com`. Alice's `Person` object is replaced with a copy that has the `"archived"` tag added. Because the active filtered list excludes archived persons, Alice disappears from the main view.
+
+<puml src="diagrams/ArchiveState1.puml" />
+
+**Step 3.** The user executes `restore alice@example.com`. Alice's `Person` object is replaced with a copy that has the `"archived"` tag removed. She reappears in the main list.
+
+<puml src="diagrams/ArchiveState2.puml" />
+
+<br>
+
+<box type="info" seamless>
+
+`archiveproduct` / `restoreproduct` follow the same lifecycle as described above, operating on `Product` objects in the `Inventory` instead of `Person` objects in the `AddressBook`.
+</box>
+
+
+The sequence diagram below shows the interactions within the `Logic` component when `archive support@adafruit.com` is executed:
+
+<puml src="diagrams/ArchiveSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the archive command" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `ArchiveCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of the diagram.
+
+</box>
+
+The sequence diagram below shows the interactions for `restore support@adafruit.com`:
+
+<puml src="diagrams/RestoreSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the restore command" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `RestoreCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of the diagram.
+
+</box>
+
+Similarly, how an `archive` operation goes through the `Model` component is shown below:
+
+<puml src="diagrams/ArchiveSequenceDiagram-Model.puml" alt="ArchiveSequenceDiagram-Model" />
+
+Similarly, how a `restore` operation goes through the `Model` component is shown below:
+
+<puml src="diagrams/RestoreSequenceDiagram-Model.puml" alt="RestoreSequenceDiagram-Model" />
+
+In full, the steps for `archive support@adafruit.com` are:
 
 1. `AddressBookParser` identifies the command word `archive`.
 2. `ArchiveCommandParser` parses the email argument.
 3. An `ArchiveCommand` object is created.
 4. `LogicManager` executes the command.
-5. The command retrieves the vendor from the filtered list.
-6. `Model.archivePerson()` is called.
-7. The `Person` object is replaced with a new instance with `archived = true`.
-8. The UI updates automatically because archived vendors are excluded from the filtered list.
+5. The command searches the **full** `VendorVault` person list (not just the filtered list) for the matching email.
+6. `Model#archivePerson()` is called, replacing the `Person` with an archived copy via `Person#archive()`.
+7. `Model#commitVendorVault()` is called to save the state for undo/redo.
+8. The UI updates automatically because archived vendors are excluded from the active filtered list.
 
-The `restore EMAIL` command follows a similar flow but sets `archived = false`.
+The `restore EMAIL` command follows a similar flow: it searches only the archived subset of persons, calls `Model#restorePerson()`, then commits. If no email is provided (or the email is not found), the filtered list is switched to show only archived vendors as a convenience.
 
-#### Filtering Behaviour
+<box type="info" seamless>
 
-Archived vendors are hidden from the default UI display.
+`archiveproduct IDENTIFIER` and `restoreproduct IDENTIFIER` mirror this flow against the `Inventory`, using `Model#archiveProduct()` / `Model#restoreProduct()`.
+</box>
 
-The model maintains a filtered list where:
+The model also maintains two constant predicates:
+
+```java
+PREDICATE_SHOW_ACTIVE_PERSONS  = person  -> !person.isArchived()
+PREDICATE_SHOW_ACTIVE_PRODUCTS = product -> !product.isArchived()
 ```
-person -> !person.isArchived()
-```
 
-This ensures archived vendors remain stored but are not displayed in the main vendor list.
-
-When a vendor is restored, the archived flag is set to `false`, causing the vendor to reappear in the UI.
-
-#### Error Handling
-
-Error handling is implemented for email lookups.
-{more implementations to be added}
-
-
-If the email does not match a valid target, a `CommandException` is thrown.
-
-**Model Layer**
-
-Protects internal state consistency. For example, attempting to archive an already archived vendor results in an `IllegalArgumentException`.
+These are applied by default so that archived records are hidden from the main display. When `restore` (without an argument) or `restoreproduct` (without an identifier or with an unknown identifier) is executed, `updateFilteredPersonList(Person::isArchived)` or `updateFilteredProductList(Product::isArchived)` is called temporarily to surface the archived records as a guide to the user.
 
 #### Design Considerations
 
-**Aspect: Representation of archived vendors**
+**Aspect: Representation of archived vendors (`Person`)**
 
-Option 1 (Current implementation): Use a boolean `archived` flag in the `Person` model.
+* **Option 1 (current choice):** Use a special `"archived"` tag in the existing `Tag` set.
+    * Pros: No schema change; archived status is persisted through the existing JSON tag serialisation without any additional storage field.
+    * Cons: The archived flag is semantically different from user-defined tags; mixing them can be confusing and requires care when displaying or editing tags.
 
-Pros:
-- Simple implementation
-- Minimal changes to existing architecture
-- Archived vendors remain stored in the same data structure
+* **Option 2:** Add a dedicated `boolean isArchived` field to `Person` (same approach used by `Product`).
+    * Pros: Cleaner semantics; no risk of the user accidentally adding/removing the reserved tag.
+    * Cons: Requires a storage migration and changes to `JsonAdaptedPerson`.
 
-Cons:
-- Requires filtering logic when displaying vendors
+Option 1 was chosen for `Person` to minimise changes to the existing architecture. A future refactor may unify both approaches.
 
-Option 2: Maintain a separate archive list.
+**Aspect: Representation of archived products (`Product`)**
 
-Pros:
-- Clear separation between active and archived vendors
+* **Option 1 (current choice):** Dedicated `boolean isArchived` field.
+    * Pros: Clean separation; the field is explicit in the constructor and persisted via `JsonAdaptedProduct`.
+    * Cons: Slightly more verbose constructors.
 
-Cons:
-- Increases model complexity
-- Requires synchronization between lists
+* **Option 2:** Reuse a tag (same approach as `Person`).
+    * Cons: Products do not otherwise use tags, so this would be inconsistent.
 
-Option 1 was chosen as it integrates better with the existing data structure and keeps the implementation lightweight.
-
-#### Future Improvements
-
-Future extensions may allow vendors to be archived using other identifiers such as:
-```
-archive email john@email.com
-archive name Alice
-restore phone 91234567
-```
+Option 1 was chosen as `Product` has no pre-existing tag mechanism to reuse.
 
 <div style="height: 10px;"></div>
 
@@ -612,7 +650,7 @@ Use case ends.
 
 * 2a. User decides not to delete the contact, rejecting the deletion.
   * 2a1. VV displays a list of current vendor contacts.
-  
+
   Use case ends.
 
 **Use Case: UC4 - Add Product**
@@ -637,22 +675,22 @@ Use case ends.
 * 3a. VV detects error in provided data (e.g. missing compulsory fields, invalid data format).
   * 3a1. VV displays an appropriate error message indicating the invalid or missing field.
   * 3a2. User re-provides the corrected data.
-  
+
   Steps 3a1–3a2 are repeated until all fields are valid.
-  
+
   Use case resumes from step 4.
 
 * 4a. VV detects duplicate product.
   * 4a1. VV displays an error.
   * 4a2. User re-provides the corrected data.
-  
+
   Steps 4a1–4a2 are repeated until a unique ID is provided.
-  
+
   Use case resumes from step 5.
 
 * 7a. Storage file cannot be written or accessed.
   * 7a1. VV displays a failure message indicating inventory could not be saved.
-  
+
   Use case ends.
 
 **Use Case: UC 5 - View Products**
@@ -689,7 +727,7 @@ Use case ends.
 
 * 2a. User decides not to delete the product, rejecting deletion.
   * 2a1. VV displays a list of current product.
-  
+
   Use case ends.
 
 
@@ -752,7 +790,7 @@ Accessibility:
 
 1. Initial launch as per [Quick Start](./UserGuide.md#quick-start)
 
-   - Expected: Full-screen GUI with sample contacts and products. 
+   - Expected: Full-screen GUI with sample contacts and products.
 
 2. Saving window preferences
 
