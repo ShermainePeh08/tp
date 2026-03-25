@@ -94,7 +94,8 @@ public class PersonListPanel extends UiPart<Region> {
                 setGraphic(null);
                 setText(null);
             } else {
-                setGraphic(new PersonCard(person, getIndex() + 1).getRoot());
+                boolean wrapDetails = personListView.getItems().size() == 1;
+                setGraphic(new PersonCard(person, getIndex() + 1, wrapDetails).getRoot());
             }
         }
     }

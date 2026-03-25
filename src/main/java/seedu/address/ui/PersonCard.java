@@ -46,6 +46,14 @@ public class PersonCard extends UiPart<Region> {
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
      */
     public PersonCard(Person person, int displayedIndex) {
+        this(person, displayedIndex, false);
+    }
+
+    /**
+     * Creates a {@code PersonCard} with the given {@code Person}, index, and wrap mode.
+     * When {@code wrapDetails} is true, phone/email/address wrap instead of truncating.
+     */
+    public PersonCard(Person person, int displayedIndex, boolean wrapDetails) {
         super(FXML);
         this.person = person;
         id.setText(displayedIndex + ". ");
@@ -56,6 +64,11 @@ public class PersonCard extends UiPart<Region> {
         phone.setText(person.getPhone().value);
         address.setText(person.getAddress().value);
         email.setText(person.getEmail().value);
+        if (wrapDetails) {
+            phone.setWrapText(true);
+            email.setWrapText(true);
+            address.setWrapText(true);
+        }
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
