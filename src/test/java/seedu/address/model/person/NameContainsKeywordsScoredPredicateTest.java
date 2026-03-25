@@ -11,8 +11,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.model.person.FindRelevance.MatchTier;
-import seedu.address.model.person.FindRelevance.Score;
+import seedu.address.model.search.FindRelevance.MatchTier;
+import seedu.address.model.search.FindRelevance.Score;
 import seedu.address.testutil.PersonBuilder;
 
 class NameContainsKeywordsScoredPredicateTest {
@@ -76,7 +76,7 @@ class NameContainsKeywordsScoredPredicateTest {
 
         assertEquals(MatchTier.EXACT_TOKEN, score.tier());
         assertEquals(0, score.unmatchedChars());
-        assertEquals("Alice Bob", score.fullName());
+        assertEquals("Alice Bob", score.sortKey());
     }
 
     @Test

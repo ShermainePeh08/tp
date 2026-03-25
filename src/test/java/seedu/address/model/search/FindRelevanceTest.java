@@ -1,17 +1,17 @@
-package seedu.address.model.person;
+package seedu.address.model.search;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static seedu.address.model.person.FindRelevance.MatchTier.EXACT_TOKEN;
-import static seedu.address.model.person.FindRelevance.MatchTier.PREFIX_TOKEN;
-import static seedu.address.model.person.FindRelevance.MatchTier.SUBSTRING_TOKEN;
+import static seedu.address.model.search.FindRelevance.MatchTier.EXACT_TOKEN;
+import static seedu.address.model.search.FindRelevance.MatchTier.PREFIX_TOKEN;
+import static seedu.address.model.search.FindRelevance.MatchTier.SUBSTRING_TOKEN;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.model.person.FindRelevance.Score;
+import seedu.address.model.search.FindRelevance.Score;
 
 class FindRelevanceTest {
 

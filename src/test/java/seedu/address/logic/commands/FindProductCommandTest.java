@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_PRODUCTS_LISTED_OVERVIEW;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
@@ -26,7 +27,7 @@ import seedu.address.model.VendorVault;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.VendorEmailMatchesProductsPredicate;
 import seedu.address.model.product.Product;
-import seedu.address.model.product.ProductNameContainsKeywordsPredicate;
+import seedu.address.model.product.ProductNameContainsKeywordsScoredPredicate;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.ProductBuilder;
 
@@ -41,10 +42,10 @@ public class FindProductCommandTest {
 
     @Test
     public void equals() {
-        ProductNameContainsKeywordsPredicate firstPredicate =
-                new ProductNameContainsKeywordsPredicate(Collections.singletonList("first"));
-        ProductNameContainsKeywordsPredicate secondPredicate =
-                new ProductNameContainsKeywordsPredicate(Collections.singletonList("second"));
+        ProductNameContainsKeywordsScoredPredicate firstPredicate =
+                new ProductNameContainsKeywordsScoredPredicate(Collections.singletonList("first"));
+        ProductNameContainsKeywordsScoredPredicate secondPredicate =
+                new ProductNameContainsKeywordsScoredPredicate(Collections.singletonList("second"));
 
         FindProductCommand findFirstCommand = new FindProductCommand(firstPredicate);
         FindProductCommand findSecondCommand = new FindProductCommand(secondPredicate);
@@ -67,9 +68,14 @@ public class FindProductCommandTest {
     }
 
     @Test
+    public void constructor_nullPredicate_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new FindProductCommand(null));
+    }
+
+    @Test
     public void execute_zeroKeywords_noProductFound() {
-        ProductNameContainsKeywordsPredicate predicate = preparePredicate(" ");
         String expectedMessage = String.format(MESSAGE_PRODUCTS_LISTED_OVERVIEW + MESSAGE_DISPLAY_CONTACTS, 0);
+        ProductNameContainsKeywordsScoredPredicate predicate = preparePredicate(" ");
         FindProductCommand command = new FindProductCommand(predicate);
 
         expectedModel.updateFilteredProductList(predicate);
@@ -82,8 +88,8 @@ public class FindProductCommandTest {
 
     @Test
     public void execute_multipleKeywords_multiplePersonsFound() {
-        ProductNameContainsKeywordsPredicate predicate = preparePredicate("Rice Oil Eggs");
         String expectedMessage = String.format(MESSAGE_PRODUCTS_LISTED_OVERVIEW + MESSAGE_DISPLAY_CONTACTS, 3);
+        ProductNameContainsKeywordsScoredPredicate predicate = preparePredicate("Rice Oil Eggs");
         FindProductCommand command = new FindProductCommand(predicate);
 
         expectedModel.updateFilteredProductList(predicate);
@@ -168,16 +174,16 @@ public class FindProductCommandTest {
 
     @Test
     public void getPendingConfirmation_returnsInactivePendingConfirmation() {
-        ProductNameContainsKeywordsPredicate predicate = preparePredicate(" ");
+        ProductNameContainsKeywordsScoredPredicate predicate = preparePredicate(" ");
         FindProductCommand command = new FindProductCommand(predicate);
         PendingConfirmation pendingConfirmation = command.getPendingConfirmation();
         assertFalse(pendingConfirmation.getNeedConfirmation());
     }
 
     /**
-     * Parses {@code userInput} into a {@code ProductNameContainsKeywordsPredicate}.
+     * Parses {@code userInput} into a {@code ProductNameContainsKeywordsScoredPredicate}.
      */
-    private ProductNameContainsKeywordsPredicate preparePredicate(String userInput) {
-        return new ProductNameContainsKeywordsPredicate(Arrays.asList(userInput.split("\\s+")));
+    private ProductNameContainsKeywordsScoredPredicate preparePredicate(String userInput) {
+        return new ProductNameContainsKeywordsScoredPredicate(Arrays.asList(userInput.split("\\s+")));
     }
 }

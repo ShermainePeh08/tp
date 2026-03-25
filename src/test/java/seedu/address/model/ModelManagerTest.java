@@ -31,6 +31,7 @@ import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.NameContainsKeywordsScoredPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.product.Product;
+import seedu.address.model.product.ProductNameContainsKeywordsScoredPredicate;
 import seedu.address.model.product.exceptions.DuplicateProductException;
 import seedu.address.model.product.exceptions.ProductNotFoundException;
 import seedu.address.testutil.AddressBookBuilder;
@@ -307,6 +308,59 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void updateFilteredProductList_scoredPredicate_sortsByRelevance() {
+        Product substring = new ProductBuilder().withIdentifier("SKU-SUB").withName("Tali Watch").build();
+        Product prefix = new ProductBuilder().withIdentifier("SKU-PRE").withName("Aliphatic Cake").build();
+        Product exact = new ProductBuilder().withIdentifier("SKU-EXA").withName("Ali").build();
+
+        modelManager.addProduct(substring);
+        modelManager.addProduct(prefix);
+        modelManager.addProduct(exact);
+
+        modelManager.updateFilteredProductList(new ProductNameContainsKeywordsScoredPredicate(List.of("ali")));
+        assertEquals(List.of(exact, prefix, substring), modelManager.getFilteredProductList());
+    }
+
+    @Test
+    public void updateFilteredProductList_scoredPredicate_excludesArchivedProducts() {
+        Inventory inventory = new Inventory();
+        Product archivedMatching = new ProductBuilder()
+                .withIdentifier("SKU-ARCH-MATCH")
+                .withName("Ali Archived")
+                .build()
+                .archive();
+        Product activeMatching = new ProductBuilder()
+                .withIdentifier("SKU-ACTIVE-MATCH")
+                .withName("Ali Active")
+                .build();
+        inventory.addProduct(archivedMatching);
+        inventory.addProduct(activeMatching);
+
+        ModelManager model = new ModelManager(new VendorVault(new AddressBook(), inventory),
+                new UserPrefs(), new Aliases());
+        model.updateFilteredProductList(new ProductNameContainsKeywordsScoredPredicate(List.of("ali")));
+
+        assertEquals(List.of(activeMatching), model.getFilteredProductList());
+    }
+
+    @Test
+    public void updateFilteredProductList_afterScoredPredicate_resetsToUnderlyingOrder() {
+        Product substring = new ProductBuilder().withIdentifier("SKU-SUB2").withName("Tali Watch").build();
+        Product prefix = new ProductBuilder().withIdentifier("SKU-PRE2").withName("Aliphatic Cake").build();
+        Product exact = new ProductBuilder().withIdentifier("SKU-EXA2").withName("Ali").build();
+
+        modelManager.addProduct(substring);
+        modelManager.addProduct(prefix);
+        modelManager.addProduct(exact);
+
+        modelManager.updateFilteredProductList(new ProductNameContainsKeywordsScoredPredicate(List.of("ali")));
+        assertEquals(List.of(exact, prefix, substring), modelManager.getFilteredProductList());
+
+        modelManager.updateFilteredProductList(PREDICATE_SHOW_ALL_PRODUCTS);
+        assertEquals(List.of(substring, prefix, exact), modelManager.getFilteredProductList());
+    }
+
+    @Test
     public void getFilteredProductList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredProductList().remove(0));
     }
@@ -427,12 +481,15 @@ public class ModelManagerTest {
 
     @Test
     public void constructor_filtersArchivedProducts() {
-        ModelManager model = new ModelManager(new VendorVault(), new UserPrefs(), new Aliases());
+        Inventory inventory = new Inventory();
+        Product active = new ProductBuilder().withIdentifier("SKU-ACTIVE").build();
+        Product archived = new ProductBuilder().withIdentifier("SKU-ARCHIVED").build().archive();
+        inventory.addProduct(active);
+        inventory.addProduct(archived);
 
-        Product product = new ProductBuilder().build();
-        model.addProduct(product);
-
-        assertEquals(1, model.getFilteredProductList().size());
+        ModelManager model = new ModelManager(new VendorVault(new AddressBook(), inventory),
+                new UserPrefs(), new Aliases());
+        assertEquals(active, model.getFilteredProductList().get(0));
     }
 
     @Test

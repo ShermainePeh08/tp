@@ -1,4 +1,4 @@
-package seedu.address.model.person;
+package seedu.address.model.product;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.model.search.FindRelevance.SCORE_COMPARATOR;
@@ -15,9 +15,9 @@ import seedu.address.model.search.FindRelevance.MatchTier;
 import seedu.address.model.search.FindRelevance.Score;
 
 /**
- * Tests that a {@code Person}'s {@code Name} matches any keyword using token-level partial matching.
+ * Tests that a {@code Product}'s {@code Name} matches any keyword using token-level partial matching.
  */
-public class NameContainsKeywordsScoredPredicate implements Predicate<Person> {
+public class ProductNameContainsKeywordsScoredPredicate implements Predicate<Product> {
     private static final String WHITESPACE_REGEX = "\\s+";
 
     private final List<String> keywords;
@@ -27,30 +27,30 @@ public class NameContainsKeywordsScoredPredicate implements Predicate<Person> {
      *
      * @param keywords cannot be null
      */
-    public NameContainsKeywordsScoredPredicate(List<String> keywords) {
+    public ProductNameContainsKeywordsScoredPredicate(List<String> keywords) {
         requireNonNull(keywords);
         this.keywords = List.copyOf(keywords);
     }
 
     @Override
-    public boolean test(Person person) {
-        requireNonNull(person);
-        return computeScore(person).tier() != MatchTier.NO_MATCH;
+    public boolean test(Product product) {
+        requireNonNull(product);
+        return computeScore(product).tier() != MatchTier.NO_MATCH;
     }
 
     /**
-     * Computes the best relevance score for the given contact based on all keyword-token pairs.
+     * Computes the best relevance score for the given product based on all keyword-token pairs.
      */
-    public Score computeScore(Person person) {
-        requireNonNull(person);
+    public Score computeScore(Product product) {
+        requireNonNull(product);
 
-        String fullName = person.getName().fullName;
-        Score bestScore = new Score(MatchTier.NO_MATCH, Integer.MAX_VALUE, fullName);
+        String productName = product.getName().fullName;
+        Score bestScore = new Score(MatchTier.NO_MATCH, Integer.MAX_VALUE, productName);
 
-        String[] nameTokens = fullName.trim().split(WHITESPACE_REGEX);
+        String[] nameTokens = productName.trim().split(WHITESPACE_REGEX);
         for (String keyword : keywords) {
             for (String token : nameTokens) {
-                Score candidate = toScore(token, keyword, fullName);
+                Score candidate = toScore(token, keyword, productName);
                 if (isBetterScore(candidate, bestScore)) {
                     bestScore = candidate;
                 }
@@ -61,23 +61,23 @@ public class NameContainsKeywordsScoredPredicate implements Predicate<Person> {
     }
 
     /**
-     * Returns a comparator that ranks contacts according to scoring rules.
+     * Returns a comparator that ranks products according to scoring rules.
      */
-    public Comparator<Person> createPersonComparator() {
-        Map<Person, Score> scoreCache = new HashMap<>();
-        return Comparator.comparing((Person person)
-                -> scoreCache.computeIfAbsent(person, this::computeScore), SCORE_COMPARATOR);
+    public Comparator<Product> createProductComparator() {
+        Map<Product, Score> scoreCache = new HashMap<>();
+        return Comparator.comparing((Product product)
+                -> scoreCache.computeIfAbsent(product, this::computeScore), SCORE_COMPARATOR);
     }
 
-    private Score toScore(String token, String keyword, String fullName) {
+    private Score toScore(String token, String keyword, String productName) {
         int matchScore = StringUtil.getWordPartialMatchScoreIgnoreCase(token, keyword);
         MatchTier tier = toMatchTier(matchScore);
         if (tier == MatchTier.NO_MATCH) {
-            return new Score(MatchTier.NO_MATCH, Integer.MAX_VALUE, fullName);
+            return new Score(MatchTier.NO_MATCH, Integer.MAX_VALUE, productName);
         }
 
         int unmatchedChars = token.trim().length() - keyword.trim().length();
-        return new Score(tier, unmatchedChars, fullName);
+        return new Score(tier, unmatchedChars, productName);
     }
 
     private static MatchTier toMatchTier(int score) {
@@ -99,11 +99,11 @@ public class NameContainsKeywordsScoredPredicate implements Predicate<Person> {
             return true;
         }
 
-        if (!(other instanceof NameContainsKeywordsScoredPredicate)) {
+        if (!(other instanceof ProductNameContainsKeywordsScoredPredicate)) {
             return false;
         }
 
-        NameContainsKeywordsScoredPredicate otherPredicate = (NameContainsKeywordsScoredPredicate) other;
+        ProductNameContainsKeywordsScoredPredicate otherPredicate = (ProductNameContainsKeywordsScoredPredicate) other;
         return keywords.equals(otherPredicate.keywords);
     }
 

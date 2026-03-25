@@ -24,7 +24,7 @@ public class FindCommand extends Command {
             + "Parameters: KEYWORD [MORE_KEYWORDS]...\n"
             + "Example: " + COMMAND_WORD + " adafruit cytron";
 
-    public static final String MESSAGE_DISPLAY_PRODUCTS = " Products associated with these contacts listed on "
+    public static final String MESSAGE_DISPLAY_PRODUCTS = " Product(s) associated with these contacts listed on "
             + "the right!";
 
     private final NameContainsKeywordsScoredPredicate predicate;

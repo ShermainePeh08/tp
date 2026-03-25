@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import seedu.address.logic.commands.FindProductCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.product.ProductNameContainsKeywordsPredicate;
+import seedu.address.model.product.ProductNameContainsKeywordsScoredPredicate;
 
 /**
  * Parses input arguments and creates a new FindProductCommand object
@@ -28,6 +28,6 @@ public class FindProductCommandParser implements Parser<FindProductCommand> {
         String[] productNameKeywords = trimmedArgs.split("\\s+");
 
         return new FindProductCommand(
-                new ProductNameContainsKeywordsPredicate(Arrays.asList(productNameKeywords)));
+                new ProductNameContainsKeywordsScoredPredicate(Arrays.asList(productNameKeywords)));
     }
 }
