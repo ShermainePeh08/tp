@@ -322,6 +322,28 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void updateFilteredProductList_scoredPredicate_excludesArchivedProducts() {
+        Inventory inventory = new Inventory();
+        Product archivedMatching = new ProductBuilder()
+                .withIdentifier("SKU-ARCH-MATCH")
+                .withName("Ali Archived")
+                .build()
+                .archive();
+        Product activeMatching = new ProductBuilder()
+                .withIdentifier("SKU-ACTIVE-MATCH")
+                .withName("Ali Active")
+                .build();
+        inventory.addProduct(archivedMatching);
+        inventory.addProduct(activeMatching);
+
+        ModelManager model = new ModelManager(new VendorVault(new AddressBook(), inventory),
+                new UserPrefs(), new Aliases());
+        model.updateFilteredProductList(new ProductNameContainsKeywordsScoredPredicate(List.of("ali")));
+
+        assertEquals(List.of(activeMatching), model.getFilteredProductList());
+    }
+
+    @Test
     public void updateFilteredProductList_afterScoredPredicate_resetsToUnderlyingOrder() {
         Product substring = new ProductBuilder().withIdentifier("SKU-SUB2").withName("Tali Watch").build();
         Product prefix = new ProductBuilder().withIdentifier("SKU-PRE2").withName("Aliphatic Cake").build();
