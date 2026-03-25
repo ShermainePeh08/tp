@@ -28,7 +28,11 @@ public class FindProductCommand extends Command {
 
     private final ProductNameContainsKeywordsScoredPredicate predicate;
 
+    /**
+     * Creates a findproduct command with the given name matching predicate.
+     */
     public FindProductCommand(ProductNameContainsKeywordsScoredPredicate predicate) {
+        requireNonNull(predicate);
         this.predicate = predicate;
     }
 
