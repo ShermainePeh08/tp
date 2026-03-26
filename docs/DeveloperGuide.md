@@ -531,6 +531,10 @@ This diagram shows the structure and dependency of Better Search classes:
 
 <puml src="diagrams/BetterSearchClass.puml" width="500"/>
 
+This diagram shows an example of scoring state when the given keyword is `"adafruit"`:
+
+<puml src="diagrams/BetterSearchObject.puml" width="1000"/>
+
 #### Usage Scenario
 This diagram shows how Better Search fits in the execution pipeline:
 
