@@ -496,9 +496,24 @@ Option 1 was chosen as `Product` has no pre-existing tag mechanism to reuse.
 <div style="height: 10px;"></div>
 
 ### Command Alias Feature
-To be added.
 
 #### Implementation
+
+The command `alias` feature allows users to define shorthand strings that map to existing command words.
+When a user enters a command, the input is resolved against the stored `alias` mappings before being parsed and executed.
+
+The core data structures are:
+* `Alias`  — An **immutable** value object holding an `alias` string and its `originalCommand` string.
+* `AliasList`  — Stores a list of `Alias` objects, enforces uniqueness of alias string, and exposes **lookup, add and remove** operations.
+* `Aliases`  — The top level model object that wraps `AliasList`. It implements `ReadOnlyAliases`.
+
+These operations are exposed in `ModelManager` as `ModelManager#addAlias()`, `ModelManager#findAlias()`, `ModelManager#removeAlias()`.
+
+**Alias Resolution** is handled in `AddressBookParser`. 
+Before converting any command to its specific parser, the parser checks if the `command word` entered by the user matches any stored `alias`.
+If a match is found, the alias is substituted with its original command word, and parsing continues as normal.
+Otherwise, the input is used as it is.
+
 #### Usage Scenario
 #### Design Considerations
 
