@@ -119,8 +119,8 @@ public class ParserUtilTest {
 
     @Test
     public void parseName_nonBlankInvalidPattern_throwsParseExceptionWithConstraintsMessage() {
-        assertThrows(ParseException.class, Name.MESSAGE_CONSTRAINTS,
-                () -> ParserUtil.parseName("Alice\nBob"));
+        assertThrows(ParseException.class, Name.MESSAGE_CONSTRAINTS, ()
+                -> ParserUtil.parseName("Alice\nBob"));
     }
 
     @Test
@@ -247,8 +247,8 @@ public class ParserUtilTest {
 
     @Test
     public void parseEmail_tooLong_throwsParseExceptionWithLengthMessage() {
-        assertThrows(ParseException.class, Email.MESSAGE_LENGTH_CONSTRAINTS,
-                () -> ParserUtil.parseEmail(INVALID_EMAIL_TOO_LONG));
+        assertThrows(ParseException.class, Email.MESSAGE_LENGTH_CONSTRAINTS, ()
+                -> ParserUtil.parseEmail(INVALID_EMAIL_TOO_LONG));
     }
 
     @Test
@@ -322,8 +322,8 @@ public class ParserUtilTest {
 
     @Test
     public void parseIdentifier_nonBlankInvalidPattern_throwsParseExceptionWithConstraintsMessage() {
-        assertThrows(ParseException.class, Identifier.MESSAGE_CONSTRAINTS,
-                () -> ParserUtil.parseIdentifier(INVALID_IDENTIFIER_NEWLINE));
+        assertThrows(ParseException.class, Identifier.MESSAGE_CONSTRAINTS, ()
+                -> ParserUtil.parseIdentifier(INVALID_IDENTIFIER_NEWLINE));
     }
 
     @Test
@@ -362,8 +362,8 @@ public class ParserUtilTest {
 
     @Test
     public void parseProductName_nonBlankInvalidPattern_throwsParseExceptionWithConstraintsMessage() {
-        assertThrows(ParseException.class, seedu.address.model.product.Name.MESSAGE_CONSTRAINTS,
-                () -> ParserUtil.parseProductName(INVALID_PRODUCT_NAME_NEWLINE));
+        assertThrows(ParseException.class, seedu.address.model.product.Name.MESSAGE_CONSTRAINTS, ()
+                -> ParserUtil.parseProductName(INVALID_PRODUCT_NAME_NEWLINE));
     }
 
     @Test
