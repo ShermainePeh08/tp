@@ -182,15 +182,15 @@ These operations are exposed in the `Model` interface as `Model#commitVendorVaul
 #### Usage Scenario
 Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
 
-Step 1. The user launches the application for the first time. The `VersionedVendorVault` will be initialized with the initial VendorVault (which includes the address book and inventory internally) state, and the `currentStatePointer` pointing to that single VendorVault state.
+**Step 1.** The user launches the application for the first time. The `VersionedVendorVault` will be initialized with the initial VendorVault (which includes the address book and inventory internally) state, and the `currentStatePointer` pointing to that single VendorVault state.
 
 <puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
 
-Step 2. The user executes `delete support@adafruit.com` command to delete the corresponding vendor contact in VendorVault. The `delete` command calls `Model#commitVendorVault()`, causing the modified state of the VendorVault after the `delete support@adafruit.com` command executes to be saved in the `vendorVaultStateList`, and the `currentStatePointer` is shifted to the newly inserted VendorVault state.
+**Step 2.** The user executes `delete support@adafruit.com` command to delete the corresponding vendor contact in VendorVault. The `delete` command calls `Model#commitVendorVault()`, causing the modified state of the VendorVault after the `delete support@adafruit.com` command executes to be saved in the `vendorVaultStateList`, and the `currentStatePointer` is shifted to the newly inserted VendorVault state.
 
 <puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
 
-Step 3. The user executes `add n/Adafruit …​` to add a new vendor contact. The `add` command also calls `Model#commitVendorVault()`, causing another modified VendorVault state to be saved into the `vendorVaultStateList`.
+**Step 3.** The user executes `add n/Adafruit …​` to add a new vendor contact. The `add` command also calls `Model#commitVendorVault()`, causing another modified VendorVault state to be saved into the `vendorVaultStateList`.
 
 <puml src="diagrams/UndoRedoState2.puml" alt="UndoRedoState2" />
 
@@ -200,7 +200,7 @@ Step 3. The user executes `add n/Adafruit …​` to add a new vendor contact. T
 
 </box>
 
-Step 4. The user now decides that adding the contact was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoVendorVault()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous VendorVault state, and restores the VendorVault to that state.
+**Step 4.** The user now decides that adding the contact was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoVendorVault()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous VendorVault state, and restores the VendorVault to that state.
 
 <puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
 
@@ -234,11 +234,11 @@ The `redo` command does the opposite — it calls `Model#redoVendorVault()`,
 
 </box>
 
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the VendorVault, such as `list`, will usually not call `Model#commitVendorVault()`, `Model#undoVendorVault()` or `Model#redoVendorVault()`. Thus, the `vendorVaultStateList` remains unchanged.
+**Step 5.** The user then decides to execute the command `list`. Commands that do not modify the VendorVault, such as `list`, will usually not call `Model#commitVendorVault()`, `Model#undoVendorVault()` or `Model#redoVendorVault()`. Thus, the `vendorVaultStateList` remains unchanged.
 
 <puml src="diagrams/UndoRedoState4.puml" alt="UndoRedoState4" />
 
-Step 6. The user executes `clear`, which calls `Model#commitVendorVault()`. Since the `currentStatePointer` is not pointing at the end of the `vendorVaultStateList`, all VendorVault states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/Adafruit …​` command. This is the behavior that most modern desktop applications follow.
+**Step 6.** The user executes `clear`, which calls `Model#commitVendorVault()`. Since the `currentStatePointer` is not pointing at the end of the `vendorVaultStateList`, all VendorVault states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/Adafruit …​` command. This is the behavior that most modern desktop applications follow.
 
 <puml src="diagrams/UndoRedoState5.puml" alt="UndoRedoState5" />
 
@@ -305,7 +305,7 @@ These operations are exposed in the `Logic` interface through the `Logic#getComm
 #### Usage Scenario
 Given below is an example usage scenario and how the command history behaves at each step.
 
-Step 1. The user executes the command `add n/Adafruit Industries...`. The command is executed and added to the `CommandHistory`.
+**Step 1.** The user executes the command `add n/Adafruit Industries...`. The command is executed and added to the `CommandHistory`.
 
 <box type="info" seamless>
 
@@ -313,9 +313,9 @@ Step 1. The user executes the command `add n/Adafruit Industries...`. The comman
 
 </box>
 
-Step 2. The user executes the command `delete support@adafruit.com`. The command is executed and added to the `CommandHistory`.
+**Step 2.** The user executes the command `delete support@adafruit.com`. The command is executed and added to the `CommandHistory`.
 
-Step 3. The user presses the UP arrow key to navigate to the previous command. The `CommandHistory#getPrevious()` method is called with the current input (empty in this case). The command box is then updated with the previous command `delete support@adafruit.com`.
+**Step 3.** The user presses the UP arrow key to navigate to the previous command. The `CommandHistory#getPrevious()` method is called with the current input (empty in this case). The command box is then updated with the previous command `delete support@adafruit.com`.
 
 The following sequence diagram shows how the `getPrevious` operation works as described:
 <puml src="diagrams/command-history/SequenceDiagram.puml" alt="Command History Sequence Diagram" />
@@ -517,7 +517,7 @@ Otherwise, the input is used as it is.
 
 Given below is an example usage scenario and how the alias feature behaves an each step.
 
-Step 1. The user launches the application. The `Aliases` object is initialised and loaded from `aliases.json` via `AliasStorage`
+**Step 1.** The user launches the application. The `Aliases` object is initialised and loaded from `aliases.json` via `AliasStorage`
 
 <puml src="diagrams/AliasCommandImplementation/AliasState0.puml" />
 
@@ -527,7 +527,7 @@ Step 1. The user launches the application. The `Aliases` object is initialised a
 
 </box>
 
-Step 2. The user executes `alias list ls`. An `AliasCommand` is created with `originalCommand = "list"` and `alias = "ls"`.
+**Step 2.** The user executes `alias list ls`. An `AliasCommand` is created with `originalCommand = "list"` and `alias = "ls"`.
 The new `Alias` is stored in `Aliases` and persisted to `aliases.json`
 
 <puml src="diagrams/AliasCommandImplementation/AliasState1.puml" />
@@ -538,12 +538,12 @@ The new `Alias` is stored in `Aliases` and persisted to `aliases.json`
 
 </box>
 
-Step 3. The user types `ls`. The `AddressBookParser` checks the command word `"ls"` against the stored aliases and finds a match. `"ls"` is mapped to `"list"`.
+**Step 3.** The user types `ls`. The `AddressBookParser` checks the command word `"ls"` against the stored aliases and finds a match. `"ls"` is mapped to `"list"`.
 The command word is substituted, and the rest of execution proceeds identically to if the user had typed `"list"` directly.
 
-Step 4. The user types `ls args`. The same substitution occurs, only the command word `"ls"` is replaced with `"list"`, and `"args"` is passed through unchanged to the underlying parser.
+**Step 4.** The user types `ls args`. The same substitution occurs, only the command word `"ls"` is replaced with `"list"`, and `"args"` is passed through unchanged to the underlying parser.
 
-Step 5. The user executes `deletealias ls`. A `DeleteAliasCommand` is created and removes `"ls"` from `Aliases`.
+**Step 5.** The user executes `deletealias ls`. A `DeleteAliasCommand` is created and removes `"ls"` from `Aliases`.
 The updated alias list is persisted to `aliases.json`.
 
 <puml src="diagrams/AliasCommandImplementation/AliasState2.puml" />
