@@ -241,8 +241,8 @@ public class AddCommandParserTest {
 
         String expectedWarnings =
                 Name.MESSAGE_WARN + SEPARATOR_NEW_LINE
-                        + Phone.MESSAGE_WARN + SEPARATOR_NEW_LINE
-                        + Email.MESSAGE_WARN;
+                        + Email.MESSAGE_WARN + SEPARATOR_NEW_LINE
+                        + Phone.MESSAGE_WARN;
 
         CommandResult commandResult = result.execute(new ModelManager());
         assertEquals(CommandResult.FEEDBACK_TYPE_WARN, commandResult.getFeedbackType());
