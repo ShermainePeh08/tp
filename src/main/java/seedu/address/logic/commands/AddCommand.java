@@ -116,11 +116,11 @@ public class AddCommand extends Command {
         model.findSimilarNameMatch(toAdd, null).ifPresent(match ->
                 appendWarning(warnings, formatNameWarning(match.getName())));
 
-        model.findSimilarAddressMatch(toAdd, null).ifPresent(match ->
-                appendWarning(warnings, formatAddressWarning(match.getName(), match.getAddress())));
-
         model.findSimilarPhoneMatch(toAdd, null).ifPresent(match ->
                 appendWarning(warnings, formatPhoneWarning(match.getName(), match.getPhone())));
+
+        model.findSimilarAddressMatch(toAdd, null).ifPresent(match ->
+                appendWarning(warnings, formatAddressWarning(match.getName(), match.getAddress())));
     }
 
     private void appendWarning(StringBuilder warnings, String message) {

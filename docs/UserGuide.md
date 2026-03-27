@@ -983,7 +983,7 @@ Common `add` warnings:
 
 <box type="tip" seamless>
 
-Tip: If multiple warnings apply, VendorVault shows all of them (one per line) together with the success message.
+Tip: If multiple warnings apply, VendorVault shows each type of them (one per line) together with the success message.
 
 </box>
 

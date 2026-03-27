@@ -83,8 +83,8 @@ public class AddCommandParser implements Parser<AddCommand> {
         Set<Tag> tags = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
 
         appendWarning(warnings, nameResult.getWarning());
-        appendWarning(warnings, phoneResult.getWarning());
         appendWarning(warnings, emailResult.getWarning());
+        appendWarning(warnings, phoneResult.getWarning());
 
         return new Person(nameResult.getValue(), phoneResult.getValue(), emailResult.getValue(), address, tags);
     }

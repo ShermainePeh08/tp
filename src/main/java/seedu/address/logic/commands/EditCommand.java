@@ -271,15 +271,15 @@ public class EditCommand extends Command {
                     appendWarning(warnings, formatNameWarning(match.getName())));
         }
 
+        if (descriptor.getPhone().isPresent()) {
+            model.findSimilarPhoneMatch(editedPerson, personToEdit).ifPresent(match ->
+                    appendWarning(warnings, formatPhoneWarning(match.getName(), match.getPhone())));
+        }
+
         if (descriptor.getAddress().isPresent()) {
             model.findSimilarAddressMatch(editedPerson, personToEdit).ifPresent(match ->
                     appendWarning(warnings, String.format(
                             MESSAGE_SIMILAR_ADDRESS, match.getName(), match.getAddress())));
-        }
-
-        if (descriptor.getPhone().isPresent()) {
-            model.findSimilarPhoneMatch(editedPerson, personToEdit).ifPresent(match ->
-                    appendWarning(warnings, formatPhoneWarning(match.getName(), match.getPhone())));
         }
     }
 
