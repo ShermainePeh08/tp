@@ -182,15 +182,15 @@ These operations are exposed in the `Model` interface as `Model#commitVendorVaul
 #### Usage Scenario
 Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
 
-Step 1. The user launches the application for the first time. The `VersionedVendorVault` will be initialized with the initial VendorVault (which includes the address book and inventory internally) state, and the `currentStatePointer` pointing to that single VendorVault state.
+**Step 1.** The user launches the application for the first time. The `VersionedVendorVault` will be initialized with the initial VendorVault (which includes the address book and inventory internally) state, and the `currentStatePointer` pointing to that single VendorVault state.
 
 <puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
 
-Step 2. The user executes `delete support@adafruit.com` command to delete the corresponding vendor contact in VendorVault. The `delete` command calls `Model#commitVendorVault()`, causing the modified state of the VendorVault after the `delete support@adafruit.com` command executes to be saved in the `vendorVaultStateList`, and the `currentStatePointer` is shifted to the newly inserted VendorVault state.
+**Step 2.** The user executes `delete support@adafruit.com` command to delete the corresponding vendor contact in VendorVault. The `delete` command calls `Model#commitVendorVault()`, causing the modified state of the VendorVault after the `delete support@adafruit.com` command executes to be saved in the `vendorVaultStateList`, and the `currentStatePointer` is shifted to the newly inserted VendorVault state.
 
 <puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
 
-Step 3. The user executes `add n/Adafruit …​` to add a new vendor contact. The `add` command also calls `Model#commitVendorVault()`, causing another modified VendorVault state to be saved into the `vendorVaultStateList`.
+**Step 3.** The user executes `add n/Adafruit …​` to add a new vendor contact. The `add` command also calls `Model#commitVendorVault()`, causing another modified VendorVault state to be saved into the `vendorVaultStateList`.
 
 <puml src="diagrams/UndoRedoState2.puml" alt="UndoRedoState2" />
 
@@ -200,7 +200,7 @@ Step 3. The user executes `add n/Adafruit …​` to add a new vendor contact. T
 
 </box>
 
-Step 4. The user now decides that adding the contact was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoVendorVault()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous VendorVault state, and restores the VendorVault to that state.
+**Step 4.** The user now decides that adding the contact was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoVendorVault()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous VendorVault state, and restores the VendorVault to that state.
 
 <puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
 
@@ -234,11 +234,11 @@ The `redo` command does the opposite — it calls `Model#redoVendorVault()`,
 
 </box>
 
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the VendorVault, such as `list`, will usually not call `Model#commitVendorVault()`, `Model#undoVendorVault()` or `Model#redoVendorVault()`. Thus, the `vendorVaultStateList` remains unchanged.
+**Step 5.** The user then decides to execute the command `list`. Commands that do not modify the VendorVault, such as `list`, will usually not call `Model#commitVendorVault()`, `Model#undoVendorVault()` or `Model#redoVendorVault()`. Thus, the `vendorVaultStateList` remains unchanged.
 
 <puml src="diagrams/UndoRedoState4.puml" alt="UndoRedoState4" />
 
-Step 6. The user executes `clear`, which calls `Model#commitVendorVault()`. Since the `currentStatePointer` is not pointing at the end of the `vendorVaultStateList`, all VendorVault states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/Adafruit …​` command. This is the behavior that most modern desktop applications follow.
+**Step 6.** The user executes `clear`, which calls `Model#commitVendorVault()`. Since the `currentStatePointer` is not pointing at the end of the `vendorVaultStateList`, all VendorVault states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/Adafruit …​` command. This is the behavior that most modern desktop applications follow.
 
 <puml src="diagrams/UndoRedoState5.puml" alt="UndoRedoState5" />
 
@@ -305,7 +305,7 @@ These operations are exposed in the `Logic` interface through the `Logic#getComm
 #### Usage Scenario
 Given below is an example usage scenario and how the command history behaves at each step.
 
-Step 1. The user executes the command `add n/Adafruit Industries...`. The command is executed and added to the `CommandHistory`.
+**Step 1.** The user executes the command `add n/Adafruit Industries...`. The command is executed and added to the `CommandHistory`.
 
 <box type="info" seamless>
 
@@ -313,9 +313,9 @@ Step 1. The user executes the command `add n/Adafruit Industries...`. The comman
 
 </box>
 
-Step 2. The user executes the command `delete support@adafruit.com`. The command is executed and added to the `CommandHistory`.
+**Step 2.** The user executes the command `delete support@adafruit.com`. The command is executed and added to the `CommandHistory`.
 
-Step 3. The user presses the UP arrow key to navigate to the previous command. The `CommandHistory#getPrevious()` method is called with the current input (empty in this case). The command box is then updated with the previous command `delete support@adafruit.com`.
+**Step 3.** The user presses the UP arrow key to navigate to the previous command. The `CommandHistory#getPrevious()` method is called with the current input (empty in this case). The command box is then updated with the previous command `delete support@adafruit.com`.
 
 The following sequence diagram shows how the `getPrevious` operation works as described:
 <puml src="diagrams/command-history/SequenceDiagram.puml" alt="Command History Sequence Diagram" />
@@ -385,7 +385,6 @@ Model#restoreProduct(Product product)
 The `ModelManager` implementations call `addressBook.setPerson()` and `inventory.setProduct()` respectively to swap the old record for the newly created immutable copy.
 
 #### Usage Scenario
-##### Vendor Archiving
 
 Given below is an example of the vendor archive/restore lifecycle.
 
@@ -468,26 +467,26 @@ These are applied by default so that archived records are hidden from the main d
 
 **Aspect: Representation of archived vendors (`Person`)**
 
-* **Option 1 (current choice):** Use a special `"archived"` tag in the existing `Tag` set.
+* **Alternative 1 (current choice):** Use a special `"archived"` tag in the existing `Tag` set.
     * Pros: No schema change; archived status is persisted through the existing JSON tag serialisation without any additional storage field.
     * Cons: The archived flag is semantically different from user-defined tags; mixing them can be confusing and requires care when displaying or editing tags.
 
-* **Option 2:** Add a dedicated `boolean isArchived` field to `Person` (same approach used by `Product`).
+* **Alternative 2:** Add a dedicated `boolean isArchived` field to `Person` (same approach used by `Product`).
     * Pros: Cleaner semantics; no risk of the user accidentally adding/removing the reserved tag.
     * Cons: Requires a storage migration and changes to `JsonAdaptedPerson`.
 
-Option 1 was chosen for `Person` to minimise changes to the existing architecture. A future refactor may unify both approaches.
+Alternative 1 was chosen for `Person` to minimise changes to the existing architecture. A future refactor may unify both approaches.
 
 **Aspect: Representation of archived products (`Product`)**
 
-* **Option 1 (current choice):** Dedicated `boolean isArchived` field.
+* **Alternative 1 (current choice):** Dedicated `boolean isArchived` field.
     * Pros: Clean separation; the field is explicit in the constructor and persisted via `JsonAdaptedProduct`.
     * Cons: Slightly more verbose constructors.
 
-* **Option 2:** Reuse a tag (same approach as `Person`).
+* **Alternative 2:** Reuse a tag (same approach as `Person`).
     * Cons: Products do not otherwise use tags, so this would be inconsistent.
 
-Option 1 was chosen as `Product` has no pre-existing tag mechanism to reuse.
+Alternative 1 was chosen as `Product` has no pre-existing tag mechanism to reuse.
 
 <div style="height: 10px;"></div>
 
@@ -496,11 +495,94 @@ Option 1 was chosen as `Product` has no pre-existing tag mechanism to reuse.
 <div style="height: 10px;"></div>
 
 ### Command Alias Feature
-To be added.
 
 #### Implementation
+
+The command `alias` feature allows users to define shorthand strings that map to existing command words.
+When a user enters a command, the input is resolved against the stored `alias` mappings before being parsed and executed.
+
+The core data structures are:
+* `Alias`  — An **immutable** value object holding an `alias` string and its `originalCommand` string.
+* `AliasList`  — Stores a list of `Alias` objects, enforces uniqueness of alias string, and exposes **lookup, add and remove** operations.
+* `Aliases`  — The top level model object that wraps `AliasList`. It implements `ReadOnlyAliases`.
+
+These operations are exposed in `Model` interface as `Model#addAlias()`, `Model#findAlias()`, `Model#removeAlias()`.
+
+**Alias Resolution** is handled in `AddressBookParser`. 
+Before converting any command to its specific parser, the parser checks if the `command word` entered by the user matches any stored `alias`.
+If a match is found, the alias is substituted with its original command word, and parsing continues as normal.
+Otherwise, the input is used as it is.
+
 #### Usage Scenario
+
+Given below is an example usage scenario and how the alias feature behaves an each step.
+
+**Step 1.** The user launches the application. The `Aliases` object is initialised and loaded from `aliases.json` via `AliasStorage`
+
+<puml src="diagrams/AliasCommandImplementation/AliasState0.puml" />
+
+<box type="info" seamless>
+
+**Note:** If the file does not exist, an empty `AliasList` is used
+
+</box>
+
+**Step 2.** The user executes `alias list ls`. An `AliasCommand` is created with `originalCommand = "list"` and `alias = "ls"`.
+The new `Alias` is stored in `Aliases` and persisted to `aliases.json`
+
+<puml src="diagrams/AliasCommandImplementation/AliasState1.puml" />
+
+<box type="info" seamless>
+
+**Note:** If the alias string `"ls"` already existed in `AliasList`, a `DuplicateAliasException` is thrown and the command fails with an error message.
+
+</box>
+
+**Step 3.** The user types `ls`. The `AddressBookParser` checks the command word `"ls"` against the stored aliases and finds a match. `"ls"` is mapped to `"list"`.
+The command word is substituted, and the rest of execution proceeds identically to if the user had typed `"list"` directly.
+
+**Step 4.** The user types `ls args`. The same substitution occurs, only the command word `"ls"` is replaced with `"list"`, and `"args"` is passed through unchanged to the underlying parser.
+
+**Step 5.** The user executes `deletealias ls`. A `DeleteAliasCommand` is created and removes `"ls"` from `Aliases`.
+The updated alias list is persisted to `aliases.json`.
+
+<puml src="diagrams/AliasCommandImplementation/AliasState2.puml" />
+
+<box type="info" seamless>
+
+**Note:** If `"ls"` does not exists in `AliasList`, a `NoAliasFoundInAliasListException` is thrown and the command fails with an error message.
+
+</box>
+
+The following sequence diagram shows how the user input `ls` is resolved through `AddressBookParser` and `Aliases`:
+
+<puml src="diagrams/AliasCommandImplementation/AliasSequenceDiagram.puml" />
+
 #### Design Considerations
+
+**Aspect: Where alias resolution happens**
+
+* **Alternative 1 (current choice)**: Resolves aliases in `AddressBookParser` before parsing it to the correct command.
+  * Pros: Centralised, as all commands automatically benefit from aliasing without any per-command changes
+  * Cons: The parser needs access to the `Model`
+
+* **Alternative 2**: Resolve aliases in `LogicManager` before passing the input to the parser.
+  * Pros: Keeps parser free of `Model` dependencies.
+  * Cons: Require `LogicManager` to be aware of alias resolution logic, making the code more complex.
+
+Alternative 1 is preferred as it keeps all parsing logic in one place.
+
+**Aspect: Persistence strategy**
+
+* **Alternative 1 (current choice)**: Store aliases in a separate `aliases.json` file via `AliasStorage`.
+  * Pros: Clean separation from contact and product data. Easy to back up or reset independently
+  * Cons: Adds another file the user must manage when transferring data.
+
+* **Alternative 2**: Embed alias data inside `addressbook.json`.
+  * Pros: Use the same code to embed data as contacts.
+  * Cons: Couples unrelated data, making the file harder to read and maintain.
+
+Alternative 1 aligns with the existing storage pattern used by contacts and inventory.
 
 <div style="height: 10px;"></div>
 
@@ -566,29 +648,30 @@ The usage scenario for `findproduct` is analogous.
 
 **Aspect: Matching strategy**
 
-* **Option 1 (current choice):** Partial matching 
+* **Alternative 1 (current choice):** Partial matching
   * Pros: Tolerant of incomplete keywords, hence more user-friendly.
   * Cons: Broader set of results.
 
-* **Option 2:** Exact matching
+* **Alternative 2:** Exact matching
   * Pros: Simpler design; Stricter set of results.
   * Cons: Low usability as users have to remember exact words.
 
-Option 1 was chosen to ensure discoverability and improve user experience.
+Alternative 1 was chosen to ensure discoverability and improve user experience.
 
 **Aspect: Ranking strategy**
 TODO
 
 **Aspect: Ranking implementation**
-* **Option 1 (current choice):** Shared contract between contact and product entity.
+
+* **Alternative 1 (current choice):** Shared contract between contact and product entity.
   * Pros: Consistent behavior across commands; Reusable implementation.
   * Cons: Careful abstraction required.
 
-* **Option 2:** Independent logic per entity.
+* **Alternative 2:** Independent logic per entity.
   * Pros: Each entity can customise the logic. 
   * Cons: Duplicated logic; Higher risk of behavior drift.
 
-Option 1 was chosen for consistency and maintainability.
+Alternative 1 was chosen for consistency and maintainability.
 
 <div style="height: 10px;"></div>
 
