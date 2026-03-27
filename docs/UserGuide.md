@@ -54,7 +54,7 @@ java -jar vendorvault.jar
 For example, if you placed the `.jar` file in your Downloads folder:
 
 ```bash
-cd C:\Users\John\Downloads
+cd C:\Users\YOUR_USERNAME\Downloads
 java -jar vendorvault.jar
 ```
 
@@ -117,6 +117,12 @@ Some example commands you can try:
 * `deleteproduct SKU-1003`: Deletes `Arduino Uno R4`.
 
 5\. Refer to the [Features](#features) below for details of each command, or [Command Summary](#command-summary) for a quick summary of all commands.
+
+<box type="tip" seamless>
+
+**Tip:** Press the UP or DOWN arrow keys to navigate through your previous commands easily.
+
+</box>
 
 <br>
 
