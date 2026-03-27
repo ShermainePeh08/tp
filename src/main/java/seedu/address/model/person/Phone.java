@@ -13,8 +13,9 @@ import java.util.stream.Collectors;
  */
 public class Phone {
 
-    public static final String MESSAGE_CONSTRAINTS = "Phone number should not be empty "
-            + "and must be at least 3 digits.";
+    public static final String MESSAGE_CONSTRAINTS = "Phone number(s) must be at least 3 digits "
+            + "(including those separated by comma).";
+    public static final String MESSAGE_BLANK = "Phone number should not be blank";
     public static final String MESSAGE_WARN =
             "⚠ Warning: Phone number contains unusual symbols, is this intentional?";
     public static final String WARNING_VALIDATION_REGEX =

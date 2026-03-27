@@ -29,6 +29,8 @@ public class ParserUtilTest {
     private static final String INVALID_PHONE = " ";
     private static final String INVALID_ADDRESS = " ";
     private static final String INVALID_EMAIL = "example.com";
+    private static final String INVALID_EMAIL_TOO_LONG = "a".repeat(Email.MAX_LENGTH - "@example.com".length() + 1)
+            + "@example.com";
     private static final String INVALID_BLANK_EMAIL = " ";
     private static final String INVALID_TAG = "#friend";
 
@@ -62,7 +64,9 @@ public class ParserUtilTest {
     private static final String VALID_PRODUCT_NAME_WARN = "apple juice 5% sugar";
 
     private static final String INVALID_IDENTIFIER = " ";
+    private static final String INVALID_IDENTIFIER_NEWLINE = "SKU\n1001";
     private static final String INVALID_PRODUCT_NAME = " ";
+    private static final String INVALID_PRODUCT_NAME_NEWLINE = "Brown\nRice";
     private static final String INVALID_QUANTITY = "-1";
     private static final String INVALID_THRESHOLD = "-1";
 
@@ -111,6 +115,12 @@ public class ParserUtilTest {
     @Test
     public void parseName_invalidValue_throwsParseException() {
         assertThrows(ParseException.class, () -> ParserUtil.parseName(INVALID_NAME));
+    }
+
+    @Test
+    public void parseName_nonBlankInvalidPattern_throwsParseExceptionWithConstraintsMessage() {
+        assertThrows(ParseException.class, Name.MESSAGE_CONSTRAINTS, ()
+                -> ParserUtil.parseName("Alice\nBob"));
     }
 
     @Test
@@ -236,6 +246,12 @@ public class ParserUtilTest {
     }
 
     @Test
+    public void parseEmail_tooLong_throwsParseExceptionWithLengthMessage() {
+        assertThrows(ParseException.class, Email.MESSAGE_LENGTH_CONSTRAINTS, ()
+                -> ParserUtil.parseEmail(INVALID_EMAIL_TOO_LONG));
+    }
+
+    @Test
     public void parseEmail_validValueWithoutWhitespace_returnsEmail() throws Exception {
         Email expectedEmail = new Email(VALID_EMAIL);
         assertEquals(expectedEmail, ParserUtil.parseEmail(VALID_EMAIL).getValue());
@@ -305,6 +321,12 @@ public class ParserUtilTest {
     }
 
     @Test
+    public void parseIdentifier_nonBlankInvalidPattern_throwsParseExceptionWithConstraintsMessage() {
+        assertThrows(ParseException.class, Identifier.MESSAGE_CONSTRAINTS, ()
+                -> ParserUtil.parseIdentifier(INVALID_IDENTIFIER_NEWLINE));
+    }
+
+    @Test
     public void parseIdentifier_validValueWithoutWhitespace_returnsIdentifier() throws Exception {
         Identifier expectedIdentifier = new Identifier(VALID_IDENTIFIER);
         assertEquals(expectedIdentifier, ParserUtil.parseIdentifier(VALID_IDENTIFIER).getValue());
@@ -336,6 +358,12 @@ public class ParserUtilTest {
     @Test
     public void parseProductName_invalidValue_throwsParseException() {
         assertThrows(ParseException.class, () -> ParserUtil.parseProductName(INVALID_PRODUCT_NAME));
+    }
+
+    @Test
+    public void parseProductName_nonBlankInvalidPattern_throwsParseExceptionWithConstraintsMessage() {
+        assertThrows(ParseException.class, seedu.address.model.product.Name.MESSAGE_CONSTRAINTS, ()
+                -> ParserUtil.parseProductName(INVALID_PRODUCT_NAME_NEWLINE));
     }
 
     @Test
