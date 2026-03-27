@@ -8,7 +8,8 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  * Guarantees: immutable; is valid as declared in {@link #isValidIdentifier(String)}
  */
 public class Identifier {
-    public static final String MESSAGE_CONSTRAINTS = "Identifier should not be blank.";
+    public static final String MESSAGE_BLANK = "Identifier should not be blank.";
+    public static final String MESSAGE_CONSTRAINTS = MESSAGE_BLANK;
     public static final int MAX_LENGTH = 120;
     public static final String MESSAGE_LENGTH_CONSTRAINTS =
             "Identifier should be less than " + MAX_LENGTH + " characters.";

@@ -960,9 +960,11 @@ Use this section when `add` fails or returns a warning.
 | Same single-value field repeated (e.g. two `n/` or two `e/`)   | `Multiple values specified for the following single-valued field(s): ...` | Keep only one value for each of `n/`, `p/`, `e/`, `a/`.                      |
 | Name is blank                                                  | `Name should not be blank.`                                               | Provide a non-empty name after `n/`.                                         |
 | Name is too long                                               | `Name should be at most 256 characters.`                                  | Shorten the name.                                                            |
-| Phone is blank/too short                                       | `Phone number should not be empty and must be at least 3 digits.`         | Ensure each phone entry has at least 3 digits.                               |
+| Phone is blank                                                 | `Phone number should not be blank.`                                       | Ensure each phone entry is not blank.                                        |
+| Phone is too short                                             | `Phone number(s) must be at least 3 digits ...`                           | Ensure each phone entry has at least 3 digits.                               |
 | Email is blank                                                 | `Email should not be blank.`                                              | Provide a non-empty email after `e/`.                                        |
-| Email format is invalid                                        | `Email should be of the format local-part@domain ...`                     | Use a valid email format (e.g. `sales@vendor.com`) less than 320 characters. |
+| Email format is invalid                                        | `Email should be a valid format ...`                                      | Use a [valid email format](#contact-email-format) (e.g. `sales@vendor.com`). |
+| Email is too long                                              | `Email should be at most 320 characters.`                                 | Shorten the email.                                                           |
 | Address is blank                                               | `Address can take any values, and it should not be blank`                 | Provide a non-empty address after `a/`.                                      |
 | Address is too long                                            | `Address should be at most 500 characters.`                               | Shorten the address.                                                         |
 | Tag contains non-alphanumeric characters                       | `Tag names should be alphanumeric`                                        | Use letters/numbers only for each `t/` value.                                |
@@ -977,13 +979,26 @@ Common `add` warnings:
 | Email is unusually long                     | `⚠ Warning: This email address is unusually long, is this intentional?`                                                                       | Email is accepted, but more than 256 characters. You can verify if the email entered is correct.                                                                                         |
 | Similar name to an existing contact         | `⚠ Warning: There's a contact with a similar name (name: <similar-name>), is this intentional?`                                               | Possible duplicate by similar name. You can check if the name in the warning message is the same vendor as what you were about to add.                                                   |
 | Similar phone number to an existing contact | `⚠ Warning: There's a contact with a similar phone number (name: <name>, phone number: <similar-phone-number>), is this intentional?`         | Possible duplicate by similar phone number. You can check if the name in the warning message is the same vendor as what you were about to add.                                           |
-| Similar address to an existing contact      | `⚠ Warning: There's a contact with a similar address (name: <name>, address: <similar-address>), is this intentional?`                        | Possible duplicate/related location by address similarity. You can check if the vendor name and address in the warning message belongs to the same vendor as what you were about to add. |
+| Similar address to an existing contact      | `⚠ Warning: There's a contact with a similar address (name: <name>, address: <similar-address>), is this intentional?`                        | Possible duplicate/related location by address similarity. You can check if the name and address in the warning message belongs as what you were about to add.                           |
 
 <box type="tip" seamless>
 
 Tip: If multiple warnings apply, VendorVault shows all of them (one per line) together with the success message.
 
 </box>
+
+<panel header="What's considered a valid Contact Email?" type="seamless" id="contact-email-format">
+
+Email should be of the format local-part@domain and adhere to the following constraints:
+* The local-part should only contain alphanumeric characters and these special characters, excluding the parentheses, (`+_.-`). The local-part may not start or end with any special characters.
+* This is followed by a `@` and then a domain name. The domain name is made up of domain labels separated by periods.
+   The domain name must:
+    - End with a domain label at least 2 characters long
+    - Have each domain label start and end with alphanumeric characters
+    - Have each domain label consist of alphanumeric characters, separated only by hyphens, if any.
+
+</panel>
+
 <div style="height: 30px;"></div>
 
 #### Troubleshooting `edit` contact

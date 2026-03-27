@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -74,7 +75,7 @@ public class ParserUtil {
     public static ParseResult<Name> parseName(String name) throws ParseException {
         requireNonNull(name);
         String trimmedName = name.trim();
-        Optional<String> warnings = getNameWarning(trimmedName);
+        Optional<String> warnings = validateName(trimmedName);
         return new ParseResult<>(new Name(trimmedName), warnings);
     }
 
@@ -87,7 +88,7 @@ public class ParserUtil {
     public static ParseResult<Phone> parsePhone(String phone) throws ParseException {
         requireNonNull(phone);
         String trimmedPhone = phone.trim();
-        Optional<String> warnings = getPhoneWarning(trimmedPhone);
+        Optional<String> warnings = validatePhone(trimmedPhone);
         return new ParseResult<>(new Phone(trimmedPhone), warnings);
     }
 
@@ -120,7 +121,7 @@ public class ParserUtil {
     public static ParseResult<Email> parseEmail(String email) throws ParseException {
         requireNonNull(email);
         String trimmedEmail = email.trim();
-        Optional<String> warnings = getEmailWarning(trimmedEmail);
+        Optional<String> warnings = validateEmail(trimmedEmail);
         return new ParseResult<>(new Email(trimmedEmail), warnings);
     }
 
@@ -160,8 +161,8 @@ public class ParserUtil {
     public static ParseResult<Identifier> parseIdentifier(String identifier) throws ParseException {
         requireNonNull(identifier);
         String trimmedIdentifier = identifier.trim();
-        Optional<String> warning = getIdentifierWarning(trimmedIdentifier);
-        return new ParseResult<>(new Identifier(trimmedIdentifier), warning);
+        Optional<String> warnings = validateIdentifier(trimmedIdentifier);
+        return new ParseResult<>(new Identifier(trimmedIdentifier), warnings);
     }
 
     /**
@@ -173,8 +174,8 @@ public class ParserUtil {
     public static ParseResult<seedu.address.model.product.Name> parseProductName(String name) throws ParseException {
         requireNonNull(name);
         String trimmedName = name.trim();
-        Optional<String> warning = getProductNameWarning(trimmedName);
-        return new ParseResult<>(new seedu.address.model.product.Name(trimmedName), warning);
+        Optional<String> warnings = validateProductName(trimmedName);
+        return new ParseResult<>(new seedu.address.model.product.Name(trimmedName), warnings);
     }
 
     /**
@@ -213,64 +214,52 @@ public class ParserUtil {
 
     // ============ Helper Functions for Warnings ============
 
-    private static Optional<String> getNameWarning(String name) throws ParseException {
-        return getWarning(
-            name, () -> new ParseException(Name.MESSAGE_CONSTRAINTS), ()
+    private static Optional<String> validateName(String name) throws ParseException {
+        return validate(
+            name, () -> new ParseException(Name.MESSAGE_BLANK),
+            Name.MAX_LENGTH, ()
                         -> new ParseException(Name.MESSAGE_LENGTH_CONSTRAINTS),
-            Name.MAX_LENGTH,
-            Name::isValidNameWarn,
-            Name.MESSAGE_WARN
+            Name::isValidName, () -> new ParseException(Name.MESSAGE_CONSTRAINTS),
+            Name::isValidNameWarn, Name.MESSAGE_WARN
         );
 
     }
 
-    private static Optional<String> getPhoneWarning(String phone) throws ParseException {
-        if (phone.isBlank()) {
-            throw new ParseException(Phone.MESSAGE_CONSTRAINTS);
-        }
-
-        if (!Phone.isValidPhone(phone)) {
-            throw new ParseException(Phone.MESSAGE_CONSTRAINTS);
-        }
-
-        if (!Phone.isValidPhoneWarn(phone)) {
-            return Optional.of(Phone.MESSAGE_WARN);
-        }
-
-        return Optional.empty();
+    private static Optional<String> validatePhone(String phone) throws ParseException {
+        return validate(
+                phone, () -> new ParseException(Phone.MESSAGE_BLANK),
+                0, null,
+                Phone::isValidPhone, () -> new ParseException(Phone.MESSAGE_CONSTRAINTS),
+                Phone::isValidPhoneWarn, Phone.MESSAGE_WARN
+        );
     }
 
-    private static Optional<String> getEmailWarning(String email) throws ParseException {
-        if (email.isBlank()) {
-            throw new ParseException(Email.MESSAGE_BLANK);
-        }
-
-        if (!Email.isValidEmail(email)) {
-            throw new ParseException(Email.MESSAGE_CONSTRAINTS);
-        }
-
-        if (!Email.isValidEmailWarn(email)) {
-            return Optional.of(Email.MESSAGE_WARN);
-        }
-
-        return Optional.empty();
+    private static Optional<String> validateEmail(String email) throws ParseException {
+        return validate(
+                email, () -> new ParseException(Email.MESSAGE_BLANK),
+                Email.MAX_LENGTH, () -> new ParseException(Email.MESSAGE_LENGTH_CONSTRAINTS),
+                Email::isValidEmail, () -> new ParseException(Email.MESSAGE_CONSTRAINTS),
+                Email::isValidEmailWarn, Email.MESSAGE_WARN
+        );
     }
 
-    private static Optional<String> getIdentifierWarning(String identifier) throws ParseException {
-        return getWarning(
-                identifier, () -> new ParseException(Identifier.MESSAGE_CONSTRAINTS), ()
+    private static Optional<String> validateIdentifier(String identifier) throws ParseException {
+        return validate(
+                identifier, () -> new ParseException(Identifier.MESSAGE_BLANK),
+                Identifier.MAX_LENGTH, ()
                         -> new ParseException(Identifier.MESSAGE_LENGTH_CONSTRAINTS),
-                Identifier.MAX_LENGTH,
-                Identifier::isValidIdentifierWarn,
-                Identifier.MESSAGE_WARN
+                Identifier::isValidIdentifier, () -> new ParseException(Identifier.MESSAGE_CONSTRAINTS),
+                Identifier::isValidIdentifierWarn, Identifier.MESSAGE_WARN
         );
     }
 
-    private static Optional<String> getProductNameWarning(String name) throws ParseException {
-        return getWarning(
-                name, () -> new ParseException(seedu.address.model.product.Name.MESSAGE_CONSTRAINTS), ()
+    private static Optional<String> validateProductName(String name) throws ParseException {
+        return validate(
+                name, () -> new ParseException(seedu.address.model.product.Name.MESSAGE_BLANK),
+                seedu.address.model.product.Name.MAX_LENGTH, ()
                         -> new ParseException(seedu.address.model.product.Name.MESSAGE_LENGTH_CONSTRAINTS),
-                seedu.address.model.product.Name.MAX_LENGTH,
+                seedu.address.model.product.Name::isValidName, ()
+                        -> new ParseException(seedu.address.model.product.Name.MESSAGE_CONSTRAINTS),
                 seedu.address.model.product.Name::isValidNameWarn,
                 seedu.address.model.product.Name.MESSAGE_WARN
         );
@@ -278,7 +267,7 @@ public class ParserUtil {
 
     // ============ Generic Warning Helper ============
     @FunctionalInterface
-    interface WarningValidator {
+    interface Validator {
         boolean validate(String input);
     }
 
@@ -290,30 +279,38 @@ public class ParserUtil {
     /**
      * Checks only blank, max length and warnings
      */
-    private static Optional<String> getWarning(
+    private static Optional<String> validate(
             String value,
             ExceptionSupplier blankException,
-            ExceptionSupplier lengthException,
             int maxLength,
-            WarningValidator softValidator,
-            String softWarningMessage
+            ExceptionSupplier lengthException,
+            Validator errorValidator,
+            ExceptionSupplier errorException,
+            Validator warningValidator,
+            String warningMessage
     ) throws ParseException {
-        requireNonNull(value);
-        requireNonNull(blankException);
-        requireNonNull(lengthException);
-        requireNonNull(softValidator);
-        requireNonNull(softWarningMessage);
+        // error validation is optional
+        requireAllNonNull(value, blankException, warningValidator, warningMessage);
 
         if (value.isBlank()) {
             throw blankException.get();
         }
 
-        if (value.length() > maxLength) {
-            throw lengthException.get();
+        if (lengthException != null) {
+            if (value.length() > maxLength) {
+                throw lengthException.get();
+            }
         }
 
-        if (!softValidator.validate(value)) {
-            return Optional.of(softWarningMessage);
+        if (errorValidator != null) {
+            requireNonNull(errorException);
+            if (!errorValidator.validate(value)) {
+                throw errorException.get();
+            }
+        }
+
+        if (!warningValidator.validate(value)) {
+            return Optional.of(warningMessage);
         }
 
         return Optional.empty();
