@@ -4,7 +4,7 @@ skinparam ClassBorderColor MODEL_COLOR
 skinparam ClassBackgroundColor MODEL_COLOR_T1
 skinparam ArrowColor MODEL_COLOR
 
-title After removing alias ls
+title Initialize Aliases
 
 object "aliasList: AliasList" as list {
 }

@@ -519,7 +519,7 @@ Given below is an example usage scenario and how the alias feature behaves an ea
 
 Step 1. The user launches the application. The `Aliases` object is initialised and loaded from `aliases.json` via `AliasStorage`
 
-<puml src="diagrams/AliasCommandImplementation/aliasState0.puml" />
+<puml src="diagrams/AliasCommandImplementation/AliasState0.puml" />
 
 <box type="info" seamless>
 
@@ -530,7 +530,7 @@ Step 1. The user launches the application. The `Aliases` object is initialised a
 Step 2. The user executes `alias list ls`. An `AliasCommand` is created with `originalCommand = "list"` and `alias = "ls"`.
 The new `Alias` is stored in `Aliases` and persisted to `aliases.json`
 
-<puml src="diagrams/AliasCommandImplementation/aliasState1.puml" />
+<puml src="diagrams/AliasCommandImplementation/AliasState1.puml" />
 
 <box type="info" seamless>
 
@@ -546,7 +546,7 @@ Step 4. The user types `ls args`. The same substitution occurs, only the command
 Step 5. The user executes `deletealias ls`. A `DeleteAliasCommand` is created and removes `"ls"` from `Aliases`.
 The updated alias list is persisted to `aliases.json`.
 
-<puml src="diagrams/AliasCommandImplementation/aliasState2.puml" />
+<puml src="diagrams/AliasCommandImplementation/AliasState2.puml" />
 
 <box type="info" seamless>
 
