@@ -974,6 +974,7 @@ Use this section when `add` fails or returns a warning.
 | Address is blank                                               | `Address can take any values, and it should not be blank`                 | Provide a non-empty address after `a/`.                                      |
 | Address is too long                                            | `Address should be at most 500 characters.`                               | Shorten the address.                                                         |
 | Tag contains non-alphanumeric characters                       | `Tag names should be alphanumeric`                                        | Use letters/numbers only for each `t/` value.                                |
+| Tag is too long                                                | `Tag names should be at most 50 characters`                               | Shorten the tags that are too long.                                          |
 | Contact duplicates an existing contact by same email.          | `This vendor contact already exists with the same email.`                 | Change the email address, or edit the existing contact instead.              |
 
 Common `add` warnings:
