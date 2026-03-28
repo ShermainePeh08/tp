@@ -62,7 +62,7 @@ public class LogicManager implements Logic {
         pendingConfirmation = command.getPendingConfirmation();
 
         if (!isPendingConfirmationResponse) {
-            commandHistory.add(commandText);
+            addCommandHistory(commandText);
         }
 
         try {
@@ -94,8 +94,18 @@ public class LogicManager implements Logic {
     }
 
     @Override
-    public CommandHistory getCommandHistory() {
-        return commandHistory;
+    public void addCommandHistory(String commandText) {
+        commandHistory.add(commandText);
+    }
+
+    @Override
+    public String getPrevCommandHistory(String currentInput) {
+        return commandHistory.getPrevious(currentInput);
+    }
+
+    @Override
+    public String getNextCommandHistory(String currentInput) {
+        return commandHistory.getNext(currentInput);
     }
 
     @Override

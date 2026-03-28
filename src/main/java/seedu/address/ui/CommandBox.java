@@ -6,7 +6,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
-import seedu.address.logic.commands.CommandHistory;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -20,18 +19,22 @@ public class CommandBox extends UiPart<Region> {
     private static final String FXML = "CommandBox.fxml";
 
     private final CommandExecutor commandExecutor;
-    private final CommandHistory commandHistory;
+    private final HistoryNavigator previousCommandHistoryNavigator;
+    private final HistoryNavigator nextCommandHistoryNavigator;
 
     @FXML
     private TextField commandTextField;
 
     /**
-     * Creates a {@code CommandBox} with the given {@code CommandExecutor} and {@code CommandHistory}.
+     * Creates a {@code CommandBox} with command execution and history navigation.
      */
-    public CommandBox(CommandExecutor commandExecutor, CommandHistory commandHistory) {
+    public CommandBox(CommandExecutor commandExecutor,
+                      HistoryNavigator previousCommandHistoryNavigator,
+                      HistoryNavigator nextCommandHistoryNavigator) {
         super(FXML);
         this.commandExecutor = commandExecutor;
-        this.commandHistory = commandHistory;
+        this.previousCommandHistoryNavigator = previousCommandHistoryNavigator;
+        this.nextCommandHistoryNavigator = nextCommandHistoryNavigator;
 
         // calls #setStyleToDefault() whenever there is a change to the text of the command box.
         commandTextField.textProperty().addListener((unused1, unused2, unused3) -> setStyleToDefault());
@@ -41,10 +44,10 @@ public class CommandBox extends UiPart<Region> {
     @FXML
     private void handleHistoryNavigation(KeyEvent event) {
         if (event.getCode() == KeyCode.UP) {
-            replaceCommandText(commandHistory.getPrevious(commandTextField.getText()));
+            replaceCommandText(previousCommandHistoryNavigator.navigate(commandTextField.getText()));
             event.consume();
         } else if (event.getCode() == KeyCode.DOWN) {
-            replaceCommandText(commandHistory.getNext(commandTextField.getText()));
+            replaceCommandText(nextCommandHistoryNavigator.navigate(commandTextField.getText()));
             event.consume();
         }
     }
@@ -103,6 +106,12 @@ public class CommandBox extends UiPart<Region> {
          * @see seedu.address.logic.Logic#execute(String)
          */
         CommandResult execute(String commandText) throws CommandException, ParseException;
+    }
+
+    /** Represents a function that returns the navigated command history text. */
+    @FunctionalInterface
+    public interface HistoryNavigator {
+        String navigate(String currentInput);
     }
 
 }
