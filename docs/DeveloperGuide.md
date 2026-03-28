@@ -307,7 +307,13 @@ The command history feature is implemented using a `CommandHistory` class that m
 * `CommandHistory#getNext(String currentInput)` — Returns the next command in the history.
 * `CommandHistory#resetNavigation()` — Resets the navigation pointer to the end of the history.
 
-These operations are exposed in the `Logic` interface through the `Logic#getCommandHistory()` method, which returns the `CommandHistory` object, allowing the UI to access the command history and implement features such as navigating through previous commands using the up/down arrow keys.
+These operations are exposed through `Logic#addCommandHistory(String)`, `Logic#getPrevCommandHistory(String)`, and `Logic#getNextCommandHistory(String)`, allowing the UI to navigate command history via the `Logic` API without directly depending on `CommandHistory`.
+
+The following class diagram summarizes the structure and relationships used by this feature:
+
+<puml src="diagrams/command-history/CommandHistoryClassDiagram.puml" alt="Command History Class Diagram" width="600" />
+
+<br>
 
 #### Usage Scenario
 Given below is an example usage scenario and how the command history behaves at each step.
@@ -327,10 +333,13 @@ Given below is an example usage scenario and how the command history behaves at 
 The following sequence diagram shows how the `getPrevious` operation works as described:
 <puml src="diagrams/command-history/SequenceDiagram.puml" alt="Command History Sequence Diagram" />
 
+Similarly, how the `getPrevCommandHistory` operation goes through `Logic` component is shown below:
+<puml src="diagrams/command-history/SequenceDiagramLogic.puml" alt="Command History Sequence Diagram for getPrevious operation" width="500" />
+
 <div style="height: 20px;"></div>
 
 The following activity diagram below summarizes how key presses are handled to navigate through the command history:
-<puml src="diagrams/command-history/ActivityDiagram.puml" alt="Command History Activity Diagram" />
+<puml src="diagrams/command-history/ActivityDiagram.puml" alt="Command History Activity Diagram" width="550" />
 
 #### Design Considerations
 **Aspect: How command history stores input:**
@@ -995,4 +1004,4 @@ Accessibility:
 
 Team size: 4
 
-* Make 'Undo successful' and 'Redo successful' message more specific: The current success message for a successful undo/redo operation is too general. We plan to make it also mention what action was undone/redone. In the current design, both commands operate on the same `VersionedVendorVault` history (`vendorVaultStateList` + `currentStatePointer`). A single shared metadata mechanism can power both messages, so implementing one naturally enables the other.
+* Make Undo/Redo success message more readable: The current success message for a successful undo/redo operation is specific but slightly hard to read. We plan to make it also mention what action was undone/redone. 

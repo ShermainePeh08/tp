@@ -140,8 +140,8 @@ public class LogicManagerTest {
         logic.execute(deleteCommand);
         logic.execute("y");
 
-        assertEquals(deleteCommand, logic.getCommandHistory().getPrevious(""));
-        assertEquals(addCommand, logic.getCommandHistory().getPrevious(""));
+        assertEquals(deleteCommand, logic.getPrevCommandHistory(""));
+        assertEquals(addCommand, logic.getPrevCommandHistory(""));
     }
 
     /**

@@ -4,7 +4,6 @@ import java.nio.file.Path;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
-import seedu.address.logic.commands.CommandHistory;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -63,7 +62,17 @@ public interface Logic {
     void setGuiSettings(GuiSettings guiSettings);
 
     /**
-     * Returns command history for command box navigation.
+     * Adds a command text into history for navigation.
      */
-    CommandHistory getCommandHistory();
+    void addCommandHistory(String commandText);
+
+    /**
+     * Returns the previous command text from history.
+     */
+    String getPrevCommandHistory(String currentInput);
+
+    /**
+     * Returns the next command text from history.
+     */
+    String getNextCommandHistory(String currentInput);
 }
