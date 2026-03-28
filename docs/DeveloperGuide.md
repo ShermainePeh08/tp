@@ -174,9 +174,9 @@ This section describes some noteworthy details on how certain features are imple
 
 The undo/redo mechanism is facilitated by `VersionedVendorVault`. It extends `VendorVault` with an undo/redo history, stored internally as an `vendorVaultStateList` and `currentStatePointer`. Additionally, it implements the following operations:
 
-* `VersionedVendorVault#commit()` — Saves the current VendorVault state in its history.
-* `VersionedVendorVault#undo()` — Restores the previous VendorVault state from its history.
-* `VersionedVendorVault#redo()` — Restores a previously undone VendorVault state from its history.
+* `VersionedVendorVault#commit(currentState, actionSummary)` — Saves the current VendorVault state in its history along with a summary of the action that caused the change.
+* `VersionedVendorVault#undo(currentState)` — Restores the previous VendorVault state from its history.
+* `VersionedVendorVault#redo(currentState)` — Restores a previously undone VendorVault state from its history.
 * `VersionedVendorVault#canUndo()` and `VersionedVendorVault#canRedo()` — Checks if undo/redo operations are possible based on the current state of the history.
 
 <box type="info" seamless>
