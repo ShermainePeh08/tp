@@ -988,3 +988,11 @@ Accessibility:
    - _{explain how to simulate a missing/corrupted file, and the expected behavior}_
 
 2. _{ more test cases …​ }_
+
+## **Appendix: Effort**
+
+## **Appendix: Planned Enhancements**
+
+Team size: 4
+
+* Make 'Undo successful' and 'Redo successful' message more specific: The current success message for a successful undo/redo operation is too general. We plan to make it also mention what action was undone/redone. In the current design, both commands operate on the same `VersionedVendorVault` history (`vendorVaultStateList` + `currentStatePointer`). A single shared metadata mechanism can power both messages, so implementing one naturally enables the other.
