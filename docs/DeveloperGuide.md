@@ -172,7 +172,7 @@ This section describes some noteworthy details on how certain features are imple
 
 #### Implementation
 
-The undo/redo mechanism is facilitated by `VersionedVendorVault`. It extends `VendorVault` with an undo/redo history, stored internally as an `vendorVaultStateList` and `currentStatePointer`. Additionally, it implements the following operations:
+The undo/redo mechanism is facilitated by `VersionedVendorVault`. It extends `VendorVault` with an undo/redo history, stored internally as an `vendorVaultStateList`, `stateActionSummaryList` and `currentStatePointer`. Additionally, it implements the following operations:
 
 * `VersionedVendorVault#commit(currentState, actionSummary)` — Saves the current VendorVault state in its history along with a summary of the action that caused the change.
 * `VersionedVendorVault#undo(currentState)` — Restores the previous VendorVault state from its history.
@@ -194,7 +194,7 @@ Given below is an example showing how the undo/redo mechanism behaves at each st
 
 <puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
 
-**Step 2.** The user executes `delete support@adafruit.com` command. The `delete` command calls `Model#commitVendorVault()`, saving the modified `VendorVault` state to `vendorVaultStateList` and moving the `currentStatePointer` to point to the newly inserted state. 
+**Step 2.** The user executes `delete support@adafruit.com` command. The `delete` command calls `Model#commitVendorVault()`, saving the modified `VendorVault` state to `vendorVaultStateList` and moving the `currentStatePointer` to point to the newly inserted state.
 
 <puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
 
@@ -208,7 +208,7 @@ Given below is an example showing how the undo/redo mechanism behaves at each st
 
 </box>
 
-**Step 4.** The user now decides that adding the contact was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoVendorVault()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous state, and restores `VendorVault`'s data to that state.
+**Step 4.** The user now decides that adding the contact was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoVendorVault()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous state, and restores `VendorVault`'s data to that state. The action summary is also retrieved from `stateActionSummaryList` and returned to the user as part of the `CommandResult`'s feedback message.
 
 <puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
 
