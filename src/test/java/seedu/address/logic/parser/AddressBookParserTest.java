@@ -43,6 +43,7 @@ import seedu.address.logic.commands.ListProductsCommand;
 import seedu.address.logic.commands.PendingConfirmation;
 import seedu.address.logic.commands.RedoCommand;
 import seedu.address.logic.commands.RestoreProductCommand;
+import seedu.address.logic.commands.SetThresholdCommand;
 import seedu.address.logic.commands.UndoCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
@@ -60,6 +61,7 @@ import seedu.address.model.person.NameContainsKeywordsScoredPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.product.Product;
 import seedu.address.model.product.ProductNameContainsKeywordsScoredPredicate;
+import seedu.address.model.product.RestockThreshold;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
@@ -301,6 +303,15 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_setThreshold() throws Exception {
+        SetThresholdCommand command = (SetThresholdCommand) parser.parseCommand(
+                SetThresholdCommand.COMMAND_WORD + " 5",
+                new PendingConfirmation(),
+                new ModelManager());
+        assertEquals(new SetThresholdCommand(new RestockThreshold("5")), command);
+    }
+
+    @Test
     public void parseCommand_alias() throws Exception {
         Command command = parser.parseCommand(AliasCommand.COMMAND_WORD + " "
                         + CommandType.LIST.getCommandWord() + " ls",
@@ -361,7 +372,7 @@ public class AddressBookParserTest {
     }
 
     /**
-     * A default model stub that have all of the methods failing.
+     * A default model stub that has all of the methods failing.
      */
     private class ModelStub implements Model {
         @Override
