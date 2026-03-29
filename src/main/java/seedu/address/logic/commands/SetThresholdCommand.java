@@ -12,7 +12,7 @@ import seedu.address.model.product.RestockThreshold;
  */
 public class SetThresholdCommand extends Command {
 
-    public static final String COMMAND_WORD = "setthreshold";
+    public static final String COMMAND_WORD = "threshold";
     public static final String COMMAND_USAGE = COMMAND_WORD + " THRESHOLD";
     public static final String COMMAND_DESCRIPTION = "Sets the default restock threshold.";
 
