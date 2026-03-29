@@ -132,7 +132,8 @@ public class AddressBookParser {
                 return new RestoreCommandParser().parse(arguments);
 
             case AddProductCommand.COMMAND_WORD:
-                return new AddProductCommandParser().parse(arguments);
+                return new AddProductCommandParser(() ->
+                        model.getUserPrefs().getDefaultRestockThresholdValue()).parse(arguments);
 
             case ListProductsCommand.COMMAND_WORD:
                 return new ListProductsCommand();

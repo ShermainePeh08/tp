@@ -17,6 +17,7 @@ import static seedu.address.logic.parser.ParserUtil.SEPARATOR_NEW_LINE;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.IntSupplier;
 import java.util.stream.Collectors;
 
 import seedu.address.logic.commands.AddProductCommand;
@@ -34,13 +35,18 @@ import seedu.address.model.product.RestockThreshold;
 public class AddProductCommandParser implements Parser<AddProductCommand> {
 
     public static final String DEFAULT_QUANTITY = "0";
-    public static final String DEFAULT_THRESHOLD = "0";
     public static final String MESSAGE_QUANTITY_DEFAULTED =
             "⚠ Warning: Quantity missing, defaulted to 0.";
     public static final String MESSAGE_THRESHOLD_DEFAULTED =
-            "⚠ Warning: Restock threshold missing, defaulted to 0.";
+            "⚠ Warning: Restock threshold missing, defaulted to %1$s.";
     public static final String MESSAGE_VENDOR_EMAIL_MISSING =
             "⚠ Warning: Vendor email missing, product will not be associated with a vendor.";
+
+    private final IntSupplier defaultThresholdSupplier;
+
+    public AddProductCommandParser(IntSupplier defaultThresholdSupplier) {
+        this.defaultThresholdSupplier = defaultThresholdSupplier;
+    }
 
     private record RequiredField(Prefix prefix, String name) {
     }
@@ -80,8 +86,10 @@ public class AddProductCommandParser implements Parser<AddProductCommand> {
         if (argMultimap.getValue(PREFIX_THRESHOLD).isPresent()) {
             threshold = ParserUtil.parseThreshold(argMultimap.getValue(PREFIX_THRESHOLD).get()).getValue();
         } else {
-            threshold = new RestockThreshold(DEFAULT_THRESHOLD);
-            appendWarning(warnings, Optional.of(MESSAGE_THRESHOLD_DEFAULTED));
+            int configuredDefaultThreshold = defaultThresholdSupplier.getAsInt();
+            threshold = new RestockThreshold(configuredDefaultThreshold);
+            appendWarning(warnings,
+                    Optional.of(String.format(MESSAGE_THRESHOLD_DEFAULTED, configuredDefaultThreshold)));
         }
 
         Email vendorEmail = null;
