@@ -51,6 +51,15 @@ public class UserPrefsTest {
         userPrefs.setAliasFilePath(aliasFilePath);
         userPrefs1.setAliasFilePath(aliasFilePath);
 
+        userPrefs.setDefaultRestockThresholdValue(7);
+        userPrefs1.setDefaultRestockThresholdValue(7);
+
         assertEquals(userPrefs, userPrefs1);
+    }
+
+    @Test
+    public void setDefaultRestockThresholdValue_negativeValue_throwsIllegalArgumentException() {
+        UserPrefs userPrefs = new UserPrefs();
+        assertThrows(IllegalArgumentException.class, () -> userPrefs.setDefaultRestockThresholdValue(-1));
     }
 }
