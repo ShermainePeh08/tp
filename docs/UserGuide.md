@@ -460,6 +460,12 @@ If vendor email is omitted, product will not be associated with a vendor.
 
 </box>
 
+<box type="tip" seamless>
+
+**Tip:** You can set your own [default threshold](#changing-default-threshold-threshold).
+
+</box>
+
 <panel header="What products are considered duplicates?" type="seamless" id="faq-duplicate-products">
 
 A product is considered a duplicate if it has the **same identifier (id) as an existing product**. For example:
@@ -726,6 +732,27 @@ Removes alias given.
 
 <div style="height: 30px;"></div>
 
+#### Changing default threshold : `threshold`
+
+Changes the default restock threshold used when adding products.
+
+Format:
+```
+threshold DEFAULT_THRESHOLD
+```
+
+Examples:
+
+* `threshold 10`
+
+<box type="info" seamless>
+
+This change is saved across app sessions.
+
+</box>
+
+<div style="height: 30px;"></div>
+
 #### Undoing the previous change : `undo`
 
 Undoes the last change to contacts or products. You can repeat the command to undo multiple changes in the current session.
@@ -824,15 +851,16 @@ exit
 
 ### General Commands
 
-| <div style="width:100px">Action</div> | <div style="width:200px">Command</div> | <div style="width:200px">Example</div> | What it does                                              |
-|---------------------------------------|----------------------------------------|---------------------------------------|-----------------------------------------------------------|
-| **Alias**                             | `alias [ORIGINAL_COMMAND] [ALIAS]`     | `alias list ls`                       | Adds a new alias; lists all aliases if no arguments given |
-| **Delete Alias**                      | `deletealias [ALIAS]`                  | `deletealias ls`                      | Deletes an existing alias                                 |
-| **Undo**                              | `undo`                                 | &nbsp;                                | Undoes previous change                                    |
-| **Redo**                              | `redo`                                 | &nbsp;                                | Redoes last undone change                                 |
-| **List All**                          | `listall`                              | &nbsp;                                | Lists all active contacts and products                    |
-| **Help**                              | `help`                                 | &nbsp;                                | Shows a summary of commands                               |
-| **Exit**                              | `exit`                                 | &nbsp;                                | Exits VendorVault                                         |
+| <div style="width:100px">Action</div> | <div style="width:200px">Command</div> | <div style="width:200px">Example</div> | What it does                                                    |
+|---------------------------------------|----------------------------------------|----------------------------------------|-----------------------------------------------------------------|
+| **Alias**                             | `alias [ORIGINAL_COMMAND] [ALIAS]`     | `alias list ls`                        | Adds a new alias; lists all aliases if no arguments given       |
+| **Delete Alias**                      | `deletealias [ALIAS]`                  | `deletealias ls`                       | Deletes an existing alias                                       |
+| **Change Default Threshold**          | `threshold DEFAULT_THRESHOLD`          | `threshold 10`                         | Changes the default restock threshold used when adding products |
+| **Undo**                              | `undo`                                 | &nbsp;                                 | Undoes previous change                                          |
+| **Redo**                              | `redo`                                 | &nbsp;                                 | Redoes last undone change                                       |
+| **List All**                          | `listall`                              | &nbsp;                                 | Lists all active contacts and products                          |
+| **Help**                              | `help`                                 | &nbsp;                                 | Shows a summary of commands                                     |
+| **Exit**                              | `exit`                                 | &nbsp;                                 | Exits VendorVault                                               |
 
 --------------------------------------------------------------------------------------------------------------------
 
