@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 import seedu.address.commons.core.LogsCenter;
@@ -21,7 +20,7 @@ public class VersionedVendorVault extends VendorVault {
     private static final Logger logger = LogsCenter.getLogger(VersionedVendorVault.class);
 
     private final List<VendorVault> vendorVaultStateList; // list elements mutability is intended
-    private final List<Optional<String>> stateActionSummaryList;
+    private final List<String> stateActionSummaryList;
     private int currentStatePointer;
 
     /**
@@ -35,7 +34,7 @@ public class VersionedVendorVault extends VendorVault {
         this.vendorVaultStateList = new ArrayList<>();
         this.vendorVaultStateList.add(new VendorVault(vendorVault));
         this.stateActionSummaryList = new ArrayList<>();
-        this.stateActionSummaryList.add(Optional.empty());
+        this.stateActionSummaryList.add("");
         this.currentStatePointer = INITIAL_STATE;
 
         checkInvariant();
@@ -45,10 +44,6 @@ public class VersionedVendorVault extends VendorVault {
      * Saves a copy of the current VendorVault state to the history with an action summary.
      */
     public void commit(VendorVault currentState, String actionSummary) {
-        commit(currentState, Optional.ofNullable(actionSummary));
-    }
-
-    private void commit(VendorVault currentState, Optional<String> actionSummary) {
         requireNonNull(currentState);
         requireNonNull(actionSummary);
 
@@ -67,13 +62,13 @@ public class VersionedVendorVault extends VendorVault {
     /**
      * Restores the previous VendorVault state and returns the summary of what was undone.
      */
-    public Optional<String> undo(VendorVault currentState) {
+    public String undo(VendorVault currentState) {
         requireNonNull(currentState);
 
         if (!canUndo()) {
             throw new IllegalStateException(UndoCommand.MESSAGE_FAILURE);
         }
-        Optional<String> undoneActionSummary = stateActionSummaryList.get(currentStatePointer);
+        String undoneActionSummary = stateActionSummaryList.get(currentStatePointer);
         currentStatePointer--;
         currentState.resetData(vendorVaultStateList.get(currentStatePointer));
 
@@ -85,7 +80,7 @@ public class VersionedVendorVault extends VendorVault {
     /**
      * Restores the next VendorVault state after an undo and returns the summary of what was redone.
      */
-    public Optional<String> redo(VendorVault currentState) {
+    public String redo(VendorVault currentState) {
         requireNonNull(currentState);
 
         if (!canRedo()) {

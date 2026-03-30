@@ -559,7 +559,7 @@ public class AddCommandTest {
         }
 
         @Override
-        public Optional<String> undoVendorVault() {
+        public String undoVendorVault() {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -569,7 +569,7 @@ public class AddCommandTest {
         }
 
         @Override
-        public Optional<String> redoVendorVault() {
+        public String redoVendorVault() {
             throw new AssertionError("This method should not be called.");
         }
 
