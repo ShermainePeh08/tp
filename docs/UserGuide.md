@@ -557,12 +557,6 @@ Examples:
 
 </box>
 
-<box type="info" seamless>
-
-Matching is partial and case-insensitive. The order of the keywords does not matter.
-
-</box>
-
 <div style="height: 30px;"></div>
 
 #### Archiving a product : `archiveproduct`
