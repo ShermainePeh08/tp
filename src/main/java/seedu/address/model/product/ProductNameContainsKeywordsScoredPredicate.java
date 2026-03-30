@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import seedu.address.commons.util.StringUtil;
 import seedu.address.commons.util.ToStringBuilder;
@@ -17,7 +16,7 @@ import seedu.address.model.search.FindRelevance.Score;
 /**
  * Tests that a {@code Product}'s {@code Name} matches any keyword using token-level partial matching.
  */
-public class ProductNameContainsKeywordsScoredPredicate implements Predicate<Product> {
+public class ProductNameContainsKeywordsScoredPredicate implements RankedProductPredicate {
     private static final String WHITESPACE_REGEX = "\\s+";
 
     private final List<String> keywords;
