@@ -868,8 +868,6 @@ Please follow this format carefully. Files that do not adhere to the required fo
 
 <panel header="`addressbook.json`: stores contact details" type="seamless">
 
-This is the json for address book:
-
 ```json
 {
   "persons" : [ {
@@ -885,8 +883,6 @@ This is the json for address book:
 </panel>
 
 <panel header="`inventory.json`: stores product details" type="seamless">
-
-This is the json for inventory:
 
 ```json
 {
@@ -904,8 +900,6 @@ This is the json for inventory:
 </panel>
 
 <panel header="`aliases.json`: stores alias details" type="seamless">
-
-This is the json for aliases:
 
 ```json
 {
