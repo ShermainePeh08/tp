@@ -60,9 +60,9 @@ public class EditCommand extends Command {
             + "[" + PREFIX_EMAIL + "EMAIL] "
             + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_TAG + "TAG]...\n"
-            + "Example: " + COMMAND_WORD + " johndoe@example.com "
-            + PREFIX_PHONE + "91234567 "
-            + PREFIX_EMAIL + "johndoe@example.com";
+            + "Example: " + COMMAND_WORD + " support@adafruit.com "
+            + PREFIX_PHONE + "98196742 "
+            + PREFIX_ADDRESS + "New York, USA";
 
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Contact: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
