@@ -1,9 +1,9 @@
 package seedu.address.storage;
 
-import static seedu.address.logic.Messages.MESSAGE_ALIAS_CANNOT_BE_EMPTY;
-import static seedu.address.logic.Messages.MESSAGE_ALIAS_CONTAINS_SPACE;
-import static seedu.address.logic.Messages.MESSAGE_ALIAS_IS_A_PREDEFINED_COMMAND;
-import static seedu.address.logic.Messages.MESSAGE_ORIGINAL_COMMAND_DOES_NOT_EXISTS;
+import static seedu.address.logic.commands.AliasCommand.MESSAGE_ALIAS_CANNOT_BE_EMPTY;
+import static seedu.address.logic.commands.AliasCommand.MESSAGE_ALIAS_CONTAINS_SPACE;
+import static seedu.address.logic.commands.AliasCommand.MESSAGE_ALIAS_IS_A_PREDEFINED_COMMAND;
+import static seedu.address.logic.commands.AliasCommand.MESSAGE_ORIGINAL_COMMAND_DOES_NOT_EXISTS;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

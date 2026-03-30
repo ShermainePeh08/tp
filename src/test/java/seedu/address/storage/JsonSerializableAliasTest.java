@@ -1,8 +1,8 @@
 package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static seedu.address.logic.Messages.MESSAGE_ALIAS_CANNOT_BE_EMPTY;
-import static seedu.address.logic.Messages.MESSAGE_ORIGINAL_COMMAND_DOES_NOT_EXISTS;
+import static seedu.address.logic.commands.AliasCommand.MESSAGE_ALIAS_CANNOT_BE_EMPTY;
+import static seedu.address.logic.commands.AliasCommand.MESSAGE_ORIGINAL_COMMAND_DOES_NOT_EXISTS;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.nio.file.Path;

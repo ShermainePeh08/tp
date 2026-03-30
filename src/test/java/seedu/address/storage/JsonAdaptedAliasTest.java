@@ -1,9 +1,9 @@
 package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static seedu.address.logic.Messages.MESSAGE_ALIAS_CONTAINS_SPACE;
-import static seedu.address.logic.Messages.MESSAGE_ALIAS_IS_A_PREDEFINED_COMMAND;
-import static seedu.address.logic.Messages.MESSAGE_ORIGINAL_COMMAND_DOES_NOT_EXISTS;
+import static seedu.address.logic.commands.AliasCommand.MESSAGE_ALIAS_CONTAINS_SPACE;
+import static seedu.address.logic.commands.AliasCommand.MESSAGE_ALIAS_IS_A_PREDEFINED_COMMAND;
+import static seedu.address.logic.commands.AliasCommand.MESSAGE_ORIGINAL_COMMAND_DOES_NOT_EXISTS;
 import static seedu.address.storage.JsonAdaptedAlias.MISSING_FIELD_MESSAGE_FORMAT;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalAliases.LIST;
