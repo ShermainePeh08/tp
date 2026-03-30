@@ -848,9 +848,6 @@ exit
 
 * Open the folder where VendorVault's `.jar` file is located.
 * Inside, locate the `data` folder, which contains `.json` files.
-  * `addressbook.json`: stores contact details
-  * `inventory.json`: stores product details
-  * `aliases.json`: stores alias details
 * Copy the `data` folder to a secure location of your choice
 
 </panel>
@@ -916,10 +913,10 @@ Please follow this format carefully. Files that do not adhere to the required fo
 
 <panel header="I edited the data file directly and now VendorVault is not working. What should I do?" type="seamless">
 
-If you edited the data file and it caused VendorVault to behave unexpectedly, you can try the following steps:
+You can try the following steps:
 
 1. Restore from backup: If you made a backup of the data file before editing, you can restore the original data file by replacing the edited data files in the data folder with the backup.
-2. Start with a new data file: If you do not have a backup, you can delete the existing data file (or move it to a different location for safekeeping) and start VendorVault again. This will create a new, empty data file.
+2. Start with a new data file: If you do not have a backup, you can delete the existing data file (or move it to a different location for safekeeping) and start VendorVault again. After entering a valid command, this will create a new, sample data file.
 
 </panel>
 
