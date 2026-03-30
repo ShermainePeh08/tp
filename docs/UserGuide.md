@@ -689,7 +689,7 @@ help
 
 <div style="height: 30px;"></div>
 
-#### Adding a command alias : `alias`
+#### Adding a command shortcut : `alias`
 
 Creates a shortcut to an existing command (excluding `alias`).
 
@@ -711,7 +711,7 @@ Example:
 
 <div style="height: 30px;"></div>
 
-#### Deleting a command alias : `deletealias`
+#### Deleting a command shortcut : `deletealias`
 
 Removes an existing shortcut.
 
