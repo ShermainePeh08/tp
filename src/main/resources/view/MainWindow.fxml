@@ -51,12 +51,6 @@
                             <MenuItem text="Exit" onAction="#handleExit"/>
                         </Menu>
 
-                        <Menu text="Help">
-                            <MenuItem fx:id="helpMenuItem"
-                                      text="Help"
-                                      onAction="#handleHelp"/>
-                        </Menu>
-
                     </MenuBar>
                 </HBox>
 
