@@ -2,6 +2,7 @@ package seedu.address.model.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -16,6 +17,11 @@ import seedu.address.model.search.FindRelevance.Score;
 import seedu.address.testutil.PersonBuilder;
 
 class NameContainsKeywordsScoredPredicateTest {
+
+    @Test
+    void constructor_nullKeywords_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new NameContainsKeywordsScoredPredicate(null));
+    }
 
     @Test
     void equals() {
