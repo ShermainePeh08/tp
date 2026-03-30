@@ -1,9 +1,9 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_ALIAS_CONTAINS_SPACE;
-import static seedu.address.logic.Messages.MESSAGE_ALIAS_FORMATTED_WRONGLY;
-import static seedu.address.logic.Messages.MESSAGE_ALIAS_IS_A_PREDEFINED_COMMAND;
-import static seedu.address.logic.Messages.MESSAGE_ORIGINAL_COMMAND_DOES_NOT_EXISTS;
+import static seedu.address.logic.commands.AliasCommand.MESSAGE_ALIAS_CONTAINS_SPACE;
+import static seedu.address.logic.commands.AliasCommand.MESSAGE_ALIAS_FORMATTED_WRONGLY;
+import static seedu.address.logic.commands.AliasCommand.MESSAGE_ALIAS_IS_A_PREDEFINED_COMMAND;
+import static seedu.address.logic.commands.AliasCommand.MESSAGE_ORIGINAL_COMMAND_DOES_NOT_EXISTS;
 
 import seedu.address.logic.commands.AliasCommand;
 import seedu.address.logic.commands.CommandType;

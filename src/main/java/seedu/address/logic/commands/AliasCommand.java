@@ -27,6 +27,20 @@ public class AliasCommand extends Command {
 
     public static final String MESSAGE_DISPLAY_ALIAS_LIST = "Here are your current aliases:\n";
 
+    public static final String MESSAGE_ORIGINAL_COMMAND_DOES_NOT_EXISTS =
+            "The original command (%s) does not exists or is not supported.\n"
+                    + "For the list of commands visit the User Guide.";
+
+    public static final String MESSAGE_ALIAS_CANNOT_BE_EMPTY = "The alias should not be empty";
+
+    public static final String MESSAGE_ALIAS_CONTAINS_SPACE = "The alias should not contain any spaces.";
+
+    public static final String MESSAGE_ALIAS_FORMATTED_WRONGLY =
+            "Message is formatted wrongly.\nThe correct format is alias <ORIGINAL_COMMAND> <NEW_ALIAS>";
+
+    public static final String MESSAGE_ALIAS_IS_A_PREDEFINED_COMMAND =
+            "%s is a predefined command, please choose another alias.";
+
     private final Optional<Alias> alias;
 
     public AliasCommand(Alias alias) {
