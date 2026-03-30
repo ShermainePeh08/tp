@@ -222,6 +222,8 @@ A contact is considered a duplicate if it has the **same email as an existing co
 * `add n/DigiKey Singapore p/61234567 e/contact@company.com a/71 Ayer Rajah Crescent, #05-18, Singapore 139951`
 * `add n/DigiKey Singapore p/61234567, 12345678 e/contact@company.com a/71 Ayer Rajah Crescent, #05-18, Singapore 139951`
 
+For more information about warnings related to duplicate, refer to the [warning guide](#duplicate-warnings) below
+
 </panel>
 
 <br>
