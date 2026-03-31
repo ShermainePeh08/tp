@@ -276,6 +276,11 @@ public class AliasCommandTest {
         }
 
         @Override
+        public Optional<Product> findById(String id) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void deleteProduct(Product target) {
             throw new AssertionError("This method should not be called.");
         }
