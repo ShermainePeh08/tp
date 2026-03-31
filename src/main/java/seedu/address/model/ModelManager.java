@@ -239,6 +239,12 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public Optional<Product> findById(String id) {
+        requireNonNull(id);
+        return inventory.findById(id);
+    }
+
+    @Override
     public void deleteProduct(Product target) {
         inventory.removeProduct(target);
     }
