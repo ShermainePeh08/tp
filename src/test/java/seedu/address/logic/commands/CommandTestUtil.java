@@ -27,6 +27,7 @@ import seedu.address.model.Model;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.product.Product;
+import seedu.address.model.product.ProductNameContainsKeywordsPredicate;
 import seedu.address.model.product.warnings.DuplicateProductWarning;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 
@@ -180,6 +181,20 @@ public class CommandTestUtil {
         model.updateFilteredPersonList(new NameContainsKeywordsPredicate(Arrays.asList(splitName[0])));
 
         assertEquals(1, model.getFilteredPersonList().size());
+    }
+
+    /**
+     * Updates {@code model}'s filtered list to show only the product at the given {@code targetIndex} in the
+     * {@code model}'s inventory.
+     */
+    public static void showProductAtIndex(Model model, Index targetIndex) {
+        assertTrue(targetIndex.getZeroBased() < model.getFilteredProductList().size());
+
+        Product product = model.getFilteredProductList().get(targetIndex.getZeroBased());
+        final String[] splitName = product.getName().fullName.split("\\s+");
+        model.updateFilteredProductList(new ProductNameContainsKeywordsPredicate(Arrays.asList(splitName[0])));
+
+        assertEquals(1, model.getFilteredProductList().size());
     }
 
     // =========================================================================
