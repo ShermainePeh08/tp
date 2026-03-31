@@ -183,6 +183,11 @@ public interface Model {
     boolean hasProduct(Product product);
 
     /**
+     * Returns Product if a product with the same id exists in the inventory.
+     */
+    Optional<Product> findById(String id);
+
+    /**
      * Deletes the given product.
      * The product must exist in the inventory.
      */
