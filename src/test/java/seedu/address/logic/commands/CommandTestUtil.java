@@ -27,6 +27,7 @@ import seedu.address.model.Model;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.product.Product;
+import seedu.address.model.product.warnings.DuplicateProductWarning;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 
 /**
@@ -237,6 +238,26 @@ public class CommandTestUtil {
     public static void assertSimilarPhoneWarning(CommandResult result, Person existingPerson) {
         assertWarnFeedback(result,
                 String.format(MESSAGE_SIMILAR_PHONE, existingPerson.getName(), existingPerson.getPhone()));
+    }
+
+    /**
+     * Asserts that {@code result} warns about a product name similar to
+     * {@code existingProduct}'s, using the canonical {@link DuplicateProductWarning} format.
+     */
+    public static void assertSimilarProductNameWarning(CommandResult result, Product existingProduct) {
+        assertWarnFeedback(result, String.format(
+                DuplicateProductWarning.MESSAGE_SIMILAR_NAME,
+                existingProduct.getIdentifier(),
+                existingProduct.getName()));
+    }
+
+    /**
+     * Asserts that {@code feedback} contains exactly one of {@code warningA} or
+     * {@code warningB} — not both. Use this to verify deduplication when multiple
+     * products match a similarity check.
+     */
+    public static void assertExactlyOneProductWarning(String feedback, String warningA, String warningB) {
+        assertExactlyOneWarning(feedback, warningA, warningB);
     }
 
 }

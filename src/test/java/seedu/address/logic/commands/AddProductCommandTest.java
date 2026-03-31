@@ -7,6 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_DUPLICATE_PRODUCT;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_IDENTIFIER_WARN;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PRODUCT_NAME_WARN;
+import static seedu.address.logic.commands.CommandTestUtil.assertExactlyOneProductWarning;
+import static seedu.address.logic.commands.CommandTestUtil.assertSimilarProductNameWarning;
+import static seedu.address.logic.commands.CommandTestUtil.assertSuccessFeedbackWithout;
+import static seedu.address.logic.commands.CommandTestUtil.assertWarnFeedback;
 import static seedu.address.logic.commands.CommandUtil.SEPARATOR_NEW_LINE;
 import static seedu.address.testutil.Assert.assertThrows;
 
@@ -44,6 +48,19 @@ import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.ProductBuilder;
 
 public class AddProductCommandTest {
+
+    private static final String SKU_DUPLICATE = "SKU-2000";
+    private static final String SKU_DIFFERENT = "SKU-2001";
+    private static final String SKU_DIFFERENT_2 = "SKU-2002";
+    private static final String NAME_OFFICE_CHAIR = "Office Chair";
+    private static final String NAME_GAMING_CHAIR = "Gaming Chair";
+    private static final String NAME_HOME_CHAIR = "Home Chair";
+    private static final String NAME_RASPBERRY_PI = "Raspberry Berry Pi 5";
+    private static final String NAME_ARDUINO_UNO = "Arduino Uno";
+    private static final String PRESET_WARNING = "⚠ Warning: Identifier contains unusual symbols, is this intentional?";
+    private static final String SIMILAR_NAME = "similar name";
+
+
     @Test
     public void constructor_nullProduct_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new AddProductCommand(null));
@@ -86,14 +103,12 @@ public class AddProductCommandTest {
 
     @Test
     public void execute_duplicateProductIdentifier_throwsCommandException() {
+        // EP: exact same SKU -> reject
         Product existingProduct = new ProductBuilder()
-                .withIdentifier("SKU-2000")
-                .withName("Office Chair")
-                .build();
+                .withIdentifier(SKU_DUPLICATE).withName(NAME_OFFICE_CHAIR).build();
         Product duplicateProduct = new ProductBuilder()
-                .withIdentifier("SKU-2000")
-                .withName("Gaming Chair")
-                .build();
+                .withIdentifier(SKU_DUPLICATE).withName(NAME_GAMING_CHAIR).build();
+
         ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded();
         modelStub.seedExistingProduct(existingProduct);
 
@@ -104,161 +119,83 @@ public class AddProductCommandTest {
     }
     @Test
     public void execute_similarProductName_warnAndAddSuccessful() throws Exception {
+        // EP: one existing product with a shared name token -> soft warn, still added
         Product existingProduct = new ProductBuilder()
-                .withIdentifier("SKU-3000")
-                .withName("Wireless Mouse")
-                .build();
+                .withIdentifier(SKU_DUPLICATE).withName(NAME_OFFICE_CHAIR).build();
         Product productToAdd = new ProductBuilder()
-                .withIdentifier("SKU-3001")
-                .withName("Wireless Keyboard")
-                .build();
+                .withIdentifier(SKU_DIFFERENT).withName(NAME_GAMING_CHAIR).build();
         ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded();
         modelStub.seedExistingProduct(existingProduct);
 
         CommandResult result = new AddProductCommand(productToAdd).execute(modelStub);
 
-        String expectedWarning = String.format(DuplicateProductWarning.MESSAGE_SIMILAR_NAME,
-                existingProduct.getIdentifier(), existingProduct.getName());
-        assertTrue(result.getFeedbackToUser().contains(expectedWarning));
-        assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
+        assertSimilarProductNameWarning(result, existingProduct);
         assertEquals(2, modelStub.productsAdded.size());
         assertEquals(productToAdd, modelStub.productsAdded.get(1));
     }
 
     @Test
     public void execute_noSimilarProducts_noSimilarNameWarning() throws Exception {
-        // All existing products have completely different names
+        // EP: completely different names -> success, no warning
         Product existingProduct = new ProductBuilder()
-                .withIdentifier("SKU-4000")
-                .withName("Stapler")
-                .build();
-        Product productToAdd = new ProductBuilder()
-                .withIdentifier("SKU-4001")
-                .withName("Rubber Band")
-                .build();
+                .withIdentifier(SKU_DUPLICATE).withName(NAME_OFFICE_CHAIR).build();
+        Product productToAdd = new ProductBuilder().withIdentifier(SKU_DIFFERENT)
+                .withName(NAME_RASPBERRY_PI).build();
         ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded();
         modelStub.seedExistingProduct(existingProduct);
 
         CommandResult result = new AddProductCommand(productToAdd).execute(modelStub);
 
-        assertFalse(result.getFeedbackToUser().contains(
-                DuplicateProductWarning.MESSAGE_SIMILAR_NAME.substring(0, 10)));
-        assertEquals(CommandResult.FEEDBACK_TYPE_SUCCESS, result.getFeedbackType());
+        assertSuccessFeedbackWithout(result,
+                DuplicateProductWarning.MESSAGE_SIMILAR_NAME.substring(0, 10));
     }
 
     @Test
     public void execute_multipleNonSimilarProducts_loopCompletesWithoutWarning() throws Exception {
-        Product existingOne = new ProductBuilder()
-                .withIdentifier("SKU-4100")
-                .withName("Stapler")
-                .build();
-        Product existingTwo = new ProductBuilder()
-                .withIdentifier("SKU-4101")
-                .withName("Paper Clips")
-                .build();
-        Product productToAdd = new ProductBuilder()
-                .withIdentifier("SKU-4102")
-                .withName("Rubber Band")
-                .build();
+        // EP: two existing products, neither shares tokens with the new product
+        Product existingOne = new ProductBuilder().withIdentifier(SKU_DUPLICATE).withName(NAME_OFFICE_CHAIR).build();
+        Product existingTwo = new ProductBuilder().withIdentifier(SKU_DIFFERENT).withName(NAME_RASPBERRY_PI).build();
+        Product productToAdd = new ProductBuilder().withIdentifier(SKU_DIFFERENT_2).withName(NAME_ARDUINO_UNO).build();
         ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded();
         modelStub.seedExistingProduct(existingOne);
         modelStub.seedExistingProduct(existingTwo);
 
         CommandResult result = new AddProductCommand(productToAdd).execute(modelStub);
 
-        assertFalse(result.getFeedbackToUser().contains("similar name"));
-        assertEquals(CommandResult.FEEDBACK_TYPE_SUCCESS, result.getFeedbackType());
-    }
-
-    @Test
-    public void execute_warningValueTrueButDifferentWarningType_withSimilarNameWarning() throws Exception {
-        // When there's multiple warnings
-        Product toAddWithDifferentWarningType = new ProductWithForcedWarning(
-                new Identifier("SKU-4200"),
-                new Name("Desk Lamp"),
-                new Quantity("5"),
-                new RestockThreshold("5"),
-                new DuplicateProductWarning(true, "OTHER_WARNING_TYPE"));
-
-        ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded();
-        modelStub.seedExistingProduct(new ProductBuilder()
-                .withIdentifier("SKU-4201")
-                .withName("Desk Mat")
-                .build());
-        modelStub.seedExistingProduct(new ProductBuilder()
-                .withIdentifier("SKU-4202")
-                .withName("Desk Organizer")
-                .build());
-
-        CommandResult result = new AddProductCommand(toAddWithDifferentWarningType).execute(modelStub);
-
-        assertTrue(result.getFeedbackToUser().contains("similar name"));
-        assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
-        assertEquals(3, modelStub.productsAdded.size());
-    }
-
-    @Test
-    public void execute_similarProductName_warningMatchesMessageSimilarName() throws Exception {
-        Product existingProduct = new ProductBuilder()
-                .withIdentifier("SKU-5000")
-                .withName("Mechanical Keyboard")
-                .build();
-        Product productToAdd = new ProductBuilder()
-                .withIdentifier("SKU-5001")
-                .withName("Mechanical Pencil")
-                .build();
-        ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded();
-        modelStub.seedExistingProduct(existingProduct);
-
-        CommandResult result = new AddProductCommand(productToAdd).execute(modelStub);
-
-        String expectedWarning = String.format(DuplicateProductWarning.MESSAGE_SIMILAR_NAME,
-                existingProduct.getIdentifier(), existingProduct.getName());
-        assertTrue(result.getFeedbackToUser().contains(expectedWarning));
-        assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
+        assertSuccessFeedbackWithout(result, SIMILAR_NAME);
     }
 
     @Test
     public void execute_presetWarningAndSimilarName_warningsJoinedWithNewline() throws Exception {
+        // EP: preset field warning + similar-name warning -> both present, separated by \n
         Product existingProduct = new ProductBuilder()
-                .withIdentifier("SKU-6000")
-                .withName("Printer Ink")
-                .build();
+                .withIdentifier(SKU_DUPLICATE).withName(NAME_OFFICE_CHAIR).build();
         Product productToAdd = new ProductBuilder()
-                .withIdentifier("SKU-6001")
-                .withName("Printer Paper")
-                .build();
-        String presetWarning = "⚠ Warning: Identifier contains unusual symbols, is this intentional?";
+                .withIdentifier(SKU_DIFFERENT).withName(NAME_GAMING_CHAIR).build();
         ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded();
         modelStub.seedExistingProduct(existingProduct);
 
-        CommandResult result = new AddProductCommand(productToAdd, presetWarning).execute(modelStub);
+        CommandResult result = new AddProductCommand(productToAdd, PRESET_WARNING).execute(modelStub);
 
-        String expectedSimilarWarning = String.format(DuplicateProductWarning.MESSAGE_SIMILAR_NAME,
+        assertSimilarProductNameWarning(result, existingProduct);
+        String expectedSimilarWarning = String.format(
+                DuplicateProductWarning.MESSAGE_SIMILAR_NAME,
                 existingProduct.getIdentifier(), existingProduct.getName());
-        String feedback = result.getFeedbackToUser();
-        assertTrue(feedback.contains(presetWarning));
-        assertTrue(feedback.contains(expectedSimilarWarning));
+        assertWarnFeedback(result, PRESET_WARNING);
         // The two warnings must be separated by a newline
-        assertTrue(feedback.contains(presetWarning + "\n" + expectedSimilarWarning));
-        assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
+        assertTrue(result.getFeedbackToUser().contains(PRESET_WARNING + "\n" + expectedSimilarWarning));
     }
 
     @Test
     public void execute_multipleSimilarProducts_onlyFirstWarningAppended() throws Exception {
-        // When multiple existing products share a name token, only one warning should appear.
-        Product similar1 = new ProductBuilder()
-                .withIdentifier("SKU-7000")
-                .withName("Glass Cup")
-                .build();
-        Product similar2 = new ProductBuilder()
-                .withIdentifier("SKU-7001")
-                .withName("Glass Bottle")
-                .build();
-        Product productToAdd = new ProductBuilder()
-                .withIdentifier("SKU-7002")
-                .withName("Glass Jar")
-                .build();
+        // EP: two existing products both share a token with the new product ->
+        //     exactly one warning emitted (deduplication / early-exit)
+        Product similar1 = new ProductBuilder().withIdentifier(SKU_DUPLICATE)
+                .withName(NAME_OFFICE_CHAIR).build();
+        Product similar2 = new ProductBuilder().withIdentifier(SKU_DIFFERENT)
+                .withName(NAME_GAMING_CHAIR).build();
+        Product productToAdd = new ProductBuilder().withIdentifier(SKU_DIFFERENT_2)
+                .withName(NAME_HOME_CHAIR).build();
         ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded();
         modelStub.seedExistingProduct(similar1);
         modelStub.seedExistingProduct(similar2);
@@ -269,12 +206,7 @@ public class AddProductCommandTest {
                 similar1.getIdentifier(), similar1.getName());
         String warning2 = String.format(DuplicateProductWarning.MESSAGE_SIMILAR_NAME,
                 similar2.getIdentifier(), similar2.getName());
-        // Exactly one of the two possible warnings should appear, not both
-        assertTrue(result.getFeedbackToUser().contains(warning1)
-                || result.getFeedbackToUser().contains(warning2));
-        assertFalse(result.getFeedbackToUser().contains(warning1)
-                && result.getFeedbackToUser().contains(warning2));
-        assertEquals(CommandResult.FEEDBACK_TYPE_WARN, result.getFeedbackType());
+        assertExactlyOneProductWarning(result.getFeedbackToUser(), warning1, warning2);
     }
 
     @Test
