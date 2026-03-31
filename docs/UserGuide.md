@@ -1069,11 +1069,11 @@ Use this section when `restore` fails.
 
 Use this section when `delete` fails.
 
-| Scenario                               | Message shown                                         | How to fix                                  |
-|----------------------------------------|-------------------------------------------------------|---------------------------------------------|
-| No email provided                      | `Email should not be blank.`                          | Provide the vendor's email: `delete EMAIL`. |
-| Email Format is invalid                | `Email should be of the format local-part@domain ...` | Check the email if its correct.             |
-| Email provided but no matching contact | `No contact with the specified email was found.`      | Check the email if its correct.             |
+| Scenario                               | Message shown                                    | How to fix                                                         |
+|----------------------------------------|--------------------------------------------------|--------------------------------------------------------------------|
+| No email is provided                   | `Email must be provided.  ...`                   | Provide the vendor's email: `delete EMAIL`.                        |
+| Email Format is invalid                | `Email should be a valid format  ...`            | Provide the correct vendor's email: `delete EMAIL`.                |
+| Email provided but no matching contact | `No contact with the specified email was found.` | Ensures the vendor exists in the active list. Use `list` to check. |
 
 <br>
 
@@ -1164,7 +1164,7 @@ Use this section when `archiveproduct` fails.
 
 | Scenario                              | Message shown                                  | How to fix                                                                      |
 |---------------------------------------|------------------------------------------------|---------------------------------------------------------------------------------|
-| No identifier provided                | (usage message shown)                          | Provide the product identifier: `archiveproduct IDENTIFIER`.                    |
+| No identifier provided                | `archiveproduct IDENTIFIER ...`                | Provide the product identifier: `archiveproduct IDENTIFIER`.                    |
 | Identifier does not match any product | `No product found with identifier: IDENTIFIER` | Check the identifier is correct and that the product exists in the active list. |
 
 <div style="height: 30px;"></div>
@@ -1185,7 +1185,7 @@ Use this section when `deleteproduct` fails.
 
 | Scenario                              | Message shown                                     | How to fix                                                                |
 |---------------------------------------|---------------------------------------------------|---------------------------------------------------------------------------|
-| No identifier provided                | `Invalid command format! ...`                     | Provide the product identifier: `deleteproduct IDENTIFIER`.               |
+| No identifier provided                | `Product Identifier must be provided. ...`        | Provide the product identifier: `deleteproduct IDENTIFIER`.               |
 | Identifier does not match any product | `No product found with the specified identifier.` | Ensure the product exists in the active list. Use `listproduct` to check. |
 
 <div style="height: 30px;"></div>
