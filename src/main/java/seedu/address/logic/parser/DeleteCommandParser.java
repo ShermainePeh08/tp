@@ -30,9 +30,8 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         String[] tokens = argsTrimmed.split("\\s+");
         boolean needsConfirmation = !containsConfirmationFlag(
                 tokens, CONFIRMATION_INDICATOR, MESSAGE_INVALID_CONFIRMATION_FLAG);
-        String emailBeforeParsed = removeConfirmationFlag(tokens, CONFIRMATION_INDICATOR);
-        ParseResult<Email> email = ParserUtil.parseEmail(emailBeforeParsed);
+        String email= removeConfirmationFlag(tokens, CONFIRMATION_INDICATOR);
 
-        return new DeleteCommand(email.getValue(), needsConfirmation);
+        return new DeleteCommand(email, needsConfirmation);
     }
 }

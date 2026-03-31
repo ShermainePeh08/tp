@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
+import seedu.address.logic.parser.ParseResult;
+import seedu.address.logic.parser.ParserUtil;
+import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.NameEqualsKeywordsPredicate;
@@ -40,16 +43,19 @@ public class DeleteCommand extends Command {
 
     public static final String MESSAGE_DELETE_FAILURE = "Did not delete contact";
 
+    public static final String MESSAGE_INVALID_FORMAT =
+            "Invalid command format!\n" + MESSAGE_USAGE;
+
     private PendingConfirmation pendingConfirmation = new PendingConfirmation();
 
-    private final Email targetEmail;
+    private final String targetEmail;
     private final boolean needsConfirmation;
 
     /**
      * Creates a DeleteCommand to delete the person at the specified {@code targetIndexString}.
      *
      */
-    public DeleteCommand(Email targetEmail, boolean needsConfirmation) {
+    public DeleteCommand(String targetEmail, boolean needsConfirmation) {
         this.targetEmail = targetEmail;
         this.needsConfirmation = needsConfirmation;
     }
@@ -58,6 +64,8 @@ public class DeleteCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         List<Person> lastShownList = model.getFilteredPersonList();
+
+        Email targetEmail = getEmailFromString();
 
         Person personToDelete = model.findByEmail(targetEmail)
                 .orElseThrow(() ->
@@ -73,6 +81,15 @@ public class DeleteCommand extends Command {
         NameEqualsKeywordsPredicate predicate = new NameEqualsKeywordsPredicate(personToDelete);
         model.updateFilteredPersonList(predicate);
         return new CommandResult(CONFIRMATION_DELETE_PERSON_MESSAGE);
+    }
+
+    public Email getEmailFromString() throws CommandException {
+        try {
+            ParseResult<Email> email = ParserUtil.parseEmail(targetEmail);
+            return email.getValue();
+        } catch (ParseException e) {
+            throw new CommandException(MESSAGE_INVALID_FORMAT);
+        }
     }
 
     /**
