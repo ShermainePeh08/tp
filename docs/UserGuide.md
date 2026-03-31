@@ -1032,7 +1032,8 @@ Most errors and warnings in `add` also occur in `edit`, except the first three e
 
 | Scenario                                                              | Message shown                                    | How to fix                                                              |
 |-----------------------------------------------------------------------|--------------------------------------------------|-------------------------------------------------------------------------|
-| Missing/invalid target email (or extra non-prefixed text after email) | `Invalid command format! ...`                    | Follow the syntax `edit EMAIL [n/...] [p/...] [e/...] [a/...] [t/...]`. |
+| No target email provided                                              | `Email should not be blank.`                     | Provide the target email: `edit EMAIL [n/...] [p/...] [e/...] [a/...] [t/...]`. |
+| Target email format is invalid                                        | `Email should be a valid format (e.g. user@example.com).` | Use a [valid email format](#contact-email-format).         |
 | No fields specified to edit                                           | `At least one field to edit must be provided.`   | Include at least one of `n/`, `p/`, `e/`, `a/`, or `t/`.                |
 | Target email not found                                                | `No contact with the specified email was found.` | Check the contact exists and re-run with the correct existing email.    |
 
@@ -1050,8 +1051,10 @@ Use this section when `archive` fails.
 
 | Scenario                           | Message shown                             | How to fix                                                                     |
 |------------------------------------|-------------------------------------------|--------------------------------------------------------------------------------|
-| No email provided                  | `Email must be provided.`                 | Provide the vendor's email: `archive EMAIL`.                                   |
-| Email does not match any contact   | `No vendor found with email: EMAIL`       | Check the email is correct and that the contact exists in the active list.     |
+| No email provided                  | `Email should not be blank.`              | Provide the vendor's email: `archive EMAIL`.                                   |
+| Email format is invalid            | `Email should be a valid format (e.g. user@example.com).` | Use a [valid email format](#contact-email-format).          |
+| Email does not match any contact   | `No contact with the specified email was found.` | Check the email is correct and that the contact exists in the active list.     |
+| Contact is already archived        | `This vendor is already archived. Did you want to restore it?` | Use [`restore`](#restoring-an-archived-contact-restore) to restore instead. |
 
 <div style="height: 30px;"></div>
 
@@ -1061,7 +1064,8 @@ Use this section when `restore` fails.
 
 | Scenario                                        | Message shown                                                         | How to fix                                                                         |
 |-------------------------------------------------|-----------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| Email provided but no matching archived contact | `No archived vendor found with email: EMAIL` (archived list is shown) | Check the email is correct. The archived contacts panel will be shown to help you. |
+| Email format is invalid                         | `Email should be a valid format (e.g. user@example.com).`            | Use a [valid email format](#contact-email-format).                                 |
+| Email provided but no matching archived contact | `No archived contact with the specified email was found.` (archived list is shown) | Check the email is correct. The archived contacts panel will be shown to help you. |
 
 <div style="height: 30px;"></div>
 
@@ -1071,8 +1075,8 @@ Use this section when `delete` fails.
 
 | Scenario                               | Message shown                                    | How to fix                                                         |
 |----------------------------------------|--------------------------------------------------|--------------------------------------------------------------------|
-| No email is provided                   | `Email must be provided.  ...`                   | Provide the vendor's email: `delete EMAIL`.                        |
-| Email Format is invalid                | `Email should be a valid format  ...`            | Provide the correct vendor's email: `delete EMAIL`.                |
+| No email is provided                   | `Email should not be blank.`                     | Provide the vendor's email: `delete EMAIL`.                        |
+| Email format is invalid                | `Email should be a valid format (e.g. user@example.com).` | Use a [valid email format](#contact-email-format).         |
 | Email provided but no matching contact | `No contact with the specified email was found.` | Ensures the vendor exists in the active list. Use `list` to check. |
 
 <br>
@@ -1081,7 +1085,7 @@ Common `delete` warnings:
 
 | Warning trigger                             | Warning shown                                            | What it means                                        |
 |---------------------------------------------|----------------------------------------------------------|------------------------------------------------------|
-| Contact with existing product(s) is deleted | `... product(s) became unassociated from contact (...).` | The product(s) will not have a corresponding vendor. |
+| Contact with existing product(s) is deleted | `⚠ Warning: <n> product(s) became unassociated from contact (<product-ids>).` | The product(s) will not have a corresponding vendor. |
 
 <div style="height: 30px;"></div>
 
@@ -1114,7 +1118,7 @@ Common `addproduct` warnings:
 | Warning trigger                     | Warning shown                                                                                                                                   | What it means                                                                                                                  |
 |-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
 | Identifier/Name has unusual symbols | `⚠ Warning: Identifier contains unusual symbols, is this intentional?`<br><br/>`⚠ Warning: Name contains unusual symbols, is this intentional?` | Identifier/Name is accepted, but [looks unusual](#product-name-format). You can verify if you entered it correctly.            |
-| Similar name to an existing product | `⚠ Warning: There's a product with a similar name (name: <similar-name>), is this intentional?`                                                 | Possible duplicate by similar name. You can check if the name in the warning message is the same as what you were about to add. |
+| Similar name to an existing product | `⚠ Warning: There's a product with a similar name (id: <id>, name: <similar-name>), is this intentional?`                                      | Possible duplicate by similar name. You can check if the name in the warning message is the same as what you were about to add. |
 
 <div style="height: 30px;"></div>
 
@@ -1130,6 +1134,7 @@ If you assign a vendor email to a product, the contact **must already exist** in
 
 | Scenario                                             | Message shown                                                             | How to fix                                                                               |
 |------------------------------------------------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| No identifier provided                               | `Product identifier must be provided.`                                    | Provide the product identifier: `editproduct IDENTIFIER [id/...] [n/...] ...`.           |
 | No fields specified to edit                          | `At least one field to edit must be provided.`                            | Include at least one of `id/`, `n/`, `q/`, `th/`, or `e/`.                               |
 | Identifier does not match any active product         | `No product found with the specified identifier.`                         | Ensure the product exists in the active list. Use `listproduct` to check.                |
 | New identifier is already used by another product    | `This product already exists with the same identifier.`                   | Choose a unique identifier.                                                              |
@@ -1164,8 +1169,9 @@ Use this section when `archiveproduct` fails.
 
 | Scenario                              | Message shown                                  | How to fix                                                                      |
 |---------------------------------------|------------------------------------------------|---------------------------------------------------------------------------------|
-| No identifier provided                | `archiveproduct IDENTIFIER ...`                | Provide the product identifier: `archiveproduct IDENTIFIER`.                    |
-| Identifier does not match any product | `No product found with identifier: IDENTIFIER` | Check the identifier is correct and that the product exists in the active list. |
+| No identifier provided                | `Product identifier must be provided.`         | Provide the product identifier: `archiveproduct IDENTIFIER`.                    |
+| Identifier does not match any product | `No product found with the specified identifier.` | Check the identifier is correct and that the product exists in the active list. |
+| Product is already archived           | `This product is already archived. Did you want to restore it?` | Use [`restoreproduct`](#restoring-an-archived-product-restoreproduct) to restore instead. |
 
 <div style="height: 30px;"></div>
 
@@ -1175,7 +1181,7 @@ Use this section when `restoreproduct` fails.
 
 | Scenario                                             | Message shown                                                                 | How to fix                                                                                            |
 |------------------------------------------------------|-------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
-| Identifier provided but no matching archived product | `No archived product found with identifier: IDENTIFIER` (archived list shown) | Check the identifier is correct. The archived products panel will be shown to help you identify the right one. |
+| Identifier provided but no matching archived product | `No archived product with the specified identifier was found.` (archived list shown) | Check the identifier is correct. The archived products panel will be shown to help you identify the right one. |
 
 <div style="height: 30px;"></div>
 
@@ -1185,7 +1191,7 @@ Use this section when `deleteproduct` fails.
 
 | Scenario                              | Message shown                                     | How to fix                                                                |
 |---------------------------------------|---------------------------------------------------|---------------------------------------------------------------------------|
-| No identifier provided                | `Product Identifier must be provided. ...`        | Provide the product identifier: `deleteproduct IDENTIFIER`.               |
+| No identifier provided                | `Product identifier must be provided.`        | Provide the product identifier: `deleteproduct IDENTIFIER`.               |
 | Identifier does not match any product | `No product found with the specified identifier.` | Ensure the product exists in the active list. Use `listproduct` to check. |
 
 <div style="height: 30px;"></div>
@@ -1211,7 +1217,7 @@ Use this section when `deletealias` fails.
 
 | Scenario                     | Message shown                       | How to fix                                                        |
 |------------------------------|-------------------------------------|-------------------------------------------------------------------|
-| No alias given in alias list | `No alias found in alias list. ...` | Find the correct alias using `alias` then use `deletealias ALIAS` |
+| No alias given in alias list | `No alias found in AliasList.` | Find the correct alias using `alias` then use `deletealias ALIAS` |
 
 
 
