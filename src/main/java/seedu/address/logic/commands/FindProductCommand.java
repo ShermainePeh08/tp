@@ -23,9 +23,6 @@ public class FindProductCommand extends Command {
             + "Parameters: KEYWORD [MORE_KEYWORDS]...\n"
             + "Example: " + COMMAND_WORD + " motherboard ssd";
 
-    public static final String MESSAGE_DISPLAY_CONTACTS = " Contact(s) associated with these products listed on "
-            + "the left!";
-
     private final ProductNameContainsKeywordsScoredPredicate predicate;
 
     /**
@@ -46,7 +43,7 @@ public class FindProductCommand extends Command {
         model.updateFilteredPersonList(personPredicate);
 
         return new CommandResult(
-                String.format(Messages.MESSAGE_PRODUCTS_LISTED_OVERVIEW + MESSAGE_DISPLAY_CONTACTS,
+                String.format(Messages.MESSAGE_PRODUCTS_LISTED_OVERVIEW,
                         model.getFilteredProductList().size()));
     }
 
