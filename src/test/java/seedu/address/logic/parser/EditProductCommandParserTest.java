@@ -36,7 +36,7 @@ import seedu.address.testutil.EditProductDescriptorBuilder;
 public class EditProductCommandParserTest {
 
     private static final String MESSAGE_INVALID_FORMAT =
-            String.format(Messages.MESSAGE_INVALID_COMMAND_FORMAT, EditProductCommand.MESSAGE_USAGE);
+            "Product identifier must be provided.\n" + EditProductCommand.MESSAGE_USAGE;
 
     private final EditProductCommandParser parser = new EditProductCommandParser();
 

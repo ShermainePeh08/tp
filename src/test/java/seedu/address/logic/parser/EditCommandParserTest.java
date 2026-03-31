@@ -71,26 +71,29 @@ public class EditCommandParserTest {
 
     @Test
     public void parse_missingParts_failure() {
-        // no target email specified
-        assertParseFailure(parser, VALID_NAME_AMY, MESSAGE_INVALID_FORMAT);
+        // no target email specified - name given instead of email
+        assertParseFailure(parser, VALID_NAME_AMY, Email.MESSAGE_CONSTRAINTS + "\n" + EditCommand.MESSAGE_USAGE);
 
         // no field specified
         assertParseFailure(parser, TARGET_EMAIL, EditCommand.MESSAGE_NOT_EDITED);
 
         // no target email and no field specified
-        assertParseFailure(parser, EMPTY_INPUT, MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, EMPTY_INPUT, Email.MESSAGE_BLANK + "\n" + EditCommand.MESSAGE_USAGE);
     }
 
     @Test
     public void parse_invalidPreamble_failure() {
         // invalid target email
-        assertParseFailure(parser, INVALID_TARGET_EMAIL + NAME_DESC_AMY, MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, INVALID_TARGET_EMAIL + NAME_DESC_AMY,
+                Email.MESSAGE_CONSTRAINTS + "\n" + EditCommand.MESSAGE_USAGE);
 
         // invalid arguments being parsed as preamble
-        assertParseFailure(parser, TARGET_EMAIL + RANDOM_PREAMBLE, MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, TARGET_EMAIL + RANDOM_PREAMBLE,
+                Email.MESSAGE_CONSTRAINTS + "\n" + EditCommand.MESSAGE_USAGE);
 
         // invalid prefix being parsed as preamble
-        assertParseFailure(parser, TARGET_EMAIL + INVALID_PREFIX_PREAMBLE, MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, TARGET_EMAIL + INVALID_PREFIX_PREAMBLE,
+                Email.MESSAGE_CONSTRAINTS + "\n" + EditCommand.MESSAGE_USAGE);
     }
 
     @Test

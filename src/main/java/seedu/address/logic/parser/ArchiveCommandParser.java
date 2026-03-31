@@ -1,7 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-
 import seedu.address.logic.commands.ArchiveCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Email;
@@ -32,13 +30,13 @@ public class ArchiveCommandParser implements Parser<ArchiveCommand> {
     public ArchiveCommand parse(String args) throws ParseException {
         String trimmed = args.trim();
 
-        if (trimmed.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, ArchiveCommand.MESSAGE_USAGE));
-        }
-
         // Validate email format the same way delete does — throws ParseException on blank/invalid format
-        ParseResult<Email> emailResult = ParserUtil.parseEmail(trimmed);
+        ParseResult<Email> emailResult;
+        try {
+            emailResult = ParserUtil.parseEmail(trimmed);
+        } catch (ParseException e) {
+            throw new ParseException(e.getMessage() + "\n" + ArchiveCommand.MESSAGE_USAGE);
+        }
 
         return new ArchiveCommand(emailResult.getValue().value);
     }

@@ -21,8 +21,8 @@ public class ArchiveProductCommand extends Command {
     public static final String COMMAND_DESCRIPTION = "Archives a product.";
 
     public static final String MESSAGE_USAGE =
-        COMMAND_WORD + " IDENTIFIER\n"
-        + "Archives the product identified by the identifier.\n"
+        COMMAND_WORD + ": Archives the product identified by the identifier.\n"
+        + "Parameters: IDENTIFIER\n"
         + "Example: " + COMMAND_WORD + " DE/5";
 
     public static final String MESSAGE_ACTION_SUMMARY =
@@ -33,7 +33,7 @@ public class ArchiveProductCommand extends Command {
         "Archived Product: %1$s";
 
     private static final String MESSAGE_PRODUCT_NOT_FOUND =
-        "No product found with identifier.";
+        "No product found with the specified identifier.";
 
     private static final String MESSAGE_ALREADY_ARCHIVED =
         "This product is already archived. Did you want to restore it?";

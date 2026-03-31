@@ -82,7 +82,7 @@ public class ArchiveProductCommandTest {
         ArchiveProductCommand command = new ArchiveProductCommand("invalid");
 
         CommandException exception = assertThrows(CommandException.class, () -> command.execute(model));
-        assertEquals("No product found with identifier.", exception.getMessage());
+        assertEquals("No product found with the specified identifier.", exception.getMessage());
     }
 
     @Test

@@ -1,7 +1,6 @@
 package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
 import seedu.address.logic.commands.ArchiveProductCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -34,7 +33,7 @@ public class ArchiveProductCommandParser implements Parser<ArchiveProductCommand
 
         if (identifier.isEmpty()) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, ArchiveProductCommand.MESSAGE_USAGE));
+                    "Product identifier must be provided.\n" + ArchiveProductCommand.MESSAGE_USAGE);
         }
 
         return new ArchiveProductCommand(identifier);

@@ -3,12 +3,12 @@ package seedu.address.logic.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.ArchiveCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.Email;
 
 /**
  * Tests for ArchiveCommandParser.
@@ -30,16 +30,16 @@ public class ArchiveCommandParserTest {
     }
 
     @Test
-    public void parse_emptyArgs_throwsParseExceptionWithInvalidCommandFormat() {
+    public void parse_emptyArgs_throwsParseExceptionWithEmailBlank() {
         ParseException exception = assertThrows(ParseException.class, () -> parser.parse(""));
-        assertEquals(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ArchiveCommand.MESSAGE_USAGE),
+        assertEquals(Email.MESSAGE_BLANK + "\n" + ArchiveCommand.MESSAGE_USAGE,
                 exception.getMessage());
     }
 
     @Test
-    public void parse_whitespaceOnly_throwsParseExceptionWithInvalidCommandFormat() {
+    public void parse_whitespaceOnly_throwsParseExceptionWithEmailBlank() {
         ParseException exception = assertThrows(ParseException.class, () -> parser.parse("   "));
-        assertEquals(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ArchiveCommand.MESSAGE_USAGE),
+        assertEquals(Email.MESSAGE_BLANK + "\n" + ArchiveCommand.MESSAGE_USAGE,
                 exception.getMessage());
     }
 
