@@ -29,7 +29,7 @@ public class DeleteCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Deletes the contact identified by email used in the displayed contact list.\n"
             + "Parameters: Email \n"
-            + "Example: " + COMMAND_WORD + " irfam@example.com";
+            + "Example: " + COMMAND_WORD + " sales@techsource.com";
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Contact: %1$s";
     public static final String MESSAGE_PRODUCTS_DELINKED =
@@ -39,6 +39,8 @@ public class DeleteCommand extends Command {
             "Confirm (y) you want to delete the following contact shown below:";
 
     public static final String MESSAGE_DELETE_FAILURE = "Did not delete contact";
+
+    public static final String MESSAGE_ACTION_SUMMARY = "deletion of contact: %1$s";
 
     private PendingConfirmation pendingConfirmation = new PendingConfirmation();
 
@@ -91,11 +93,11 @@ public class DeleteCommand extends Command {
 
         model.updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
 
-        String successMessage = String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete));
+        String successMessage = String.format(MESSAGE_ACTION_SUMMARY, Messages.format(personToDelete));
         model.commitVendorVault(successMessage);
 
         if (linkedProducts.isEmpty()) {
-            return new CommandResult(successMessage);
+            return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
         }
 
         String linkedProductIds = linkedProducts.stream()
