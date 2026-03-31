@@ -73,7 +73,7 @@ public class DeleteProductCommand extends Command {
 
         Product productToDelete = model.findById(targetProductId)
             .orElseThrow(() ->
-                    new CommandException(MESSAGE_INVALID_PRODUCT_ID));
+                    new CommandException(MESSAGE_INVALID_PRODUCT_ID + "\n" + MESSAGE_USAGE));
 
         if (!this.needsConfirmation) {
             return this.deleteProduct(model, productToDelete);
