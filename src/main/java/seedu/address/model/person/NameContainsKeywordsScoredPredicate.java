@@ -38,12 +38,12 @@ public class NameContainsKeywordsScoredPredicate implements RankedPersonPredicat
     }
 
     /**
-     * Computes the best relevance score for the given contact based on all keyword-token pairs.
+     * Returns the best relevance score for the given contact based on all keyword-token pairs.
      */
     public Score computeScore(Person person) {
         requireNonNull(person);
 
-        String fullName = person.getName().fullName;
+        String fullName = person.getName().toString();
         Score bestScore = new Score(MatchTier.NO_MATCH, Integer.MAX_VALUE, fullName);
 
         String[] nameTokens = fullName.trim().split(WHITESPACE_REGEX);
@@ -68,6 +68,9 @@ public class NameContainsKeywordsScoredPredicate implements RankedPersonPredicat
                 -> scoreCache.computeIfAbsent(person, this::computeScore), SCORE_COMPARATOR);
     }
 
+    /**
+     * Returns the score for a keyword-token pair
+     */
     private Score toScore(String token, String keyword, String fullName) {
         int matchScore = StringUtil.getWordPartialMatchScoreIgnoreCase(token, keyword);
         MatchTier tier = toMatchTier(matchScore);

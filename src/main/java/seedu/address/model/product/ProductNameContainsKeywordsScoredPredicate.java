@@ -38,12 +38,12 @@ public class ProductNameContainsKeywordsScoredPredicate implements RankedProduct
     }
 
     /**
-     * Computes the best relevance score for the given product based on all keyword-token pairs.
+     * Returns the best relevance score for the given product based on all keyword-token pairs.
      */
     public Score computeScore(Product product) {
         requireNonNull(product);
 
-        String productName = product.getName().fullName;
+        String productName = product.getName().toString();
         Score bestScore = new Score(MatchTier.NO_MATCH, Integer.MAX_VALUE, productName);
 
         String[] nameTokens = productName.trim().split(WHITESPACE_REGEX);
@@ -68,6 +68,9 @@ public class ProductNameContainsKeywordsScoredPredicate implements RankedProduct
                 -> scoreCache.computeIfAbsent(product, this::computeScore), SCORE_COMPARATOR);
     }
 
+    /**
+     * Returns the score for a keyword-token pair
+     */
     private Score toScore(String token, String keyword, String productName) {
         int matchScore = StringUtil.getWordPartialMatchScoreIgnoreCase(token, keyword);
         MatchTier tier = toMatchTier(matchScore);
