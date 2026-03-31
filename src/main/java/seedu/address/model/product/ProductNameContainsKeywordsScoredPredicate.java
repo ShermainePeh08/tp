@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import seedu.address.commons.util.StringUtil;
 import seedu.address.commons.util.ToStringBuilder;
@@ -17,7 +16,7 @@ import seedu.address.model.search.FindRelevance.Score;
 /**
  * Tests that a {@code Product}'s {@code Name} matches any keyword using token-level partial matching.
  */
-public class ProductNameContainsKeywordsScoredPredicate implements Predicate<Product> {
+public class ProductNameContainsKeywordsScoredPredicate implements RankedProductPredicate {
     private static final String WHITESPACE_REGEX = "\\s+";
 
     private final List<String> keywords;
@@ -39,12 +38,12 @@ public class ProductNameContainsKeywordsScoredPredicate implements Predicate<Pro
     }
 
     /**
-     * Computes the best relevance score for the given product based on all keyword-token pairs.
+     * Returns the best relevance score for the given product based on all keyword-token pairs.
      */
     public Score computeScore(Product product) {
         requireNonNull(product);
 
-        String productName = product.getName().fullName;
+        String productName = product.getName().toString();
         Score bestScore = new Score(MatchTier.NO_MATCH, Integer.MAX_VALUE, productName);
 
         String[] nameTokens = productName.trim().split(WHITESPACE_REGEX);
@@ -69,6 +68,9 @@ public class ProductNameContainsKeywordsScoredPredicate implements Predicate<Pro
                 -> scoreCache.computeIfAbsent(product, this::computeScore), SCORE_COMPARATOR);
     }
 
+    /**
+     * Returns the score for a keyword-token pair
+     */
     private Score toScore(String token, String keyword, String productName) {
         int matchScore = StringUtil.getWordPartialMatchScoreIgnoreCase(token, keyword);
         MatchTier tier = toMatchTier(matchScore);
@@ -76,8 +78,8 @@ public class ProductNameContainsKeywordsScoredPredicate implements Predicate<Pro
             return new Score(MatchTier.NO_MATCH, Integer.MAX_VALUE, productName);
         }
 
-        int unmatchedChars = token.trim().length() - keyword.trim().length();
-        return new Score(tier, unmatchedChars, productName);
+        int unmatchedCharCount = token.trim().length() - keyword.trim().length();
+        return new Score(tier, unmatchedCharCount, productName);
     }
 
     private static MatchTier toMatchTier(int score) {

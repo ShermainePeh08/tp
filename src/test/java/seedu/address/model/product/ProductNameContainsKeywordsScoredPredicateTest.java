@@ -81,7 +81,7 @@ class ProductNameContainsKeywordsScoredPredicateTest {
         Score score = predicate.computeScore(product);
 
         assertEquals(MatchTier.EXACT_TOKEN, score.tier());
-        assertEquals(0, score.unmatchedChars());
+        assertEquals(0, score.unmatchedCharCount());
         assertEquals("SSD 2TB", score.sortKey());
     }
 
@@ -110,7 +110,22 @@ class ProductNameContainsKeywordsScoredPredicateTest {
         Score score = predicate.computeScore(product);
 
         assertEquals(MatchTier.EXACT_TOKEN, score.tier());
-        assertEquals(0, score.unmatchedChars());
+        assertEquals(0, score.unmatchedCharCount());
+    }
+
+    @Test
+    void createProductComparator_multiKeywordRanking_prefersHigherTierThenQuality() {
+        ProductNameContainsKeywordsScoredPredicate predicate =
+                new ProductNameContainsKeywordsScoredPredicate(Arrays.asList("ali", "cake"));
+
+        Product exact = new ProductBuilder().withIdentifier("SKU-EXACT").withName("Cake Mix").build();
+        Product prefix = new ProductBuilder().withIdentifier("SKU-PREFIX").withName("Alice Crackers").build();
+        Product substring = new ProductBuilder().withIdentifier("SKU-SUB").withName("Tali Watch").build();
+
+        List<Product> products = new ArrayList<>(Arrays.asList(substring, prefix, exact));
+        products.sort(predicate.createProductComparator());
+
+        assertEquals(Arrays.asList(exact, prefix, substring), products);
     }
 
     @Test

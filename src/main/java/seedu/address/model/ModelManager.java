@@ -18,10 +18,10 @@ import seedu.address.model.alias.Alias;
 import seedu.address.model.alias.exceptions.DuplicateAliasException;
 import seedu.address.model.alias.exceptions.NoAliasFoundInAliasListException;
 import seedu.address.model.person.Email;
-import seedu.address.model.person.NameContainsKeywordsScoredPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.RankedPersonPredicate;
 import seedu.address.model.product.Product;
-import seedu.address.model.product.ProductNameContainsKeywordsScoredPredicate;
+import seedu.address.model.product.RankedProductPredicate;
 
 /**
  * Represents the in-memory model of the vendor vault data.
@@ -293,10 +293,10 @@ public class ModelManager implements Model {
     @Override
     public void updateFilteredPersonList(Predicate<Person> predicate) {
         requireNonNull(predicate);
-        if (predicate instanceof NameContainsKeywordsScoredPredicate) {
-            NameContainsKeywordsScoredPredicate scoredPredicate = (NameContainsKeywordsScoredPredicate) predicate;
-            filteredPersons.setPredicate(person -> !person.isArchived() && scoredPredicate.test(person));
-            sortedFilteredPersons.setComparator(scoredPredicate.createPersonComparator());
+
+        if (predicate instanceof RankedPersonPredicate rankedPredicate) {
+            filteredPersons.setPredicate(person -> !person.isArchived() && rankedPredicate.test(person));
+            sortedFilteredPersons.setComparator(rankedPredicate.createPersonComparator());
             return;
         }
 
@@ -317,11 +317,10 @@ public class ModelManager implements Model {
     @Override
     public void updateFilteredProductList(Predicate<Product> predicate) {
         requireNonNull(predicate);
-        if (predicate instanceof ProductNameContainsKeywordsScoredPredicate) {
-            ProductNameContainsKeywordsScoredPredicate scoredPredicate =
-                    (ProductNameContainsKeywordsScoredPredicate) predicate;
-            filteredProducts.setPredicate(product -> !product.isArchived() && scoredPredicate.test(product));
-            sortedFilteredProducts.setComparator(scoredPredicate.createProductComparator());
+
+        if (predicate instanceof RankedProductPredicate rankedPredicate) {
+            filteredProducts.setPredicate(product -> !product.isArchived() && rankedPredicate.test(product));
+            sortedFilteredProducts.setComparator(rankedPredicate.createProductComparator());
             return;
         }
 

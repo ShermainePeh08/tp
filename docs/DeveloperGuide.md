@@ -608,7 +608,7 @@ Alternative 1 aligns with the existing storage pattern used by contacts and inve
 
 ### Better Search Feature
 #### Implementation
-This feature upgrades contact and product search to use partial matching and return results ranked by relevance. It 
+This feature upgrades contact/product search to use partial matching and show matches by relevance. It 
 is implemented through a match predicate and shared ranking contract:
 
 1. `NameContainsKeywordsScoredPredicate` tests if a contact's name matches any keyword using partial matching. The name is split and processed as tokens.
@@ -618,41 +618,39 @@ is implemented through a match predicate and shared ranking contract:
 
 2. The same applies for `ProductNameContainsKeywordsScoredPredicate`.
 
-3. `FindRelevance` defines the ranking contract.
+3. `RelevanceRank` defines the ranking contract.
    * Keyword-token matches are tiered: `EXACT_TOKEN` > `PREFIX_TOKEN` > `SUBSTRING_TOKEN` > `NO_MATCH`. 
-   * `Score(MatchTier tier, int unmatchedChars, String sortKey)` represents how relevant a match is.
+   * `Score(MatchTier tier, int unmatchedCharCount, String sortKey)` represents how relevant a match is.
    * `SCORE_COMPARATOR` implements score comparison.
 
 This diagram shows the structure and dependency of Better Search classes:
 
-<puml src="diagrams/BetterSearchClass.puml" width="500"/>
+<puml src="diagrams/BetterSearchClass.puml" width="400"/>
 
 This diagram shows an example of scoring state when the given keyword is `"adafruit"`:
 
-<puml src="diagrams/BetterSearchObject.puml" width="1000"/>
+<puml src="diagrams/BetterSearchObject.puml" width="900"/>
+
+`SCORE_COMPARATOR` compares scores in this order: `tier`, `unmatchedCharCount`, `sortKey` (alphabetical). This 
+gives the ranking: "Adafruit", "Adafruity", "Tadafruit", "Cytron".
 
 #### Usage Scenario
-This diagram shows how Better Search fits in the execution pipeline:
+Here's how Better Search is executed by the `find` command:
+
+**Step 1.** `FindCommandParser` creates a `FindCommand` with a `NameContainsKeywordsScoredPredicate`.
+
+**Step 2.** `FindCommand` calls `ModelManager#updateFilteredPersonList` to use the predicate.
+
+**Step 3.** `FindCommand` then creates a `VendorEmailMatchesContactsPredicate`, using it to call 
+`ModelManager#updateFilteredProductList`.
+
+These updates trigger `UI` to display matching contacts and their products.
+
+This diagram shows the interactions between `Logic` and `Model`:
 
 <puml src="diagrams/BetterSearchSequence.puml" width="2000"/>
 
-**Step 1.** User executes `find adafruit`.
-
-**Step 2.** `LogicManager` calls `AddressBookParser#parseCommand`.
-
-**Step 3.** `AddressBookParser#parseCommand` creates a `FindCommandParser` that calls `parse("adafruit")`.
-
-**Step 4.** `FindCommandParser#parse` creates a `FindCommand` with a `NameContainsKeywordsScoredPredicate`.
-
-**Step 5.** `LogicManager` calls `FindCommand#execute` on a `ModelManager`.
-
-**Step 6.** `FindCommand` executes and calls `ModelManager#updateFilteredPersonList`.
-
-**Step 7.** `FindCommand` then creates a `VendorEmailMatchesContactsPredicate` and calls `ModelManager#updateFilteredProductList`.
-
-**Step 8.** The updates trigger `UI` to refresh both contact and product display.
-
-This diagram summarises the decision flow of `find`:
+This diagram summarises the decision flow in `Model`:
 
 <puml src="diagrams/BetterSearchActivity.puml" width="400"/>
 
@@ -674,12 +672,9 @@ The usage scenario for `findproduct` is analogous.
 
 Alternative 1 was chosen to ensure discoverability and improve user experience.
 
-**Aspect: Ranking strategy**
-TODO
-
 **Aspect: Ranking implementation**
 
-* **Alternative 1 (current choice):** Shared contract between contact and product entity.
+* **Alternative 1 (current choice):** Shared contract between contact and product entities.
   * Pros: Consistent behavior across commands; Reusable implementation.
   * Cons: Careful abstraction required.
 

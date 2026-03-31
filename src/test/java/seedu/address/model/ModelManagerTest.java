@@ -18,7 +18,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,8 +32,10 @@ import seedu.address.model.alias.exceptions.NoAliasFoundInAliasListException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.NameContainsKeywordsScoredPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.RankedPersonPredicate;
 import seedu.address.model.product.Product;
 import seedu.address.model.product.ProductNameContainsKeywordsScoredPredicate;
+import seedu.address.model.product.RankedProductPredicate;
 import seedu.address.model.product.exceptions.DuplicateProductException;
 import seedu.address.model.product.exceptions.ProductNotFoundException;
 import seedu.address.testutil.AddressBookBuilder;
@@ -200,6 +204,42 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void updateFilteredPersonList_rankedPredicateInterface_dispatchesComparatorAndFilter() {
+        Person alpha = new PersonBuilder().withName("Ali Alpha").withEmail("alpha@example.com").build();
+        Person beta = new PersonBuilder().withName("Ali Beta").withEmail("beta@example.com").build();
+        Person nonMatch = new PersonBuilder().withName("Chris Tan").withEmail("chris@example.com").build();
+
+        modelManager.addPerson(alpha);
+        modelManager.addPerson(beta);
+        modelManager.addPerson(nonMatch);
+
+        modelManager.updateFilteredPersonList(new StubRankedPersonPredicate("ali"));
+        assertEquals(List.of(beta, alpha), modelManager.getFilteredPersonList());
+    }
+
+    @Test
+    public void updateFilteredPersonList_rankedPredicate_excludesArchivedPersons() {
+        AddressBook addressBook = new AddressBook();
+        Person archivedMatching = new PersonBuilder()
+                .withName("Ali Archived")
+                .withEmail("archived@example.com")
+                .build()
+                .archive();
+        Person activeMatching = new PersonBuilder()
+                .withName("Ali Active")
+                .withEmail("active@example.com")
+                .build();
+        addressBook.addPerson(archivedMatching);
+        addressBook.addPerson(activeMatching);
+
+        ModelManager model = new ModelManager(new VendorVault(
+                addressBook, new Inventory()), new UserPrefs(), new Aliases());
+        model.updateFilteredPersonList(new StubRankedPersonPredicate("ali"));
+
+        assertEquals(List.of(activeMatching), model.getFilteredPersonList());
+    }
+
+    @Test
     public void hasProduct_nullProduct_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> modelManager.hasProduct(null));
     }
@@ -300,6 +340,11 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void getFilteredProductList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredProductList().remove(0));
+    }
+
+    @Test
     public void updateFilteredProductList_filtersProductList() {
         modelManager.addProduct(OIL);
         modelManager.addProduct(RICE);
@@ -363,8 +408,17 @@ public class ModelManagerTest {
     }
 
     @Test
-    public void getFilteredProductList_modifyList_throwsUnsupportedOperationException() {
-        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredProductList().remove(0));
+    public void updateFilteredProductList_rankedPredicateInterface_dispatchesComparatorAndFilter() {
+        Product alpha = new ProductBuilder().withIdentifier("SKU-ALPHA").withName("Ali Alpha").build();
+        Product beta = new ProductBuilder().withIdentifier("SKU-BETA").withName("Ali Beta").build();
+        Product nonMatch = new ProductBuilder().withIdentifier("SKU-OTHER").withName("Rice Bag").build();
+
+        modelManager.addProduct(alpha);
+        modelManager.addProduct(beta);
+        modelManager.addProduct(nonMatch);
+
+        modelManager.updateFilteredProductList(new StubRankedProductPredicate("ali"));
+        assertEquals(List.of(beta, alpha), modelManager.getFilteredProductList());
     }
 
     @Test
@@ -609,5 +663,43 @@ public class ModelManagerTest {
     @Test
     public void removeAlias_noAlias_throwsNoAliasFoundInAliasListException() throws Exception {
         assertThrows(NoAliasFoundInAliasListException.class, () -> modelManager.removeAlias("ls"));
+    }
+
+    private static class StubRankedPersonPredicate implements RankedPersonPredicate {
+        private final String keyword;
+
+        StubRankedPersonPredicate(String keyword) {
+            this.keyword = keyword.toLowerCase(Locale.ROOT);
+        }
+
+        @Override
+        public boolean test(Person person) {
+            String name = person.getName().fullName;
+            return name.toLowerCase(Locale.ROOT).contains(keyword);
+        }
+
+        @Override
+        public Comparator<Person> createPersonComparator() {
+            return Comparator.comparing((Person person) -> person.getName().fullName).reversed();
+        }
+    }
+
+    private static class StubRankedProductPredicate implements RankedProductPredicate {
+        private final String keyword;
+
+        StubRankedProductPredicate(String keyword) {
+            this.keyword = keyword.toLowerCase(Locale.ROOT);
+        }
+
+        @Override
+        public boolean test(Product product) {
+            String name = product.getName().fullName;
+            return name.toLowerCase(Locale.ROOT).contains(keyword);
+        }
+
+        @Override
+        public Comparator<Product> createProductComparator() {
+            return Comparator.comparing((Product product) -> product.getName().fullName).reversed();
+        }
     }
 }
