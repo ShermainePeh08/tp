@@ -8,6 +8,7 @@ import java.util.Optional;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.product.Identifier;
 import seedu.address.model.product.Product;
 
 /**
@@ -40,7 +41,7 @@ public class DeleteProductCommand extends Command {
 
     private PendingConfirmation pendingConfirmation = new PendingConfirmation();
 
-    private final String targetProductId;
+    private final Identifier targetProductId;
 
     private final boolean needsConfirmation;
 
@@ -50,7 +51,7 @@ public class DeleteProductCommand extends Command {
      * @param targetProductId ID of the product to delete.
      * @param needsConfirmation whether the command should ask the user for confirmation.
      */
-    public DeleteProductCommand(String targetProductId, boolean needsConfirmation) {
+    public DeleteProductCommand(Identifier targetProductId, boolean needsConfirmation) {
         this.targetProductId = targetProductId;
         this.needsConfirmation = needsConfirmation;
     }
@@ -83,7 +84,7 @@ public class DeleteProductCommand extends Command {
         );
 
         model.updateFilteredProductList(p ->
-            p.getIdentifier().toString().equals(targetProductId));
+            p.getIdentifier().equals(targetProductId));
 
         return new CommandResult(CONFIRMATION_DELETE_PRODUCT_MESSAGE);
     }

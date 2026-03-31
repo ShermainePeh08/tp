@@ -440,7 +440,7 @@ public class AddProductCommandTest {
         }
 
         @Override
-        public Optional<Product> findById(String id) {
+        public Optional<Product> findById(Identifier id) {
             throw new AssertionError("This method should not be called.");
         }
 
