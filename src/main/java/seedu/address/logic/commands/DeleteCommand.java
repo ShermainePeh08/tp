@@ -89,7 +89,7 @@ public class DeleteCommand extends Command {
             ParseResult<Email> email = ParserUtil.parseEmail(targetEmail);
             return email.getValue();
         } catch (ParseException e) {
-            throw new CommandException(MESSAGE_INVALID_FORMAT);
+            throw new CommandException(e.getMessage());
         }
     }
 
