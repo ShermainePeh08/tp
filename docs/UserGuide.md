@@ -195,7 +195,7 @@ t/electronics t/wholesale`
 <box type="info" seamless>
 
 **Expected output:**<br>
-![add](images/v1.4/add.png =600x)
+![add](images/v1.5/add.png =500x)
 
 </box>
 
@@ -241,13 +241,6 @@ Format:
 ```
 list
 ```
-
-<box type="info" seamless>
-
-**Expected output:**<br>
-![list](images/v1.4/list.png =600x)
-
-</box>
 
 <div style="height: 30px;"></div>
 
@@ -308,13 +301,7 @@ Examples:
 <box type="info" seamless>
 
 **Expected output:**<br>
-![find](images/v1.4/find.png =600x)
-
-</box>
-
-<box type="info" seamless>
-
-Matching is partial and case-insensitive. The order of the keywords does not matter.
+![find](images/v1.5/find.png =500x)
 
 </box>
 
@@ -375,8 +362,8 @@ Examples:
 
 <box type="info" seamless>
 
-**Expected output:**<br>
-![restore](images/v1.4/restore%20cytron.png =600x)
+**Expected output (`restore`):**<br>
+![restore](images/v1.5/restore.png =500x)
 
 </box>
 
@@ -422,7 +409,8 @@ clear
 
 <box type="info" seamless>
 
-**Expected output:** Once confirmed, all contacts are permanently removed. The contact list on the home page will now be empty.
+**Expected output:**<br>
+![clear](images/v1.5/clear.png =500x)
 
 </box>
 
@@ -447,7 +435,7 @@ Examples:
 <box type="info" seamless>
 
 **Expected output:**<br>
-![addprod](images/v1.4/addprod.png =600x)
+![addprod](images/v1.5/addprod.png =1000x)
 
 </box>
 
@@ -489,13 +477,6 @@ Format:
 ```
 listproduct
 ```
-
-<box type="info" seamless>
-
-**Expected output:**<br>
-![listprod](images/v1.4/listprod.png =600x)
-
-</box>
 
 <box type="tip" seamless>
 
@@ -552,7 +533,7 @@ Examples:
 <box type="info" seamless>
 
 **Expected output:**<br>
-![findprod](images/v1.4/findprod.png =600x)
+![findprod](images/v1.5/findprod.png =500x)
 
 </box>
 
@@ -693,8 +674,8 @@ Example:
 
 <box type="info" seamless>
 
-**Expected output:**<br>
-![alias](images/v1.4/alias.png =600x)
+**Expected output (`alias`):**<br>
+![alias](images/v1.5/alias.png =500x)
 
 </box>
 
@@ -711,7 +692,6 @@ deletealias ALIAS
 
 Example:
 * `deletealias ls` removes `ls` as an alias
-
 
 <div style="height: 30px;"></div>
 
@@ -767,7 +747,11 @@ redo
 <box type="info" seamless>
 
 **Expected output:**<br>
-![undo](images/v1.4/undo.png =445x) ![redo](images/v1.4/redo.png =445x)
+![undo](images/v1.5/undo.png =700x)
+
+<br>
+
+![redo](images/v1.5/redo.png =700x)
 
 </box>
 
@@ -785,7 +769,7 @@ listall
 <box type="info" seamless>
 
 **Expected output:**<br>
-![listall](images/v1.4/listall.png =600x)
+![listall](images/v1.5/listall.png =1000x)
 
 </box>
 
