@@ -1099,15 +1099,15 @@ Use this section when `addproduct` fails or returns a warning.
 | Scenario                                             | Message shown                                                             | How to fix                                                                      |
 |------------------------------------------------------|---------------------------------------------------------------------------|---------------------------------------------------------------------------------|
 | Missing one or more required prefixes (`id/`, `n/`)  | `Missing required prefix(es): ...`                                        | Include the missing prefixed fields.                                            |
-| No prefixes at all                                   | `All required prefixes are missing, ...`                                  | Include all required prefixed fields.                                           |
+| No prefixes at all                                   | `Invalid command format! ...`                                             | Include all required prefixed fields.                                           |
 | Same single-value field(s) repeated (e.g. two `q/`)  | `Multiple values specified for the following single-valued field(s): ...` | Keep only one value for each field.                                             |
 | Identifier is blank                                  | `Identifier should not be blank.`                                         | Provide a non-empty identifier after `id/`.                                     |
 | Identifier is too long                               | `Identifier should be at most 120 characters.`                            | Shorten the identifier.                                                         |
 | Name is blank                                        | `Name should not be blank.`                                               | Provide a non-empty name after `n/`.                                            |
 | Name is too long                                     | `Name should be at most 120 characters.`                                  | Shorten the name.                                                               |
-| Product duplicates an existing product by identifier | `This product already exists with the same identifier.`                   | Change the identifier, or edit the existing product instead.                    |
 | Quantity is invalid                                  | `Quantity should be a non-negative valid integer.`                        | Ensure quantity is a whole number between 0 and 2,147,483,647.                  |
 | Threshold is invalid                                 | `Restock threshold should be a non-negative valid integer.`               | Ensure threshold is a whole number between 0 and 2,147,483,647.                 |
+| Product duplicates an existing product by identifier | `This product already exists with the same identifier.`                   | Change the identifier, or edit the existing product instead.                    |
 | Product's vendor does not exist                      | `Vendor email ... does not match any existing contact.`                   | Check that the email matches an existing contact's email, or add a new contact. |
 
 <br>
