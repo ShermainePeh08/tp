@@ -154,13 +154,8 @@ public class ParserUtil {
     public static Set<Tag> parseTags(Collection<String> tags) throws ParseException {
         requireNonNull(tags);
         final Set<Tag> tagSet = new HashSet<>();
-        final Set<String> lowerCaseTagNames = new HashSet<>();
         for (String tagName : tags) {
-            Tag parsedTag = parseTag(tagName);
-            String lowerCaseTagName = parsedTag.tagName.toLowerCase(Locale.ROOT);
-            if (lowerCaseTagNames.add(lowerCaseTagName)) {
-                tagSet.add(parsedTag);
-            }
+            tagSet.add(parseTag(tagName));
         }
         return tagSet;
     }

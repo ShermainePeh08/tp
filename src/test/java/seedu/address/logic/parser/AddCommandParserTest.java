@@ -156,18 +156,6 @@ public class AddCommandParserTest {
     }
 
     @Test
-    public void parse_caseInsensitiveDuplicateTags_keepFirstOccurrence() {
-        // EP: duplicate tags in same contact, first occurrence is kept
-        Person expectedPerson = new PersonBuilder(BOB).withTags(VALID_TAG_MIXED_CASE, VALID_TAG_3).build();
-        assertParseSuccess(parser,
-                NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                        + " " + PREFIX_TAG + VALID_TAG_MIXED_CASE
-                        + " " + PREFIX_TAG + VALID_TAG_3
-                        + " " + PREFIX_TAG + VALID_TAG_LOWER_DUPLICATE,
-                new AddCommand(expectedPerson));
-    }
-
-    @Test
     public void parse_compulsoryFieldMissing_failure() {
         String expectedMessage = AddCommand.MESSAGE_USAGE;
 

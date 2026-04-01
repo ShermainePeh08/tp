@@ -228,20 +228,6 @@ public class EditCommandParserTest {
     }
 
     @Test
-    public void parse_caseInsensitiveDuplicateTags_keepFirstOccurrence() {
-        // EP: duplicate tag differing only in case -> first occurrence kept
-        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
-                .withTags(VALID_TAG_MIXED_CASE, VALID_TAG_3)
-                .build();
-
-        assertParseSuccess(parser, TARGET_EMAIL
-                        + SPACE_PREFIX_TAG + VALID_TAG_MIXED_CASE
-                        + SPACE_PREFIX_TAG + VALID_TAG_3
-                        + SPACE_PREFIX_TAG + VALID_TAG_LOWER_DUPLICATE,
-                new EditCommand(TARGET_EMAIL_OBJ, descriptor));
-    }
-
-    @Test
     public void parse_fieldsWithWarnings_success() {
         // EP: only name triggers a warning
         assertParseSuccess(parser, TARGET_EMAIL + INVALID_NAME_DESC_WARN,

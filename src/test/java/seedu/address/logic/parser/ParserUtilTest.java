@@ -314,18 +314,6 @@ public class ParserUtilTest {
     }
 
     @Test
-    public void parseTags_collectionWithCaseInsensitiveDuplicates_keepsFirstOccurrence() throws Exception {
-        // EP: duplicate tag differing only in case -> first occurrence kept, second discarded
-        Set<Tag> actualTagSet = ParserUtil.parseTags(
-                Arrays.asList(VALID_TAG_MIXED_CASE, VALID_TAG_3, VALID_TAG_LOWER_DUPLICATE));
-
-        assertEquals(2, actualTagSet.size());
-        assertTrue(actualTagSet.contains(new Tag(VALID_TAG_MIXED_CASE)));
-        assertTrue(actualTagSet.contains(new Tag(VALID_TAG_3)));
-        assertFalse(actualTagSet.contains(new Tag(VALID_TAG_LOWER_DUPLICATE)));
-    }
-
-    @Test
     public void parseIdentifier_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> ParserUtil.parseIdentifier((String) null));
     }
