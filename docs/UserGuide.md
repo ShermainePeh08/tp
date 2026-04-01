@@ -365,7 +365,7 @@ Unhides a previously archived contact.
 Format:
 
 ```
-restore EMAIL
+restore [EMAIL]
 ```
 
 Examples:
@@ -382,9 +382,11 @@ Examples:
 
 <box type="tip" seamless>
 
-If `EMAIL` is omitted or invalid, all archived contacts will be displayed, so you can find what you want to restore.
+If `EMAIL` is omitted, all archived contacts will be displayed so you can find what you want to restore.
 
 </box>
+
+For more details on possible warnings and errors, refer to the [troubleshooting guide](#troubleshooting-restore-contact) below.
 
 <div style="height: 30px;"></div>
 
@@ -451,7 +453,8 @@ Examples:
 
 <box type="info" seamless>
 
-If quantity and/or threshold is omitted, it will default to 0.
+If quantity is omitted, it will default to 0.
+If restock threshold is omitted, it will default to your [configured default threshold](#changing-default-threshold-threshold).
 If vendor email is omitted, product will not be associated with a vendor.
 
 </box>
@@ -583,7 +586,7 @@ Examples:
 
 <panel header="How do I view or recover archived products?" type="seamless">
 
-Use [`restoreproduct`](#restoring-an-archived-product-restoreproduct) without any parameters to view all archived products. Then, use `restore IDENTIFIER` to return the product to active state.
+Use [`restoreproduct`](#restoring-an-archived-product-restoreproduct) without any parameters to view all archived products. Then, use `restoreproduct IDENTIFIER` to return the product to active state.
 
 </panel><br>
 
@@ -599,7 +602,7 @@ Unhides a previously archived product.
 Format:
 
 ```
-restoreproduct IDENTIFIER
+restoreproduct [IDENTIFIER]
 ```
 
 Examples:
@@ -618,6 +621,8 @@ Examples:
 If `IDENTIFIER` is omitted or invalid, all archived products will be displayed, so you can find what you want to restore.
 
 </box>
+
+For more details on possible warnings and errors, refer to the [troubleshooting guide](#troubleshooting-restoreproduct) below.
 
 <div style="height: 30px;"></div>
 
@@ -964,7 +969,7 @@ Use this section when `add` fails or returns a warning.
 | Scenario                                                       | Message shown                                                             | How to fix                                                                   |
 |----------------------------------------------------------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------|
 | Missing one or more required prefixes (`n/`, `p/`, `e/`, `a/`) | `Missing required field(s): ...`                                          | Include all required prefixed fields in your command.                        |
-| No prefixes at all                                             | `All required prefixes are missing, ...`                                  | Use the full prefixed format, e.g. `add n/... p/... e/... a/...`.            |
+| No prefixes at all                                             | `Invalid command format! add: Adds a vendor contact to VendorVault. ...`  | Use the full prefixed format, e.g. `add n/... p/... e/... a/...`.            |
 | Text appears before the first prefix                           | `No non-prefix characters before prefix(es) is allowed, ...`              | Remove any text before `n/`.                                                 |
 | Same single-value field repeated (e.g. two `n/` or two `e/`)   | `Multiple values specified for the following single-valued field(s): ...` | Keep only one value for each of `n/`, `p/`, `e/`, `a/`.                      |
 | Name is blank                                                  | `Name should not be blank.`                                               | Provide a non-empty name after `n/`.                                         |
@@ -976,9 +981,9 @@ Use this section when `add` fails or returns a warning.
 | Email is too long                                              | `Email should be at most 320 characters.`                                 | Shorten the email.                                                           |
 | Address is blank                                               | `Address can take any values, and it should not be blank`                 | Provide a non-empty address after `a/`.                                      |
 | Address is too long                                            | `Address should be at most 500 characters.`                               | Shorten the address.                                                         |
-| Tag is blank                                                   | `Tag names should not be blank`                                           | Provide a non-empty tag name after each`t/`                                  |
+| Tag is blank                                                   | `Tag names should not be blank`                                           | Provide a non-empty tag name after each`t/`.                                  |
 | Tag is too long                                                | `Tag names should be at most 50 characters`                               | Shorten the tags that are too long.                                          |
-| Contact duplicates an existing contact by same email.          | `This vendor contact already exists with the same email.`                 | Change the email address, or edit the existing contact instead.              |
+| Contact duplicates an existing contact by same email           | `This vendor contact already exists with the same email (name: NAME, email: EMAIL).` | Change the email address, or edit the existing contact instead.              |
 
 <panel header="What's considered a valid Contact Email?" type="seamless" id="contact-email-format">
 
@@ -1002,7 +1007,7 @@ Common `add` warnings:
 | Phone includes unusual symbols/format       | `⚠ Warning: Phone number contains unusual symbols, is this intentional?`                                                              | Phone is accepted, but [format may be unintended](#contact-phone-format). You can safely ignore it if you're providing labels eg. `61234567 (Office)`                                    |
 | Email is unusually long                     | `⚠ Warning: Email address is unusually long, is this intentional?`                                                                    | Email is accepted, but more than 256 characters. You can verify if the email entered is correct.                                                                                         |
 | Similar name to an existing contact         | `⚠ Warning: There's a contact with a similar name (name: <similar-name>), is this intentional?`                                       | Possible duplicate by similar name. You can check if the name in the warning message is the same vendor as what you were about to add.                                                   |
-| Similar phone number to an existing contact | `⚠ Warning: There's a contact with a similar phone number (name: <name>, phone number: <similar-phone-number>), is this intentional?` | Possible duplicate by similar phone number. You can check if the name in the warning message is the same vendor as what you were about to add.                                           |
+| Similar phone number to an existing contact | `⚠ Warning: There's a contact with a similar phone number (name: <name>, phone number: <similar-phone-number>)`                       | Possible duplicate by similar phone number. You can check if the name in the warning message is the same vendor as what you were about to add.                                           |
 | Similar address to an existing contact      | `⚠ Warning: There's a contact with a similar address (name: <name>, address: <similar-address>), is this intentional?`                | Possible duplicate/related location by address similarity. You can check if the name and address in the warning message belongs as what you were about to add.                           |
 
 <box type="tip" seamless>
@@ -1052,10 +1057,12 @@ Use this section when `find` fails.
 
 Use this section when `archive` fails.
 
-| Scenario                           | Message shown                             | How to fix                                                                     |
-|------------------------------------|-------------------------------------------|--------------------------------------------------------------------------------|
-| No email provided                  | `Email must be provided.`                 | Provide the vendor's email: `archive EMAIL`.                                   |
-| Email does not match any contact   | `No vendor found with email: EMAIL`       | Check the email is correct and that the contact exists in the active list.     |
+| Scenario                             | Message shown                                                                      | How to fix                                                                                        |
+|--------------------------------------|------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| No email provided                    | `Invalid command format! archive: Archives the vendor...`                          | Provide the vendor's email: `archive EMAIL`.                                                      |
+| Email format is invalid              | `Email should be a valid format (e.g. user@example.com).`                          | Ensure the email is correctly formatted, e.g. `archive sg.sales@cytron.io`.                       |
+| Email does not match any contact     | `No vendor found with the specified email.`                                        | Check the email is correct and that the contact exists in the active list. Use `list` to verify.  |
+| Contact is already archived          | `This vendor is already archived. Did you want to restore it?`                     | Use `restore EMAIL` instead to bring the contact back to the active list.                         |
 
 <div style="height: 30px;"></div>
 
@@ -1063,9 +1070,11 @@ Use this section when `archive` fails.
 
 Use this section when `restore` fails.
 
-| Scenario                                        | Message shown                                                         | How to fix                                                                         |
-|-------------------------------------------------|-----------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| Email provided but no matching archived contact | `No archived vendor found with email: EMAIL` (archived list is shown) | Check the email is correct. The archived contacts panel will be shown to help you. |
+| Scenario                                        | Message shown                                                                               | How to fix                                                                                            |
+|-------------------------------------------------|---------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| Invalid email format provided                   | `Email should be a valid format (e.g. user@example.com).`                                   | Ensure the email is correctly formatted, e.g. `restore sg.sales@cytron.io`.                           |
+| No archived contacts exist (no email given)     | `No vendors are currently archived. Use 'archive EMAIL' to archive a vendor first.`         | Archive a contact first using `archive EMAIL` before attempting to restore.                           |
+| Email provided but no matching archived contact | `No archived vendor found with the specified email.` (archived list is shown)               | Check the email is correct. The archived contacts panel will be shown to help you find the right one. |
 
 <div style="height: 30px;"></div>
 
@@ -1096,28 +1105,32 @@ Common `delete` warnings:
 
 Use this section when `addproduct` fails or returns a warning.
 
-| Scenario                                             | Message shown                                                             | How to fix                                                                      |
-|------------------------------------------------------|---------------------------------------------------------------------------|---------------------------------------------------------------------------------|
-| Missing one or more required prefixes (`id/`, `n/`)  | `Missing required prefix(es): ...`                                        | Include the missing prefixed fields.                                            |
-| No prefixes at all                                   | `Invalid command format! ...`                                             | Include all required prefixed fields.                                           |
-| Same single-value field(s) repeated (e.g. two `q/`)  | `Multiple values specified for the following single-valued field(s): ...` | Keep only one value for each field.                                             |
-| Identifier is blank                                  | `Identifier should not be blank.`                                         | Provide a non-empty identifier after `id/`.                                     |
-| Identifier is too long                               | `Identifier should be at most 120 characters.`                            | Shorten the identifier.                                                         |
-| Name is blank                                        | `Name should not be blank.`                                               | Provide a non-empty name after `n/`.                                            |
-| Name is too long                                     | `Name should be at most 120 characters.`                                  | Shorten the name.                                                               |
-| Quantity is invalid                                  | `Quantity should be a non-negative valid integer.`                        | Ensure quantity is a whole number between 0 and 2,147,483,647.                  |
-| Threshold is invalid                                 | `Restock threshold should be a non-negative valid integer.`               | Ensure threshold is a whole number between 0 and 2,147,483,647.                 |
-| Product duplicates an existing product by identifier | `This product already exists with the same identifier.`                   | Change the identifier, or edit the existing product instead.                    |
-| Product's vendor does not exist                      | `Vendor email ... does not match any existing contact.`                   | Check that the email matches an existing contact's email, or add a new contact. |
+| Scenario                                            | Message shown                                                             | How to fix                                                                      |
+|-----------------------------------------------------|---------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| Missing one or more required prefixes (`id/`, `n/`) | `Missing required field(s): ...`                                          | Include all required prefixed fields in your command.                           |
+| No prefixes at all                                  | `Invalid command format! ...`                                             | Use the full prefixed format, e.g. `addproduct id/... n/...`.                   |
+| Text appears before the first prefix                | `No non-prefix characters before prefix(es) is allowed, ...`              | Remove any text before `id/`.                                                   |
+| Same single-value field repeated (e.g. two `q/`)    | `Multiple values specified for the following single-valued field(s): ...` | Keep only one value for each of `id/`, `n/`, `q/`, `th/`, `e/`.                 |
+| Identifier is blank                                 | `Identifier should not be blank.`                                         | Provide a non-empty identifier after `id/`.                                     |
+| Identifier is too long                              | `Identifier should be at most 120 characters.`                            | Shorten the identifier.                                                         |
+| Name is blank                                       | `Name should not be blank.`                                               | Provide a non-empty name after `n/`.                                            |
+| Name is too long                                    | `Name should be at most 120 characters.`                                  | Shorten the name.                                                               |
+| Quantity is invalid                                 | `Quantity should be a non-negative valid integer.`                        | Ensure it is a whole number between 0 and 2,147,483,647.                        |
+| Threshold is invalid                                | `Restock threshold should be a non-negative valid integer.`               | Ensure it is a whole number between 0 and 2,147,483,647.                        |
+| Product duplicates an existing product by same identifier | `This product already exists with the same identifier (identifier: IDENTIFIER, name: NAME).` | Change the identifier, or edit the existing product instead.             |
+| Product's vendor does not exist                     | `Vendor email EMAIL does not match any existing contact.`                 | Check that the email matches an existing contact's email, or add a new contact. |
 
 <br>
 
 Common `addproduct` warnings:
 
-| Warning trigger                          | Warning shown                                                                                                                                   | What it means                                                                                                       |
-|------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| Identifier/Name contains unusual symbols | `⚠ Warning: Identifier contains unusual symbols, is this intentional?`<br><br/>`⚠ Warning: Name contains unusual symbols, is this intentional?` | Identifier/Name is accepted, but [looks unusual](#product-name-format). You can verify if you entered it correctly. |
-| Similar name to an existing product      | `⚠ Warning: There's a product with a similar name (id: ..., name: ...), is this intentional?`                                                   | Possible duplicate by name. Check the name and edit as necessary.                                                   |
+| Warning trigger                     | Warning shown                                                                                                                                   | What it means                                                                                                                  |
+|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| `q/` omitted                        | `⚠ Warning: Quantity missing, defaulted to 0.`                                                                                                  | Quantity was not provided so it defaults to 0. Edit it later with `editproduct` if needed.                                     |
+| `th/` omitted                       | `⚠ Warning: Restock threshold missing, defaulted to N.`                                                                                         | Threshold was not provided so it defaults to the configured value. Edit with `editproduct` if needed.                          |
+| `e/` omitted                        | `⚠ Warning: Vendor email missing, product will not be associated with a vendor.`                                                                | No vendor is linked to the product. You can assign one later using `editproduct IDENTIFIER e/EMAIL`.                           |
+| Identifier/Name has unusual symbols | `⚠ Warning: Identifier contains unusual symbols, is this intentional?`<br><br/>`⚠ Warning: Name contains unusual symbols, is this intentional?` | Identifier/Name is accepted, but [looks unusual](#product-name-format). You can verify if you entered it correctly.            |
+| Similar name to an existing product | `⚠ Warning: There's a product with a similar name (name: <similar-name>), is this intentional?`                                                 | Possible duplicate by similar name. You can check if the name in the warning message is the same as what you were about to add. |
 
 <div style="height: 30px;"></div>
 
@@ -1175,10 +1188,11 @@ Use this section when `find` fails.
 
 Use this section when `archiveproduct` fails.
 
-| Scenario                              | Message shown                                  | How to fix                                                                      |
-|---------------------------------------|------------------------------------------------|---------------------------------------------------------------------------------|
-| No identifier provided                | `archiveproduct IDENTIFIER ...`                | Provide the product identifier: `archiveproduct IDENTIFIER`.                    |
-| Identifier does not match any product | `No product found with identifier: IDENTIFIER` | Check the identifier is correct and that the product exists in the active list. |
+| Scenario                                 | Message shown                                                                      | How to fix                                                                                              |
+|------------------------------------------|------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| No identifier provided                   | `Invalid command format! archiveproduct: Archives the product...`                  | Provide the product identifier: `archiveproduct IDENTIFIER`.                                            |
+| Identifier does not match any product    | `No product found with the specified identifier.`                                  | Check the identifier is correct and that the product exists in the active list. Use `listproduct`.      |
+| Product is already archived              | `This product is already archived. Did you want to restore it?`                    | Use `restoreproduct IDENTIFIER` instead to bring the product back to the active list.                   |
 
 <div style="height: 30px;"></div>
 
@@ -1186,9 +1200,10 @@ Use this section when `archiveproduct` fails.
 
 Use this section when `restoreproduct` fails.
 
-| Scenario                                             | Message shown                                                                 | How to fix                                                                                            |
-|------------------------------------------------------|-------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
-| Identifier provided but no matching archived product | `No archived product found with identifier: IDENTIFIER` (archived list shown) | Check the identifier is correct. The archived products panel will be shown to help you identify the right one. |
+| Scenario                                             | Message shown                                                                                    | How to fix                                                                                                  |
+|------------------------------------------------------|--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| No archived products exist (no identifier given)     | `No products are currently archived. Use 'archiveproduct IDENTIFIER' to archive a product first.` | Archive a product first using `archiveproduct IDENTIFIER` before attempting to restore.                    |
+| Identifier provided but no matching archived product | `No archived product found with the specified identifier.` (archived list shown)                 | Check the identifier is correct. The archived products panel will be shown to help you find the right one. |
 
 <div style="height: 30px;"></div>
 
@@ -1277,11 +1292,11 @@ Product name is recommended to meet the following guidelines, otherwise you will
 
 <panel header="Why am I seeing warnings for possible duplicates?" type="seamless" id="duplicate-warnings">
 
-**Contact and Product Names** warnings appear when a new name **shares words** with an existing one. For example, “Cytron Technologies” and “Cytron T.”.
+**Contact and Product Names** warnings appear when a new name **shares words** with an existing one. For example, "Cytron Technologies" and "Cytron T.".
 
-**Contact Phone Numbers** warnings appear when a new phone number **shares at least 3 consecutive digits** with an existing one. For example, “91245678” and “91234783”.
+**Contact Phone Numbers** warnings appear when a new phone number **shares at least 3 consecutive digits** with an existing one. For example, "91245678" and "91234783".
 
-**Contact Addresses** warnings appear when one address **fully contains** the other. For example, “123 Main Street” and “123 Main St”.
+**Contact Addresses** warnings appear when one address **fully contains** the other. For example, "123 Main Street" and "123 Main St".
 
 </panel>
 
