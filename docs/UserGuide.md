@@ -294,7 +294,7 @@ The same rules for multiple phone numbers and duplicates that apply to `add` als
 
 #### Locating contacts: `find`
 
-Finds contacts whose name matches the given keyword(s).
+Lists contacts whose name contain any of the given keyword(s).
 
 Format:
 
@@ -535,7 +535,7 @@ The same rules for email that apply to add also apply to edit. For more details 
 
 #### Locating products : `findproduct`
 
-Finds products whose names contain any of the given keyword(s).
+Lists products whose names contain any of the given keyword(s).
 
 Format:
 
@@ -1209,7 +1209,7 @@ Use this section when `deleteproduct` fails.
 
 <div style="height: 30px;"></div>
 
-### Managing general commands
+### General commands
 <div style="height: 30px;"></div>
 
 #### Troubleshooting `alias`
@@ -1231,6 +1231,17 @@ Use this section when `deletealias` fails.
 | Scenario                     | Message shown                       | How to fix                                                        |
 |------------------------------|-------------------------------------|-------------------------------------------------------------------|
 | No alias given in alias list | `No alias found in alias list. ...` | Find the correct alias using `alias` then use `deletealias ALIAS` |
+
+<div style="height: 30px;"></div>
+
+#### Troubleshooting `threshold`
+
+Use this section when `threshold` fails.
+
+| Scenario              | Message shown                                               | How to fix                                               |
+|-----------------------|-------------------------------------------------------------|----------------------------------------------------------|
+| No threshold provided | `Invalid command format! ...`                               | Provide a threshold.                                     |
+| Threshold is invalid  | `Restock threshold should be a non-negative valid integer.` | Ensure it is a whole number between 0 and 2,147,483,647. |
 
 <div style="height: 30px;"></div>
 
