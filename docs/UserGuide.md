@@ -365,7 +365,7 @@ Unhides a previously archived contact.
 Format:
 
 ```
-restore EMAIL
+restore [EMAIL]
 ```
 
 Examples:
@@ -382,9 +382,11 @@ Examples:
 
 <box type="tip" seamless>
 
-If `EMAIL` is omitted or invalid, all archived contacts will be displayed, so you can find what you want to restore.
+If `EMAIL` is omitted, all archived contacts will be displayed so you can find what you want to restore.
 
 </box>
+
+For more details on possible warnings and errors, refer to the [troubleshooting guide](#troubleshooting-restore-contact) below.
 
 <div style="height: 30px;"></div>
 
@@ -451,7 +453,8 @@ Examples:
 
 <box type="info" seamless>
 
-If quantity and/or threshold is omitted, it will default to 0.
+If quantity is omitted, it will default to 0.
+If restock threshold is omitted, it will default to your [configured default threshold](#changing-default-threshold-threshold).
 If vendor email is omitted, product will not be associated with a vendor.
 
 </box>
@@ -583,7 +586,7 @@ Examples:
 
 <panel header="How do I view or recover archived products?" type="seamless">
 
-Use [`restoreproduct`](#restoring-an-archived-product-restoreproduct) without any parameters to view all archived products. Then, use `restore IDENTIFIER` to return the product to active state.
+Use [`restoreproduct`](#restoring-an-archived-product-restoreproduct) without any parameters to view all archived products. Then, use `restoreproduct IDENTIFIER` to return the product to active state.
 
 </panel><br>
 
@@ -599,7 +602,7 @@ Unhides a previously archived product.
 Format:
 
 ```
-restoreproduct IDENTIFIER
+restoreproduct [IDENTIFIER]
 ```
 
 Examples:
@@ -618,6 +621,8 @@ Examples:
 If `IDENTIFIER` is omitted or invalid, all archived products will be displayed, so you can find what you want to restore.
 
 </box>
+
+For more details on possible warnings and errors, refer to the [troubleshooting guide](#troubleshooting-restoreproduct) below.
 
 <div style="height: 30px;"></div>
 
@@ -964,7 +969,7 @@ Use this section when `add` fails or returns a warning.
 | Scenario                                                       | Message shown                                                             | How to fix                                                                   |
 |----------------------------------------------------------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------|
 | Missing one or more required prefixes (`n/`, `p/`, `e/`, `a/`) | `Missing required field(s): ...`                                          | Include all required prefixed fields in your command.                        |
-| No prefixes at all                                             | `All required prefixes are missing, ...`                                  | Use the full prefixed format, e.g. `add n/... p/... e/... a/...`.            |
+| No prefixes at all                                             | `Invalid command format! add: Adds a vendor contact to VendorVault. ...`  | Use the full prefixed format, e.g. `add n/... p/... e/... a/...`.            |
 | Text appears before the first prefix                           | `No non-prefix characters before prefix(es) is allowed, ...`              | Remove any text before `n/`.                                                 |
 | Same single-value field repeated (e.g. two `n/` or two `e/`)   | `Multiple values specified for the following single-valued field(s): ...` | Keep only one value for each of `n/`, `p/`, `e/`, `a/`.                      |
 | Name is blank                                                  | `Name should not be blank.`                                               | Provide a non-empty name after `n/`.                                         |
@@ -978,7 +983,7 @@ Use this section when `add` fails or returns a warning.
 | Address is too long                                            | `Address should be at most 500 characters.`                               | Shorten the address.                                                         |
 | Tag is blank                                                   | `Tag names should not be blank`                                           | Provide a non-empty tag name after each`t/`                                  |
 | Tag is too long                                                | `Tag names should be at most 50 characters`                               | Shorten the tags that are too long.                                          |
-| Contact duplicates an existing contact by same email.          | `This vendor contact already exists with the same email.`                 | Change the email address, or edit the existing contact instead.              |
+| Contact duplicates an existing contact by same email           | `This vendor contact already exists with the same email (name: NAME, email: EMAIL).` | Change the email address, or edit the existing contact instead.              |
 
 <panel header="What's considered a valid Contact Email?" type="seamless" id="contact-email-format">
 
@@ -1002,7 +1007,7 @@ Common `add` warnings:
 | Phone includes unusual symbols/format       | `⚠ Warning: Phone number contains unusual symbols, is this intentional?`                                                              | Phone is accepted, but [format may be unintended](#contact-phone-format). You can safely ignore it if you're providing labels eg. `61234567 (Office)`                                    |
 | Email is unusually long                     | `⚠ Warning: Email address is unusually long, is this intentional?`                                                                    | Email is accepted, but more than 256 characters. You can verify if the email entered is correct.                                                                                         |
 | Similar name to an existing contact         | `⚠ Warning: There's a contact with a similar name (name: <similar-name>), is this intentional?`                                       | Possible duplicate by similar name. You can check if the name in the warning message is the same vendor as what you were about to add.                                                   |
-| Similar phone number to an existing contact | `⚠ Warning: There's a contact with a similar phone number (name: <name>, phone number: <similar-phone-number>), is this intentional?` | Possible duplicate by similar phone number. You can check if the name in the warning message is the same vendor as what you were about to add.                                           |
+| Similar phone number to an existing contact | `⚠ Warning: There's a contact with a similar phone number (name: <name>, phone number: <similar-phone-number>)`                       | Possible duplicate by similar phone number. You can check if the name in the warning message is the same vendor as what you were about to add.                                           |
 | Similar address to an existing contact      | `⚠ Warning: There's a contact with a similar address (name: <name>, address: <similar-address>), is this intentional?`                | Possible duplicate/related location by address similarity. You can check if the name and address in the warning message belongs as what you were about to add.                           |
 
 <box type="tip" seamless>
@@ -1102,8 +1107,8 @@ Use this section when `addproduct` fails or returns a warning.
 | Name is too long                                    | `Name should be at most 120 characters.`                                  | Shorten the name.                                                               |
 | Quantity is invalid                                 | `Quantity should be a non-negative valid integer.`                        | Ensure it is a whole number between 0 and 2,147,483,647.                        |
 | Threshold is invalid                                | `Restock threshold should be a non-negative valid integer.`               | Ensure it is a whole number between 0 and 2,147,483,647.                        |
-| Product is a duplicate                              | `This product already exists with the same identifier.`                   | Change the identifier, or edit the existing product instead.                    |
-| Product's vendor does not exist                     | `Vendor email ... does not match any existing contact.`                   | Check that the email matches an existing contact's email, or add a new contact. |
+| Product is a duplicate                              | `This product already exists with the same identifier (identifier: IDENTIFIER, name: NAME).` | Change the identifier, or edit the existing product instead.             |
+| Product's vendor does not exist                     | `Vendor email EMAIL does not match any existing contact.`                 | Check that the email matches an existing contact's email, or add a new contact. |
 
 <br>
 
@@ -1111,6 +1116,9 @@ Common `addproduct` warnings:
 
 | Warning trigger                     | Warning shown                                                                                                                                   | What it means                                                                                                                  |
 |-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| `q/` omitted                        | `⚠ Warning: Quantity missing, defaulted to 0.`                                                                                                  | Quantity was not provided so it defaults to 0. Edit it later with `editproduct` if needed.                                     |
+| `th/` omitted                       | `⚠ Warning: Restock threshold missing, defaulted to N.`                                                                                         | Threshold was not provided so it defaults to the configured value. Edit with `editproduct` if needed.                          |
+| `e/` omitted                        | `⚠ Warning: Vendor email missing, product will not be associated with a vendor.`                                                                | No vendor is linked to the product. You can assign one later using `editproduct IDENTIFIER e/EMAIL`.                           |
 | Identifier/Name has unusual symbols | `⚠ Warning: Identifier contains unusual symbols, is this intentional?`<br><br/>`⚠ Warning: Name contains unusual symbols, is this intentional?` | Identifier/Name is accepted, but [looks unusual](#product-name-format). You can verify if you entered it correctly.            |
 | Similar name to an existing product | `⚠ Warning: There's a product with a similar name (name: <similar-name>), is this intentional?`                                                 | Possible duplicate by similar name. You can check if the name in the warning message is the same as what you were about to add. |
 
@@ -1255,11 +1263,11 @@ Product name is recommended to meet the following guidelines, otherwise you will
 
 <panel header="Why am I seeing warnings for possible duplicates?" type="seamless" id="duplicate-warnings">
 
-**Contact and Product Names** warnings appear when a new name **shares words** with an existing one. For example, “Cytron Technologies” and “Cytron T.”.
+**Contact and Product Names** warnings appear when a new name **shares words** with an existing one. For example, "Cytron Technologies" and "Cytron T.".
 
-**Contact Phone Numbers** warnings appear when a new phone number **shares at least 3 consecutive digits** with an existing one. For example, “91245678” and “91234783”.
+**Contact Phone Numbers** warnings appear when a new phone number **shares at least 3 consecutive digits** with an existing one. For example, "91245678" and "91234783".
 
-**Contact Addresses** warnings appear when one address **fully contains** the other. For example, “123 Main Street” and “123 Main St”.
+**Contact Addresses** warnings appear when one address **fully contains** the other. For example, "123 Main Street" and "123 Main St".
 
 </panel>
 
