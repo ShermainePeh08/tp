@@ -723,16 +723,23 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 |----------|-------------|----------------------------------|-------------------------------------------------------------------|
 | `* *`    | new user    | see usage guide                  | recap and learn commands                                          |
 | `* * *`  | user        | add a new contact                | add new vendors I work with                                       |
+| `* *`    | user        | edit an existing contact         | keep vendor information up to date                                |
 | `* * *`  | user        | delete a contact                 | remove vendors I no longer work with                              |
 | `* * *`  | user        | view contacts                    |                                                                   |
 | `* *`    | user        | find a contact by name           | locate their details without having to go through the entire list |
 | `*`      | user        | sort contacts by name            | browse them easily                                                |
+| `* *`    | user        | clear all contacts               | reset my vendor list                                              |
 | `* * *`  | user        | add a product                    | add new products I sell                                           |
+| `* *`    | user        | edit an existing product         | keep product information up to date                               |
 | `* * *`  | user        | delete a product                 | remove products I no longer sell                                  |
 | `* * *`  | user        | view products                    |                                                                   |
 | `* *`    | user        | find a product by name           | locate their details without having to go through the entire list |
 | `*`      | user        | sort products by name/identifier | browse them easily                                                |
+| `* *`    | user        | clear all products               | reset my inventory                                                |
 | `* *`    | user        | view inventory statistics        | understand my product quantity levels                             |
+| `* *`    | user        | undo changes I made              | easily revert and correct mistake                                 |
+| `* *`    | user        | redo changes I made              | easily reapply changes I accidentally undid                       |
+| `* *`    | user        | navigate my previous commands    | reuse or correct recent commands without providing them again     |
 | `* *`    | expert user | add alias for commands           | create alias for long commands according to my preferences        |
 | `* *`    | expert user | delete alias for commands        | remove alias for I no longer want to use                          |
 | `* *`    | expert user | view aliases for commands        | view all aliases that I have set                                  |
@@ -747,40 +754,68 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. User chooses to add a vendor contact.
-2. VV requests for details for the vendor contact.
-3. User provides the requested details.
-4. VV requests for confirmation.
-5. User confirms.
-6. VV adds contact and displays a list of vendor contacts.
+1. User chooses to add a vendor contact and provides required fields.
+2. VV validates the command format and fields, then adds the contact and displays the list of vendor contacts.
 
 Use case ends.
 
 **Extensions**
 
-* 3a. VV detects error in provided data (eg. missing compulsory fields, invalid data format).
-  * 3a1. VV requests for the correct data.
-  * 3a2. User provides new data.
+* 1a. Command format is invalid (eg. missing prefixes, incorrect structure)
+    * 1a1. VV rejects the command and displays an error message indicating the correct format with an example.
+    * 1a2. User re-enters the corrected command.
 
-  Steps 3a1-3a2 are repeated until all fields are correct.
+      Use case resumes from step 1.
 
-  Use case resumes from step 4.
+* 1b. Field validation fails (eg. invalid email, blank name)
+    * 1b1. VV rejects the command and displays validation error message.
+    * 1b2. User re-enters the corrected fields.
 
-* 3b. VV detects duplicate vendor contact.
-  * 3b1. VV requests for correct data that is not a duplicate.
-  * 3b2. User provides new data.
+      Use case resumes from step 1.
 
-  Steps 3b1-3b2 are repeated until all fields are correct.
+* 1c. Duplicate contact detected (eg. same email contact exists)
+    * 1c1. VV rejects the command and displays a duplicate contact error message.
+    * 1c2. User re-enters the corrected fields.
 
-  Use case resumes from step 4.
+      Use case resumes from step 1.
 
-* *a. At any time, User chooses to cancel adding the contact.
-  * *a1. VV requests to confirm cancellation.
-  * *a2. User confirms cancellation.
+* 1d. Potential duplicate contact detected (eg. contact with similar name exists)
+    * 1d1. VV accepts the command and displays a warning with details of the similar contact.
 
-  Use case ends.
+      Use case resumes from step 2.
 
-**Use Case: UC2 - View Vendor Contacts**
+* 1e. Potential Input Mistake Warnings (eg. name has unusual symbols, email unusually long)
+    * 1e1. VV accepts the command displays a warning indicating the input may be unintended.
+
+      Use case resumes from step 2.
+
+**Use case: UC2 - Edit a Vendor Contact**
+
+**Preconditions: Application is running, user is on the main screen.**
+
+**MSS**
+
+1. User chooses to edit a vendor contact and provides fields they would like to update.
+2. VV validates the command format and fields, then edits the contact and displays the list of vendor contacts.
+
+Use case ends.
+
+**Extensions**
+
+* *a. All extensions that apply to !!UC1: Add a Vendor Contact!! also apply here. 
+  
+* 1f. Edit operation removes all tags
+    * 1f1. VV detects that the edit removes all tags and requests confirmation.
+    * 1f2. User confirms the deletion.
+
+      Use case resumes from step 2.
+  
+    * 1f2a. User cancels the deletion instead.
+      * 1f2a1. VV aborts the edit operation and displays a cancellation message.
+
+        Use case ends.
+
+**Use Case: UC3 - View Vendor Contacts**
 
 **Preconditions: Application is running, user is on the main screen.**
 
@@ -903,6 +938,71 @@ Use case ends.
 
 Analogous to UC4.
 
+**Use case: UC9 - Undo/Redo a Change**
+
+**Preconditions: Application is running, user is on the main screen, and at least one undoable action has been performed in the current session.**
+
+**MSS**
+
+1. User chooses to undo the last change.
+2. VV reverts the last change and displays a success message indicating what was undone.
+3. User chooses to redo the undone change.
+4. VV reapplies the change and displays a success message indicating what was redone.
+
+Use case ends.
+
+**Extensions**
+
+* 1a. No undoable actions exist in the current session. 
+  * 1a1. VV displays an error message indicating there is nothing to undo.
+  
+    Use case ends.
+
+* 2b. User performs a new undoable action (e.g. adds a contact) after undoing a previous action.
+    * 2b1. VV clears the redo history.
+    * 2b2. The new action becomes the latest undoable action.
+
+      Use case ends.
+
+* 3a. No redoable actions exist (e.g. redo history was cleared, or no undo was performed).
+    * 3a1. VV displays an error message indicating there is nothing to redo.
+
+      Use case ends.
+
+   
+**Use case: UC10 - Navigate Command History**
+
+**Preconditions: Application is running, user is on the main screen.**
+
+**MSS**
+
+1. User has a partial unsent command and chooses to go to previous command.
+2. VV saves the current input as a draft and displays the previous command.
+3. User chooses to go to next command.
+4. VV displays the next command.
+5. User navigates back to the most recent command.
+6. VV restores the saved draft.
+
+Use case ends.
+
+**Extensions**
+
+* *a. No command history exists (no commands have been entered in this session).
+    * *a1. VV does nothing.
+
+        Use case ends.
+
+* 1a. User is already at the oldest command in the history. 
+  * 1a1. VV does nothing.
+
+    Use case resumes from step 2.
+
+* 3a. User is already at the most recent command in the history.
+  * 3a1. VV does nothing.
+
+    Use case resumes from step 4.
+
+
 ### Non-Functional Requirements
 
 Usability:
@@ -972,6 +1072,38 @@ Accessibility:
 
    - Re-launch app. Expected: The most recent window size and location is retained.
 
+### Adding a contact
+
+1. Prerequisites: There should be no contact with email `support@adafruit.com`.
+
+2. Test case: `add n/Adafruit Industries p/64601234 e/support@adafruit.com a/151 Varick St, New York, NY 10013, USA`
+   - Expected: Adafruit Industries's Contact is added.
+
+3. Test case: `add`
+   - Expected: `Invalid Command Format..` error.
+
+4. Test case `add e/support@adafruit.com`
+   - Expected: `Missing required field(s): n/ (name), p/ (phone), a/ (address)` error.
+
+5. Test case `add n/Adafruit p/64601234 e/support@adafruit.com a/USA`
+   - Prerequisites: A contact with `support@adafruit.com` has been previously added.
+   - Expected: `This vendor contact already exists with the same email (name: Adafruit Industries, email: support@adafruit.com)`. 
+
+### Editing a contact
+1. Prerequisites: There should be a contact with the email `support@adafruit.com` with an address different from `New York, USA` and no contact with email `sg.sales@cytron.io`.
+
+2. Test case: `edit support@adafruit.com a/New York, USA`
+   - Expected: Address updates to `New York, USA`.
+
+3. Test case: `edit support@adafruit.com e/`
+   - Expected: `Email should not be blank` error.
+
+4. Test case: `edit sg.sales@cytron.io a/USA`
+   - Expected: `No contact with the specified email was found` error.
+
+5. Test case: `edit support@adafruit.com`
+   - Expected: `At least one field to edit must be provided` error.
+
 ### Deleting a contact
 
 1. Deleting a contact while all contacts are being shown
@@ -1004,7 +1136,7 @@ Accessibility:
 
 ### Adding a product
 
-1. Prerequisites: There should be a contact with email support@adafruit.com
+1. Prerequisites: There should be a contact with email `support@adafruit.com`
 
 2. Test case: `addproduct id/SKU-1003 n/Arduino Uno R4 q/50 th/10 e/support@adafruit.com`
    - Expected: Product with the above details is added
@@ -1041,6 +1173,32 @@ Accessibility:
 4. Test case: `addproduct id/DE/5 n/PlayStation q/0 e/sg.sales@cytron.io`
    - Expected: Product added with threshold defaulting to 5
 
+### Undoing and Redoing Commands
+
+<box type="info" seamless>
+
+**Note:** Perform these test cases in order within the same app session.
+
+</box>
+
+1. Prerequisite: `add n/Adafruit Industries p/64601234 e/support@adafruit.com a/151 Varick St, New York, NY 10013, USA` and verify contact appears in contact list. 
+
+2. Test case: `undo` adding a contact
+    - Expected:  `Undo successful: Reverted the addition of contact: …` and the contact no longer appears in contact list.
+
+3. Test case: `redo` undoing adding a contact
+   - Expected: `Redo successful: Reapplied the addition of contact: …` and the contact reappears in contact list.
+
+4. Prerequisite: `addproduct id/SKU-288 n/HP LaserJet (M428fdw) q/17 th/15` and verify product appears in contact list.
+
+5. Test case: `undo` adding a product
+   - Expected: `Undo successful: Reverted the addition of product: …` and the product no longer appears in product list.
+
+6. Test case: `redo` undoing adding a product
+   - Expected: `Redo successful: Reapplied the addition of product: …`and the product reappears in product list.
+
+At the end, run `listall` and verify both added contact and product are present in the contact and product lists.
+
 ### Saving data
 
 1. Prerequisites: App is running
@@ -1063,6 +1221,13 @@ Accessibility:
 
 1. While AB3 deals with one entity, our app handles and integrates two distinct entities.
 
+2. Hard to navigate initially due to the large inherited AB3 codebase and layered architecture.
+
+3. Required deeper understanding of system design rather than simple feature additions.
+
+4. Extensive testing needed due to increased system complexity.
+
+
 ### Effort & Achievements
 
 1. Higher implementation effort required from us due to more complex scope; each member contributed about 6k LoC
@@ -1075,4 +1240,3 @@ Accessibility:
 
 Team size: 4
 
-* Make Undo/Redo success message more readable: The current success message for a successful undo/redo operation is specific but slightly hard to read. We plan to make it also mention what action was undone/redone. 
