@@ -1197,7 +1197,7 @@ Use this section when `deleteproduct` fails.
 
 | Scenario                              | Message shown                                     | How to fix                                                                |
 |---------------------------------------|---------------------------------------------------|---------------------------------------------------------------------------|
-| No identifier provided                | `Product Identifier must be provided. ...`        | Provide the product identifier: `deleteproduct IDENTIFIER`.               |
+| No identifier provided                | `Invalid Command format! ...`                     | Provide the product identifier: `deleteproduct IDENTIFIER`.               |
 | Identifier does not match any product | `No product found with the specified identifier.` | Ensure the product exists in the active list. Use `listproduct` to check. |
 
 <div style="height: 30px;"></div>
@@ -1211,7 +1211,7 @@ Use this section when `alias` fails.
 
 | Scenario                         | Message shown                                                  | How to fix                                                             |
 |----------------------------------|----------------------------------------------------------------|------------------------------------------------------------------------|
-| No new alias provided            | `Message is formatted wrongly. ...`                            | Provide the new alias: `alias ORIGINAL_COMMAND NEW_ALIAS`              |
+| No new alias provided            | `Invalid Command format! ...`                                  | Provide the new alias: `alias ORIGINAL_COMMAND NEW_ALIAS`              |
 | Original Command does not exists | `The original command (ORIGINAL COMMAND) does not exists. ...` | Ensure the original command is in the `help` page.                     |
 | Alias has been used              | `This alias already exists. ...`                               | Provide a new alias, or use `deletealias` to delete the current alias. |
 
