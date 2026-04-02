@@ -723,16 +723,23 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 |----------|-------------|----------------------------------|-------------------------------------------------------------------|
 | `* *`    | new user    | see usage guide                  | recap and learn commands                                          |
 | `* * *`  | user        | add a new contact                | add new vendors I work with                                       |
+| `* *`    | user        | edit an existing contact         | keep vendor information up to date                                |
 | `* * *`  | user        | delete a contact                 | remove vendors I no longer work with                              |
 | `* * *`  | user        | view contacts                    |                                                                   |
 | `* *`    | user        | find a contact by name           | locate their details without having to go through the entire list |
 | `*`      | user        | sort contacts by name            | browse them easily                                                |
+| `* *`    | user        | clear all contacts               | reset my vendor list                                              |
 | `* * *`  | user        | add a product                    | add new products I sell                                           |
+| `* *`    | user        | edit an existing product         | keep product information up to date                               |
 | `* * *`  | user        | delete a product                 | remove products I no longer sell                                  |
 | `* * *`  | user        | view products                    |                                                                   |
 | `* *`    | user        | find a product by name           | locate their details without having to go through the entire list |
 | `*`      | user        | sort products by name/identifier | browse them easily                                                |
+| `* *`    | user        | clear all products               | reset my inventory                                                |
 | `* *`    | user        | view inventory statistics        | understand my product quantity levels                             |
+| `* *`    | user        | undo changes I made              | easily revert and correct mistake                                 |
+| `* *`    | user        | redo undone changes I made       | easily reapply changes I accidentally undid                       |
+| `* *`    | user        | navigate my previous commands    | reuse or correct recent commands without providing them again     |
 | `* *`    | expert user | add alias for commands           | create alias for long commands according to my preferences        |
 | `* *`    | expert user | delete alias for commands        | remove alias for I no longer want to use                          |
 | `* *`    | expert user | view aliases for commands        | view all aliases that I have set                                  |
