@@ -1223,6 +1223,7 @@ Use this section when `deletealias` fails.
 
 | Scenario                     | Message shown                       | How to fix                                                        |
 |------------------------------|-------------------------------------|-------------------------------------------------------------------|
+| No alias provided            | `Invalid Command format! ...`       | Provide an alias to delete: `deletealias ALIAS`                   |
 | No alias given in alias list | `No alias found in alias list. ...` | Find the correct alias using `alias` then use `deletealias ALIAS` |
 
 <div style="height: 30px;"></div>
