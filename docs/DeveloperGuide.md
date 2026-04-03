@@ -1165,12 +1165,12 @@ Accessibility:
 
 ### Deleting a product
 
-1. Prerequisites: There should be a product with id `SKU-1001` in product list
+1. Prerequisites: There should be 2 product with ids `SKU-1001` and `SKU-1002` in product list
 
 2. Test case: `deleteproduct SKU-1001`
     - Expected: A confirmation prompt appears. Enter `y` to confirm and delete the matching product.
 
-3. Test case: `deleteproduct -y SKU-1001`
+3. Test case: `deleteproduct -y SKU-1002`
    - Expected: Matching product is deleted without a confirmation prompt.
 
 4. Test case: `deleteproduct NoValidIdentifier`
