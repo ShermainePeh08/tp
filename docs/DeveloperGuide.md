@@ -1233,6 +1233,10 @@ At the end, run `listall` and verify both added contact and product are present 
 
 4. Extensive testing needed due to increased system complexity.
 
+5. Linking contacts and products while ensuring consistent behavior across both domains required careful architectural design.
+
+6. Consistently ensuring code is tested before merging added overhead to the development workflow.
+
 
 ### Effort & Achievements
 
@@ -1241,6 +1245,10 @@ At the end, run `listall` and verify both added contact and product are present 
 2. Deepened existing features and created new features that complement them
 
 3. Overcoming integration challenges to keep code and documentation aligned
+
+4. Each team member implemented at least 1 complex feature while managing concurrent high-workload modules
+
+5. Consistently kept up with project progress through regular updates and communication despite competing priorities
 
 ## **Appendix: Planned Enhancements**
 
