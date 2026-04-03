@@ -1112,23 +1112,20 @@ Accessibility:
 
 ### Deleting a contact
 
-1. Deleting a contact while all contacts are being shown
-
-   - Prerequisites: List all contacts using the `list` command. Multiple contacts in the list.
+1. Prerequisites: There should be 2 contacts with the emails `support@adafruit.com` and `sales@techsource.com`.
 
 2. Test case: `delete support@adafruit.com`
+   - Expected: A confirmation prompt appears. Enter `y` to confirm and delete the matching contact.
 
-   - Expected: Matching contact is deleted from the list. Details of the deleted contact shown in the status message.
+3. Test case: `delete -y sales@techsource.com`
+   - Expected: Matching contact is deleted without a confirmation prompt.
 
-3. Test case: `delete notfound@example.com`
+4. Test case: `delete notfound@example.com`
+   - Prerequisites: There is no contact with email `notfound@example.com`.
+   - Expected: `No contact with the specified email was found` error.
 
-   - Expected: No contact is deleted. Error shown in the status message.
-
-4. Other incorrect delete commands to try: `delete`, `delete invalid-email`
-
-   - Expected: Similar to previous.
-
-5. _{ more test cases …​ }_
+5. Test case: `delete`
+   - Expected: `Invalid Command Format..` error.
 
 ### Finding a contact
 
@@ -1139,6 +1136,16 @@ Accessibility:
 
 3. Test case: `find ada`
    - Expected: Contact named Adafruit Industries is listed
+
+### Clearing all contacts
+
+1. Prerequisites: There should be multiple contacts in the system. (You can verify with `list`) 
+
+2. Test case: `clear`
+   - Expected: A confirmation prompt appears. Enter `y` to confirm and clear all contacts.
+
+3. Test case: `clear -y`
+   - Expected: All contacts are removed from the contact list. 
 
 ### Adding a product
 
@@ -1154,7 +1161,24 @@ Accessibility:
    - Expected: `This product already exists with the same identifier.` error
 
 5. Test case: `addproduct id/SKU-1004 n/HP LaserJet (M428fdw) q/17 th/15 e/sg.sales@cytron.io`
-   - Expected: `Vendor email sg.sales@cytron.io does not match any existing contact.` error 
+   - Expected: `Vendor email sg.sales@cytron.io does not match any existing contact.` error
+
+### Deleting a product
+
+1. Prerequisites: There should be 2 product with ids `SKU-1001` and `SKU-1002` in product list
+
+2. Test case: `deleteproduct SKU-1001`
+    - Expected: A confirmation prompt appears. Enter `y` to confirm and delete the matching product.
+
+3. Test case: `deleteproduct -y SKU-1002`
+   - Expected: Matching product is deleted without a confirmation prompt.
+
+4. Test case: `deleteproduct NoValidIdentifier`
+   - Prerequisites: There is no product with identifier `NoValidIdentifier`.
+   - Expected: `No product found with the specified identifier` error.
+
+5. Test case: `deleteproduct`
+   - Expected: `Invalid Command Format..` error.
 
 ### Finding a product
 
@@ -1165,6 +1189,16 @@ Accessibility:
 
 3. Test case: `findproduct uno`
    - Expected: Product named Arduino Uno R4 is listed
+
+### Clearing all products
+
+1. Prerequisites: There should be multiple products in the system. (You can verify with `listproduct`)
+
+2. Test case: `clearproduct`
+    - Expected: A confirmation prompt appears. Enter `y` to confirm and clear all products.
+
+3. Test case: `clearproduct -y`
+    - Expected: All products are removed from the product list.
 
 ### Changing default threshold
 
@@ -1178,6 +1212,34 @@ Accessibility:
 
 4. Test case: `addproduct id/DE/5 n/PlayStation q/0 e/sg.sales@cytron.io`
    - Expected: Product added with threshold defaulting to 5
+
+### Alias and Delete Alias Commands
+
+<box type="info" seamless>
+
+**Note:** Perform these test cases in order within the same app session.
+
+</box>
+
+1. Prerequisites: `ls` is not a valid alias.
+
+2. Test case: `alias`
+   - Expected: If no aliases exist, a message prompts the user to add aliases. If aliases exist, a list of all aliases is shown.
+
+3. Test case: `alias list ls`
+   - Expected: A new alias `ls` is created that maps to the `list` command. The alias can now be used instead of `list`.
+
+4. Test case: `deletealias ls`
+   - Expected: The alias `ls` will be removed.
+
+5. Test case: `alias command cmd`
+   - Expected: `Command does not exists or is not supported` error.
+
+6. Test case: `alias list`
+   - Expected: `Invalid Command Format..` error.
+
+7. Test case: `deletealias`
+   - Expected: `Invalid Command Format..` error.
 
 ### Undoing and Redoing Commands
 
