@@ -1145,7 +1145,7 @@ Accessibility:
    - Expected: A confirmation prompt appears. Enter `y` to confirm and clear all contacts.
 
 3. Test case: `clear -y`
-   - Expected: All contacts are deleted without a confirmation prompt. 
+   - Expected: All contacts are removed from the contact list. 
 
 ### Adding a product
 
@@ -1198,7 +1198,7 @@ Accessibility:
     - Expected: A confirmation prompt appears. Enter `y` to confirm and clear all products.
 
 3. Test case: `clearproduct -y`
-    - Expected: All products are deleted without a confirmation prompt.
+    - Expected: All products are removed from the product list.
 
 ### Changing default threshold
 
@@ -1221,7 +1221,7 @@ Accessibility:
 
 </box>
 
-1. prerequisites: `ls` is not a valid alias.
+1. Prerequisites: `ls` is not a valid alias.
 
 2. Test case: `alias`
    - Expected: If no aliases exist, a message prompts the user to add aliases. If aliases exist, a list of all aliases is shown.
