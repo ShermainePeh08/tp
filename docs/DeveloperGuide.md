@@ -1246,6 +1246,10 @@ At the end, run `listall` and verify both added contact and product are present 
 
 3. Overcoming integration challenges to keep code and documentation aligned
 
+4. Each team member implemented at least 1 complex feature while managing concurrent high-workload modules
+
+5. Consistently kept up with project progress through regular updates and communication despite competing priorities
+
 ## **Appendix: Planned Enhancements**
 
 Team size: 4
