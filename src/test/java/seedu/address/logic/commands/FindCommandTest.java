@@ -12,8 +12,6 @@ import static seedu.address.testutil.TypicalPersons.FIONA;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalProducts.AIRPODS;
 import static seedu.address.testutil.TypicalProducts.IPAD;
-import static seedu.address.testutil.TypicalProducts.OIL;
-import static seedu.address.testutil.TypicalProducts.RICE;
 import static seedu.address.testutil.TypicalProducts.getTypicalInventory;
 
 import java.util.Arrays;
