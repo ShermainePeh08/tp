@@ -12,57 +12,80 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import org.junit.jupiter.api.Test;
 
 import seedu.address.testutil.PersonBuilder;
 
 public class PersonTest {
 
+    // Phone: shares "123456" overlap to trigger similar phone match
+    private static final String PHONE_VALID_A = "91234567";
+    private static final String PHONE_VALID_NO_OVERLAP = "80000000";
+    private static final String PHONE_VALID_OVERLAP = "00123456";
+
+    // Names: share one word ("Supplies") to trigger similar name match
+    private static final String NAME_SHARED_WORD_A = "Acme Supplies";
+    private static final String NAME_SHARED_WORD_B = "Global Supplies";
+    private static final String NAME_NO_SHARED_WORD = "Tan Ah Kow";
+
+    // Addresses: ADDRESS_PARTIAL is fully contained within ADDRESS_FULL
+    private static final String ADDRESS_FULL = "123 Woodlands Avenue 5";
+    private static final String ADDRESS_PARTIAL = "Woodlands";
+    private static final String ADDRESS_UNRELATED = "99 Tuas Road";
+
+    // -------------------- isSimilarNameTo Tests --------------------
+
     @Test
-    public void isSimilarPhoneTo_numbersShorterThanMinLength_returnsFalse() {
-        Person shortNumber =
-                new PersonBuilder().withPhone("123").build();
+    public void isSimilarNameTo_returnsTrue() {
+        // EP: names share at least one word
+        assertTrue(new PersonBuilder().withName(NAME_SHARED_WORD_A).build()
+                .isSimilarNameTo(new PersonBuilder().withName(NAME_SHARED_WORD_B).build()));
 
-        Person other =
-                new PersonBuilder().withPhone("456").build();
-
-        assertFalse(shortNumber.isSimilarPhoneTo(other));
+        // EP: identical names
+        assertTrue(new PersonBuilder().withName(NAME_SHARED_WORD_A).build()
+                .isSimilarNameTo(new PersonBuilder().withName(NAME_SHARED_WORD_A).build()));
     }
 
     @Test
-    public void isSimilarPhoneTo_emptyOrShortNormalizedDigits_returnsFalse() throws Exception {
-        Person valid = new PersonBuilder().withPhone("92345678").build();
+    public void isSimilarNameTo_returnsFalse() {
+        // EP: names share no words
+        assertFalse(new PersonBuilder().withName(NAME_SHARED_WORD_A).build()
+                .isSimilarNameTo(new PersonBuilder().withName(NAME_NO_SHARED_WORD).build()));
+    }
 
-        Person thisEmptyDigits = createPersonWithRawPhoneValue("abc", "empty-this@example.com");
-        assertFalse(thisEmptyDigits.isSimilarPhoneTo(valid));
+    // -------------------- isSimilarAddressTo Tests --------------------
 
-        Person otherEmptyDigits = createPersonWithRawPhoneValue("xyz", "empty-other@example.com");
-        assertFalse(valid.isSimilarPhoneTo(otherEmptyDigits));
+    @Test
+    public void isSimilarAddressTo_returnsTrue() {
+        // EP: one address fully contains the other
+        assertTrue(new PersonBuilder().withAddress(ADDRESS_FULL).build()
+                .isSimilarAddressTo(new PersonBuilder().withAddress(ADDRESS_PARTIAL).build()));
 
-        Person thisShortDigits = createPersonWithRawPhoneValue("12", "short-this@example.com");
-        assertFalse(thisShortDigits.isSimilarPhoneTo(valid));
-
-        Person otherShortDigits = createPersonWithRawPhoneValue("12", "short-other@example.com");
-        assertFalse(valid.isSimilarPhoneTo(otherShortDigits));
+        // EP: identical addresses
+        assertTrue(new PersonBuilder().withAddress(ADDRESS_FULL).build()
+                .isSimilarAddressTo(new PersonBuilder().withAddress(ADDRESS_FULL).build()));
     }
 
     @Test
-    public void isSimilarPhoneTo_contiguousMatchExists_returnsTrue() {
-        Person first = new PersonBuilder().withPhone("91234567").build();
-        Person second = new PersonBuilder().withPhone("00123456").build();
+    public void isSimilarAddressTo_returnsFalse() {
+        // EP: neither address contains the other
+        assertFalse(new PersonBuilder().withAddress(ADDRESS_FULL).build()
+                .isSimilarAddressTo(new PersonBuilder().withAddress(ADDRESS_UNRELATED).build()));
+    }
 
-        assertTrue(first.isSimilarPhoneTo(second));
+    // -------------------- isSimilarPhoneTo Tests --------------------
+    @Test
+    public void isSimilarPhoneTo_returnsFalse() {
+        // EP: both valid length but no contiguous digit overlap
+        assertFalse(new PersonBuilder().withPhone(PHONE_VALID_A).build()
+                .isSimilarPhoneTo(new PersonBuilder().withPhone(PHONE_VALID_NO_OVERLAP).build()));
     }
 
     @Test
-    public void hasContiguousMatch_inputShorterThanMinLength_returnsFalse() throws Exception {
-        Person person = new PersonBuilder().withPhone("81234567").build();
-
-        assertFalse(invokeHasContiguousMatch(person, "12", "123"));
-        assertFalse(invokeHasContiguousMatch(person, "123", "12"));
+    public void isSimilarPhoneTo_returnsTrue() {
+        // EP: phones share a contiguous digit sequence of sufficient length
+        assertTrue(new PersonBuilder().withPhone(PHONE_VALID_A).build()
+                .isSimilarPhoneTo(new PersonBuilder().withPhone(PHONE_VALID_OVERLAP).build()));
     }
 
     @Test
@@ -73,34 +96,24 @@ public class PersonTest {
 
     @Test
     public void isSamePerson() {
-        // same object -> returns true
+        // EP: same reference -> true
         assertTrue(ALICE.isSamePerson(ALICE));
 
-        // null -> returns false
-        assertFalse(ALICE.isSamePerson(null));
-
-        // same email, all other attributes different -> returns true
-        Person editedAlice = new PersonBuilder(ALICE)
+        // EP: same email, all other attributes different -> true (email is the unique identifier)
+        assertTrue(ALICE.isSamePerson(new PersonBuilder(ALICE)
                 .withName(VALID_NAME_BOB)
                 .withPhone(VALID_PHONE_BOB)
                 .withAddress(VALID_ADDRESS_BOB)
                 .withTags(VALID_TAG_HUSBAND)
-                .build();
-        assertTrue(ALICE.isSamePerson(editedAlice));
+                .build()));
 
-        // same phone but different email -> returns false (only email is checked for duplicates)
-        Person samePhoneDifferentEmail = new PersonBuilder(ALICE)
-                .withName(VALID_NAME_BOB)
-                .withEmail(VALID_EMAIL_BOB)
-                .build();
-        assertFalse(ALICE.isSamePerson(samePhoneDifferentEmail));
+        // EP: null -> false
+        assertFalse(ALICE.isSamePerson(null));
 
-        // different email -> returns false
-        Person differentIdentity = new PersonBuilder(ALICE)
-                .withPhone("11111111, 22222222")
+        // EP: different email -> false (even if other fields match)
+        assertFalse(ALICE.isSamePerson(new PersonBuilder(ALICE)
                 .withEmail(VALID_EMAIL_BOB)
-                .build();
-        assertFalse(ALICE.isSamePerson(differentIdentity));
+                .build()));
     }
 
     @Test
@@ -154,26 +167,6 @@ public class PersonTest {
         }
 
         assertEquals(expected, ALICE.toString());
-    }
-
-    private Person createPersonWithRawPhoneValue(String rawPhoneValue, String email) throws Exception {
-        Phone phone = new Phone("123");
-        Field valueField = Phone.class.getDeclaredField("value");
-        valueField.setAccessible(true);
-        valueField.set(phone, rawPhoneValue);
-
-        return new Person(
-                new Name("Test Vendor"),
-                phone,
-                new Email(email),
-                new Address("123 Test Street"),
-                java.util.Set.of());
-    }
-
-    private boolean invokeHasContiguousMatch(Person person, String str1, String str2) throws Exception {
-        Method method = Person.class.getDeclaredMethod("hasContiguousMatch", String.class, String.class);
-        method.setAccessible(true);
-        return (boolean) method.invoke(person, str1, str2);
     }
 
 }

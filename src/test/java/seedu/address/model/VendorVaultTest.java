@@ -18,6 +18,23 @@ import seedu.address.testutil.ProductBuilder;
 
 public class VendorVaultTest {
 
+    private static final String NAME_ACME_PERSON = "Acme Supplies";
+    private static final String NAME_SIMILAR_PERSON = "Acme Partners";
+    private static final String NAME_OTHER_PERSON = "Other";
+    private static final String PHONE_ACME_PERSON = "91234567";
+    private static final String PHONE_SIMILAR_PERSON = "00123456";
+    private static final String PHONE_OTHER_PERSON = "80000000";
+    private static final String EMAIL_ACME_PERSON = "acme@example.com";
+    private static final String EMAIL_OTHER_PERSON = "other@example.com";
+    private static final String ADDRESS_ACME_PERSON = "10 Business Park";
+    private static final String ADDRESS_SIMILAR_PERSON = "10 Business";
+    private static final String ADDRESS_OTHER_PERSON = "99 Other Street";
+
+    private static final String SKU_WIRELESS_PRODUCT = "SKU-8001";
+    private static final String SKU_OTHER_PRODUCT = "SKU-8002";
+    private static final String NAME_WIRELESS_PRODUCT = "Wireless Mouse";
+    private static final String NAME_SIMILAR_PRODUCT = "Wireless Keyboard";
+
     private final VendorVault vendorVault = new VendorVault();
 
     @Test
@@ -95,84 +112,70 @@ public class VendorVaultTest {
         assertEquals(getTypicalInventory(), vendorVault.getInventory());
     }
 
-    // ---------------- Helper methods ----------------
-
-    private Person buildPerson(String name, String phone, String email, String address) {
-        return new PersonBuilder()
-                .withName(name)
-                .withPhone(phone)
-                .withEmail(email)
-                .withAddress(address)
-                .build();
-    }
-
-    private Product buildProduct(String identifier, String name) {
-        return new ProductBuilder()
-                .withIdentifier(identifier)
-                .withName(name)
-                .build();
-    }
-
-    private VendorVault createVaultWithPerson(Person person) {
-        return createVendorVaultWithPersons(person);
-    }
-
-    private VendorVault createVaultWithProduct(Product product) {
-        return createVendorVaultWithProducts(product);
-    }
-
     // ---------------- Person Tests ----------------
 
     @Test
     public void findSimilarNameMatch_matchExists_returnsMatchingPerson() {
-        Person existing = buildPerson("Acme Supplies", "90000001", "acme@example.com", "10 Business Park");
+        // EP: candidate name is similar to existing; exclude = null -> match returned
+        Person existing = buildPerson(NAME_ACME_PERSON, PHONE_ACME_PERSON, EMAIL_ACME_PERSON, ADDRESS_ACME_PERSON);
         VendorVault vault = createVaultWithPerson(existing);
-        Person candidate = buildPerson("Acme Partners", "90000002", "candidate@example.com", "99 Other Street");
+        Person candidate = buildPerson(NAME_SIMILAR_PERSON,
+                PHONE_OTHER_PERSON, EMAIL_OTHER_PERSON, ADDRESS_OTHER_PERSON);
 
         assertEquals(Optional.of(existing), vault.findSimilarNameMatch(candidate, null));
     }
 
     @Test
     public void findSimilarNameMatch_matchingPersonExcluded_returnsEmpty() {
-        Person existing = buildPerson("Acme Supplies", "90000003", "acme2@example.com", "11 Business Park");
+        // EP: candidate name is similar but the matching person is excluded -> empty
+        Person existing = buildPerson(NAME_ACME_PERSON, PHONE_ACME_PERSON, EMAIL_ACME_PERSON, ADDRESS_ACME_PERSON);
         VendorVault vault = createVaultWithPerson(existing);
-        Person candidate = buildPerson("Acme Partners", "90000004", "candidate2@example.com", "100 Other Street");
+        Person candidate = buildPerson(NAME_SIMILAR_PERSON,
+                PHONE_OTHER_PERSON, EMAIL_OTHER_PERSON, ADDRESS_OTHER_PERSON);
 
         assertEquals(Optional.empty(), vault.findSimilarNameMatch(candidate, existing));
     }
 
     @Test
     public void findSimilarAddressMatch_matchExists_returnsMatchingPerson() {
-        Person existing = buildPerson("North Vendor", "90000005", "north@example.com", "123 Woodlands Avenue 5");
+        // EP: candidate address partially matches existing address; exclude = null -> match returned
+        Person existing = buildPerson(NAME_ACME_PERSON, PHONE_ACME_PERSON, EMAIL_ACME_PERSON, ADDRESS_ACME_PERSON);
         VendorVault vault = createVaultWithPerson(existing);
-        Person candidate = buildPerson("South Vendor", "90000006", "south@example.com", "Woodlands");
+        Person candidate = buildPerson(NAME_OTHER_PERSON,
+                PHONE_OTHER_PERSON, EMAIL_OTHER_PERSON, ADDRESS_SIMILAR_PERSON);
 
         assertEquals(Optional.of(existing), vault.findSimilarAddressMatch(candidate, null));
     }
 
     @Test
     public void findSimilarAddressMatch_matchingPersonExcluded_returnsEmpty() {
-        Person existing = buildPerson("North Vendor", "90000007", "north2@example.com", "456 Clementi Road");
+        // EP: candidate address partially matches but the matching person is excluded -> empty
+        Person existing = buildPerson(NAME_ACME_PERSON, PHONE_ACME_PERSON, EMAIL_ACME_PERSON, ADDRESS_ACME_PERSON);
         VendorVault vault = createVaultWithPerson(existing);
-        Person candidate = buildPerson("West Vendor", "90000008", "west@example.com", "Clementi");
+        Person candidate = buildPerson(NAME_OTHER_PERSON,
+                PHONE_OTHER_PERSON, EMAIL_OTHER_PERSON, ADDRESS_SIMILAR_PERSON);
 
         assertEquals(Optional.empty(), vault.findSimilarAddressMatch(candidate, existing));
     }
 
     @Test
     public void findSimilarPhoneMatch_matchExists_returnsMatchingPerson() {
-        Person existing = buildPerson("Phone Vendor", "91234567", "phone1@example.com", "12 One North");
+        // EP: candidate phone shares digits with existing; exclude = null -> match returned
+        Person existing = buildPerson(NAME_ACME_PERSON, PHONE_ACME_PERSON, EMAIL_ACME_PERSON, ADDRESS_ACME_PERSON);
         VendorVault vault = createVaultWithPerson(existing);
-        Person candidate = buildPerson("Other Vendor", "00123456", "phone2@example.com", "99 Other Street");
+        Person candidate = buildPerson(NAME_OTHER_PERSON,
+                PHONE_SIMILAR_PERSON, EMAIL_OTHER_PERSON, ADDRESS_OTHER_PERSON);
 
         assertEquals(Optional.of(existing), vault.findSimilarPhoneMatch(candidate, null));
     }
 
     @Test
     public void findSimilarPhoneMatch_matchingPersonExcluded_returnsEmpty() {
-        Person existing = buildPerson("Phone Vendor", "97654321", "phone3@example.com", "18 Jurong East");
+        // EP: candidate phone shares digits but the matching person is excluded -> empty
+        Person existing = buildPerson(NAME_ACME_PERSON, PHONE_ACME_PERSON, EMAIL_ACME_PERSON, ADDRESS_ACME_PERSON);
         VendorVault vault = createVaultWithPerson(existing);
-        Person candidate = buildPerson("Another Vendor", "54300000", "phone4@example.com", "100 Somewhere Ave");
+        Person candidate = buildPerson(NAME_OTHER_PERSON,
+                PHONE_SIMILAR_PERSON, EMAIL_OTHER_PERSON, ADDRESS_OTHER_PERSON);
 
         assertEquals(Optional.empty(), vault.findSimilarPhoneMatch(candidate, existing));
     }
@@ -181,18 +184,20 @@ public class VendorVaultTest {
 
     @Test
     public void findSimilarNameMatch_productMatchExists_returnsMatchingProduct() {
-        Product existing = buildProduct("SKU-8000", "Wireless Mouse");
+        // EP: candidate product name is similar to existing; exclude = null -> match returned
+        Product existing = buildProduct(SKU_WIRELESS_PRODUCT, NAME_WIRELESS_PRODUCT);
         VendorVault vault = createVaultWithProduct(existing);
-        Product candidate = buildProduct("SKU-8001", "Wireless Keyboard");
+        Product candidate = buildProduct(SKU_OTHER_PRODUCT, NAME_SIMILAR_PRODUCT);
 
         assertEquals(Optional.of(existing), vault.findSimilarNameMatch(candidate, null));
     }
 
     @Test
     public void findSimilarNameMatch_matchingProductExcluded_returnsEmpty() {
-        Product existing = buildProduct("SKU-8100", "Printer Ink");
+        // EP: candidate product name is similar but the matching product is excluded -> empty
+        Product existing = buildProduct(SKU_WIRELESS_PRODUCT, NAME_WIRELESS_PRODUCT);
         VendorVault vault = createVaultWithProduct(existing);
-        Product candidate = buildProduct("SKU-8101", "Printer Paper");
+        Product candidate = buildProduct(SKU_OTHER_PRODUCT, NAME_SIMILAR_PRODUCT);
 
         assertEquals(Optional.empty(), vault.findSimilarNameMatch(candidate, existing));
     }
@@ -221,6 +226,32 @@ public class VendorVaultTest {
         VendorVault differentInventory = createTypicalVendorVault();
         differentInventory.setInventory(new Inventory());
         assertFalse(expected.equals(differentInventory));
+    }
+
+    // ---------------- Helper methods ----------------
+
+    private Person buildPerson(String name, String phone, String email, String address) {
+        return new PersonBuilder()
+                .withName(name)
+                .withPhone(phone)
+                .withEmail(email)
+                .withAddress(address)
+                .build();
+    }
+
+    private Product buildProduct(String identifier, String name) {
+        return new ProductBuilder()
+                .withIdentifier(identifier)
+                .withName(name)
+                .build();
+    }
+
+    private VendorVault createVaultWithPerson(Person person) {
+        return createVendorVaultWithPersons(person);
+    }
+
+    private VendorVault createVaultWithProduct(Product product) {
+        return createVendorVaultWithProducts(product);
     }
 
     private VendorVault createTypicalVendorVault() {

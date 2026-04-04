@@ -4,6 +4,9 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
+import seedu.address.commons.core.LogsCenter;
 
 /**
  * Stores command text history and supports shell-like navigation through it.
@@ -11,6 +14,8 @@ import java.util.List;
 public class CommandHistory {
 
     private static final int LATEST_POSITION = -1;
+    private static final Logger logger = LogsCenter.getLogger(CommandHistory.class);
+
     private final List<String> commandTexts = new ArrayList<>();
     private int currentIndex = LATEST_POSITION;
     private String draftCommandText = "";
@@ -24,10 +29,12 @@ public class CommandHistory {
         requireNonNull(commandText);
 
         if (commandText.isBlank()) {
+            logger.fine("Ignored blank command.");
             return;
         }
 
         commandTexts.add(commandText);
+        logger.info("Command added to history. Total commands: " + commandTexts.size());
         resetNavigation();
     }
 
@@ -41,16 +48,20 @@ public class CommandHistory {
         requireNonNull(currentInput);
 
         if (commandTexts.isEmpty()) {
+            logger.fine("History empty. Returning current input.");
             return currentInput;
         }
 
         if (atLatestPosition()) {
             draftCommandText = currentInput;
             currentIndex = commandTexts.size() - 1;
+
+            logger.fine("Navigated UP to latest history entry. Index: " + currentIndex);
             return getCurrentCommandOrDraft();
         }
 
         moveIndexBack();
+        logger.fine("Navigated UP. Index: " + currentIndex);
 
         return getCurrentCommandOrDraft();
     }
@@ -65,11 +76,19 @@ public class CommandHistory {
     public String getNext(String currentInput) {
         requireNonNull(currentInput);
 
-        if (commandTexts.isEmpty()) {
-            return currentInput;
+        if (atLatestPosition()) {
+            if (draftCommandText.isEmpty()) {
+                logger.fine("Not navigating history. Returning current input.");
+                return currentInput;
+            }
+
+            logger.fine("At latest position. Restoring draft.");
+            return draftCommandText;
         }
 
         moveIndexForward();
+
+        logger.fine("Navigated DOWN. Index: " + currentIndex);
 
         return getCurrentCommandOrDraft();
     }
@@ -85,9 +104,6 @@ public class CommandHistory {
     }
 
     private void moveIndexForward() {
-        if (atLatestPosition()) {
-            return; // already at draft
-        }
         if (currentIndex < commandTexts.size() - 1) {
             currentIndex++;
         } else {
@@ -111,6 +127,7 @@ public class CommandHistory {
     public void resetNavigation() {
         currentIndex = LATEST_POSITION;
         draftCommandText = "";
+        logger.fine("Navigation reset to latest position.");
     }
 
     /**

@@ -481,7 +481,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_editPhoneToMatchAnotherPerson_warn() {
-        // EP: edited phone is identical to another existing contact's phone → similar-phone warning
+        // EP: edited phone is identical to another existing contact's phone -> similar-phone warning
         Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         Person secondPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
 
@@ -506,7 +506,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_constructorWithPresetWarnings_warningsIncludedInFeedback() throws Exception {
-        // EP: preset warning injected at construction time → appears as is in feedback
+        // EP: preset warning injected at construction time -> appears as is in feedback
         Index indexFiona = Index.fromOneBased(6);
         Person fiona = model.getFilteredPersonList().get(indexFiona.getZeroBased());
 
@@ -522,7 +522,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_editNameToSimilarName_warningShown() throws Exception {
-        // EP: new name shares a token with an existing contact's name → similar-name warning
+        // EP: new name shares a token with an existing contact's name -> similar-name warning
         // "alice" in NAME_ALICE_EDIT_TARGET overlaps with "alice" in ALICE's name "Alice Pauline"
         Person thirdPerson = model.getFilteredPersonList().get(INDEX_THIRD_PERSON.getZeroBased());
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
@@ -537,7 +537,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_editAddressToSimilarAddress_warningShown() throws Exception {
-        // EP: new address is a substring of an existing contact's address → similar-address warning
+        // EP: new address is a substring of an existing contact's address -> similar-address warning
         Person thirdPerson = model.getFilteredPersonList().get(INDEX_THIRD_PERSON.getZeroBased());
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
                 .withAddress(ADDRESS_JURONG_WEST)
@@ -551,7 +551,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_editWithoutNameChange_noNameWarning() throws Exception {
-        // EP: name field absent from descriptor (nameChanged = false) → no name warning,
+        // EP: name field absent from descriptor (nameChanged = false) -> no name warning,
         //     even when the existing name shares a token with another contact
         Person aliceSimilar = new PersonBuilder()
                 .withName(NAME_ALICE)
@@ -575,7 +575,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_editWithoutAddressChange_noAddressWarning() throws Exception {
-        // EP: address field absent from descriptor (addressChanged = false) → no address warning,
+        // EP: address field absent from descriptor (addressChanged = false) -> no address warning,
         //     even when the existing address is similar to another contact's
         Person personWithSimilarAddress = new PersonBuilder()
                 .withName(NAME_ALICE)
@@ -599,7 +599,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_editNameToMultipleSimilar_onlyOneWarning() throws Exception {
-        // EP: new name matches multiple existing contacts → exactly one name warning (deduplication)
+        // EP: new name matches multiple existing contacts -> exactly one name warning (deduplication)
         Person similar1 = buildPerson(NAME_JOHN_1, PHONE_UNIQUE_A, EMAIL_ALICE, null);
         Person similar2 = buildPerson(NAME_JOHN_2, PHONE_UNIQUE_B, EMAIL_JOHN, null);
         model.addPerson(similar1);
@@ -621,7 +621,7 @@ public class EditCommandTest {
     @Test
     public void execute_editNameAndAddress_bothWarningsShown() throws Exception {
         // EP: both name and address fields changed and each matches a different contact
-        //     → both name warning and address warning appear in feedback
+        //     -> both name warning and address warning appear in feedback
         Person nameSimilar = buildPerson(NAME_JOHN_1, PHONE_UNIQUE_A, EMAIL_JOHN, ADDRESS_NOWHERE);
         model.addPerson(nameSimilar);
 
@@ -640,7 +640,7 @@ public class EditCommandTest {
 
     @Test
     public void execute_editAddressToMultipleSimilar_onlyOneWarning() throws Exception {
-        // EP: new address matches multiple existing contacts → exactly one address warning (deduplication)
+        // EP: new address matches multiple existing contacts -> exactly one address warning (deduplication)
         Person anotherJurong = buildPerson(NAME_JOHN_1, PHONE_UNIQUE_A,
                 EMAIL_JOHN, ADDRESS_JURONG_WEST_AVE5);
         model.addPerson(anotherJurong);

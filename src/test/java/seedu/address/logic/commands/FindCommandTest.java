@@ -5,10 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_PERSONS_LISTED_OVERVIEW;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.testutil.TypicalPersons.BOB;
 import static seedu.address.testutil.TypicalPersons.CARL;
 import static seedu.address.testutil.TypicalPersons.ELLE;
 import static seedu.address.testutil.TypicalPersons.FIONA;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalProducts.AIRPODS;
+import static seedu.address.testutil.TypicalProducts.IPAD;
 import static seedu.address.testutil.TypicalProducts.getTypicalInventory;
 
 import java.util.Arrays;
@@ -92,31 +95,27 @@ public class FindCommandTest {
 
     @Test
     public void execute_keywordMatchesVendor_filtersLinkedProducts() {
-        // attempt find carl, inventory should update and unrelated products not shown
-        Product linkedProduct = new ProductBuilder().withIdentifier("SKU-9999")
-                .withName("Vendor Linked Item").withQuantity("10").withThreshold("5")
+        // EP: keyword matches active vendor -> only their linked products shown, unrelated excluded
+        Product linkedProduct = new ProductBuilder(IPAD)
                 .withVendorEmail(CARL.getEmail().toString()).build();
-        Product unrelatedProduct = new ProductBuilder().withIdentifier("SKU-9998")
-                .withName("Unrelated Vendor Item").withQuantity("10").withThreshold("5")
-                .withVendorEmail("nobody@example.com").build();
+        Product unrelatedProduct = new ProductBuilder(AIRPODS)
+                .withVendorEmail(BOB.getEmail().toString()).build();
 
         Inventory inventory = new Inventory(getTypicalInventory());
         inventory.addProduct(linkedProduct);
         inventory.addProduct(unrelatedProduct);
 
-        Model localModel = new ModelManager(
-                new VendorVault(getTypicalAddressBook(), inventory), new UserPrefs(), new Aliases());
-        Model localExpectedModel = new ModelManager(
-                new VendorVault(getTypicalAddressBook(), inventory), new UserPrefs(), new Aliases());
+        VendorVault vault = new VendorVault(getTypicalAddressBook(), inventory);
+        Model localModel = new ModelManager(vault, new UserPrefs(), new Aliases());
+        Model localExpectedModel = new ModelManager(vault, new UserPrefs(), new Aliases());
 
-        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
         NameContainsKeywordsScoredPredicate predicate = preparePredicate("Carl");
         FindCommand command = new FindCommand(predicate);
-
         localExpectedModel.updateFilteredPersonList(predicate);
         updateExpectedProductFilter(localExpectedModel);
 
-        assertCommandSuccess(command, localModel, expectedMessage, localExpectedModel);
+        assertCommandSuccess(command, localModel,
+                String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1), localExpectedModel);
         assertEquals(Collections.singletonList(linkedProduct), localModel.getFilteredProductList());
     }
 

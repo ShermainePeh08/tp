@@ -20,6 +20,12 @@ import seedu.address.testutil.ProductBuilder;
 
 public class ProductTest {
 
+    private static final String SKU_OTHER = "SKU-OTHER";
+
+    private static final String NAME_BROWN_RICE_PRODUCT = "brown rice 5kg";
+    private static final String NAME_FRIED_NOODLES_BEEF_PRODUCT = "Fried Noodles Beef";
+    private static final String NAME_RICECAKE_DELUXE_PRODUCT = "Ricecake Deluxe";
+
     @Test
     public void constructor_withVendorEmail_notArchivedByDefault() {
         Product product = new Product(
@@ -164,8 +170,8 @@ public class ProductTest {
     @Test
     public void isSameProductWarn_caseInsensitiveExactMatch_warningReturned() {
         Product other = new ProductBuilder()
-                .withIdentifier("SKU-9998")
-                .withName("brown rice 5kg")
+                .withIdentifier(SKU_OTHER)
+                .withName(NAME_BROWN_RICE_PRODUCT)
                 .build();
 
         assertTrue(RICE.generateDuplicateWarning(other).isDuplicated());
@@ -174,8 +180,8 @@ public class ProductTest {
     @Test
     public void isSameProductWarn_sharedToken_warningReturned() {
         Product other = new ProductBuilder()
-                .withIdentifier("SKU-9997")
-                .withName("Fried Noodles Beef")
+                .withIdentifier(SKU_OTHER)
+                .withName(NAME_FRIED_NOODLES_BEEF_PRODUCT)
                 .build();
 
         assertTrue(NOODLES.generateDuplicateWarning(other).isDuplicated());
@@ -189,8 +195,8 @@ public class ProductTest {
     @Test
     public void isSameProductWarn_partialSubstringNotTokenMatch_noWarning() {
         Product other = new ProductBuilder()
-                .withIdentifier("SKU-9994")
-                .withName("Ricecake Deluxe")
+                .withIdentifier(SKU_OTHER)
+                .withName(NAME_RICECAKE_DELUXE_PRODUCT)
                 .build();
 
         assertFalse(RICE.generateDuplicateWarning(other).isDuplicated());

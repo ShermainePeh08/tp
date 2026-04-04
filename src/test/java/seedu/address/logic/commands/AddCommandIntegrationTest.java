@@ -72,7 +72,7 @@ public class AddCommandIntegrationTest {
 
     @Test
     public void execute_similarName_warningShown() throws Exception {
-        // EP: new name contains a single word that appears in existing name → detects similar name
+        // EP: new name contains a single word that appears in existing name -> detects similar name
         String firstName = firstTypicalPerson.getName().fullName.split(" ")[0];
         Person newPerson = buildUniquePerson(VALID_NAME_BOB + " " + firstName, EMAIL_UNIQUE_1, PHONE_UNIQUE_1, null);
 
@@ -81,7 +81,7 @@ public class AddCommandIntegrationTest {
 
     @Test
     public void execute_similarAddress_warningShown() throws Exception {
-        // EP: new address is a subset of existing address → detects similar address
+        // EP: new address is a subset of existing address -> detects similar address
         String existingAddress = firstTypicalPerson.getAddress().value;
         String partialAddress = existingAddress.contains(" ")
                 ? existingAddress.substring(0, existingAddress.lastIndexOf(" "))
@@ -93,7 +93,7 @@ public class AddCommandIntegrationTest {
 
     @Test
     public void execute_similarPhone_warningShown() throws Exception {
-        // EP: new phone shares consecutive 3-digit with existing phone → detects similar phone
+        // EP: new phone shares consecutive 3-digit with existing phone -> detects similar phone
         String sharedSuffix = firstTypicalPerson.getPhone().value;
         sharedSuffix = sharedSuffix.substring(sharedSuffix.length() - PHONE_SHARED_SUFFIX_LENGTH);
         String newPhone = PHONE_SHARED_SUFFIX_PREFIX + sharedSuffix + PHONE_SHARED_SUFFIX_POSTFIX;

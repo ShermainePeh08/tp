@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.DeleteProductCommand.CONFIRMATION_DELETE_PRODUCT_MESSAGE;
+import static seedu.address.logic.commands.DeleteProductCommand.MESSAGE_ACTION_SUMMARY;
 import static seedu.address.logic.commands.DeleteProductCommand.MESSAGE_DELETE_PRODUCT_SUCCESS;
 import static seedu.address.model.Model.PREDICATE_SHOW_ACTIVE_PRODUCTS;
 import static seedu.address.testutil.TypicalAliases.getTypicalAliases;
@@ -38,11 +39,11 @@ public class DeleteProductCommandTest {
         ModelManager expectedModel = new ModelManager(model.getVendorVault(), new UserPrefs(), getTypicalAliases());
 
         expectedModel.deleteProduct(productToDelete);
-        String successPart = String.format(MESSAGE_DELETE_PRODUCT_SUCCESS, productToDelete);
-        expectedModel.commitVendorVault(successPart);
+        expectedModel.commitVendorVault(String.format(MESSAGE_ACTION_SUMMARY, productToDelete));
         expectedModel.updateFilteredProductList(PREDICATE_SHOW_ACTIVE_PRODUCTS);
 
-        assertCommandSuccess(command, model, successPart, expectedModel);
+        assertCommandSuccess(command, model, String.format(MESSAGE_DELETE_PRODUCT_SUCCESS,
+                productToDelete), expectedModel);
     }
 
     @Test

@@ -2,6 +2,11 @@ package seedu.address.model.product;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.testutil.TypicalPersons.ALICE;
+import static seedu.address.testutil.TypicalPersons.BOB;
+import static seedu.address.testutil.TypicalProducts.IPAD;
+import static seedu.address.testutil.TypicalProducts.OIL;
+import static seedu.address.testutil.TypicalProducts.RICE;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,86 +22,89 @@ public class VendorEmailMatchesContactsPredicateTest {
 
     @Test
     public void equals() {
-        Person alice = new PersonBuilder().withEmail("alice@example.com").build();
-        Person bob = new PersonBuilder().withEmail("bob@example.com").build();
+        List<Person> singleContact = Collections.singletonList(ALICE);
+        List<Person> twoContacts = Arrays.asList(ALICE, BOB);
 
-        List<Person> firstContactList = Collections.singletonList(alice);
-        List<Person> secondContactList = Arrays.asList(alice, bob);
+        VendorEmailMatchesContactsPredicate singlePredicate =
+                new VendorEmailMatchesContactsPredicate(singleContact);
+        VendorEmailMatchesContactsPredicate twoPredicate =
+                new VendorEmailMatchesContactsPredicate(twoContacts);
 
-        VendorEmailMatchesContactsPredicate firstPredicate =
-                new VendorEmailMatchesContactsPredicate(firstContactList);
-        VendorEmailMatchesContactsPredicate secondPredicate =
-                new VendorEmailMatchesContactsPredicate(secondContactList);
+        // EP: same reference -> true
+        assertTrue(singlePredicate.equals(singlePredicate));
 
-        // same object -> returns true
-        assertTrue(firstPredicate.equals(firstPredicate));
+        // EP: same contact list contents -> true
+        assertTrue(singlePredicate.equals(new VendorEmailMatchesContactsPredicate(singleContact)));
 
-        // same values -> returns true
-        VendorEmailMatchesContactsPredicate firstPredicateCopy =
-                new VendorEmailMatchesContactsPredicate(firstContactList);
-        assertTrue(firstPredicate.equals(firstPredicateCopy));
+        // EP: different type -> false
+        assertFalse(singlePredicate.equals(1));
 
-        // different types -> returns false
-        assertFalse(firstPredicate.equals(1));
+        // EP: null -> false
+        assertFalse(singlePredicate.equals(null));
 
-        // null -> returns false
-        assertFalse(firstPredicate.equals(null));
-
-        // different person -> returns false
-        assertFalse(firstPredicate.equals(secondPredicate));
+        // EP: different contact list -> false
+        assertFalse(singlePredicate.equals(twoPredicate));
     }
 
     @Test
     public void test_vendorEmailMatchesContacts_returnsTrue() {
-        Person alice = new PersonBuilder().withEmail("alice@example.com").build();
+        // EP: product vendor email matches the one contact in the list
         VendorEmailMatchesContactsPredicate predicate =
-                new VendorEmailMatchesContactsPredicate(Collections.singletonList(alice));
+                new VendorEmailMatchesContactsPredicate(Collections.singletonList(ALICE));
 
-        Product matchingProduct = new ProductBuilder()
-                .withIdentifier("SKU-3001")
-                .withName("Vendor Linked Item")
-                .withQuantity("10")
-                .withThreshold("5")
-                .withVendorEmail("alice@example.com")
+        Product matchingProduct = new ProductBuilder(IPAD)
+                .withVendorEmail(ALICE.getEmail().toString())
                 .build();
 
         assertTrue(predicate.test(matchingProduct));
     }
 
     @Test
-    public void test_vendorEmailDoesNotMatchOrIsMissingOrArchived_returnsFalse() {
-        Person alice = new PersonBuilder().withEmail("alice@example.com").build();
+    public void test_vendorEmailMatchesOneOfMultipleContacts_returnsTrue() {
+        // EP: contact list has multiple entries; product matches the second one
         VendorEmailMatchesContactsPredicate predicate =
-                new VendorEmailMatchesContactsPredicate(Collections.singletonList(alice));
+                new VendorEmailMatchesContactsPredicate(Arrays.asList(ALICE, BOB));
 
-        Product differentVendorProduct = new ProductBuilder()
-                .withIdentifier("SKU-3002")
-                .withName("Different Vendor Item")
-                .withQuantity("10")
-                .withThreshold("5")
-                .withVendorEmail("bob@example.com")
+        Product product = new ProductBuilder(IPAD)
+                .withVendorEmail(BOB.getEmail().toString())
                 .build();
 
-        Product noVendorProduct = new ProductBuilder()
-                .withIdentifier("SKU-3003")
-                .withName("No Vendor Item")
-                .withQuantity("10")
-                .withThreshold("5")
+        assertTrue(predicate.test(product));
+    }
+
+    @Test
+    public void test_vendorEmailDoesNotMatchOrIsMissingOrArchived_returnsFalse() {
+        VendorEmailMatchesContactsPredicate predicate =
+                new VendorEmailMatchesContactsPredicate(Collections.singletonList(ALICE));
+
+        // EP: product has a vendor email, but it matches none of the contacts
+        assertFalse(predicate.test(new ProductBuilder(IPAD)
+                .withVendorEmail(BOB.getEmail().toString())
+                .build()));
+
+        // EP: product has no vendor email
+        assertFalse(predicate.test(new ProductBuilder(RICE)
                 .withoutVendorEmail()
+                .build()));
+
+        // EP: vendor email matches a contact, but product is archived -> early return false
+        assertFalse(predicate.test(new ProductBuilder(OIL)
+                .withVendorEmail(ALICE.getEmail().toString())
+                .build()
+                .archive()));
+    }
+
+    @Test
+    public void test_emptyContactList_returnsFalse() {
+        // EP: contact list is empty -> no email can ever match
+        VendorEmailMatchesContactsPredicate predicate =
+                new VendorEmailMatchesContactsPredicate(Collections.emptyList());
+
+        Product product = new ProductBuilder(IPAD)
+                .withVendorEmail(ALICE.getEmail().toString())
                 .build();
 
-        Product archivedMatchingProduct = new ProductBuilder()
-                .withIdentifier("SKU-3004")
-                .withName("Archived Vendor Item")
-                .withQuantity("10")
-                .withThreshold("5")
-                .withVendorEmail("alice@example.com")
-                .build()
-                .archive();
-
-        assertFalse(predicate.test(differentVendorProduct));
-        assertFalse(predicate.test(noVendorProduct));
-        assertFalse(predicate.test(archivedMatchingProduct));
+        assertFalse(predicate.test(product));
     }
 
     @Test

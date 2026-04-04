@@ -134,7 +134,7 @@ public class AddCommandTest {
 
     @Test
     public void execute_similarName_warningShown() throws Exception {
-        // EP: exact same words, different casing/spacing → similar name
+        // EP: exact same words, different casing/spacing -> similar name
         ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
         Person existingPerson = new PersonBuilder().withName(NAME_JOHN_DOE).build();
         modelStub.addPerson(existingPerson);
@@ -150,7 +150,7 @@ public class AddCommandTest {
 
     @Test
     public void execute_partialNameMatch_warningShown() throws Exception {
-        // EP: new name shares words in existing name → similar name
+        // EP: new name shares words in existing name -> similar name
         ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
         Person existingPerson = new PersonBuilder().withName(NAME_JOHN_DOE_SMITH).build();
         modelStub.addPerson(existingPerson);
@@ -192,7 +192,7 @@ public class AddCommandTest {
 
     @Test
     public void execute_similarAddress_warningShown() throws Exception {
-        // EP: new address is a substring of existing address → similar address
+        // EP: new address is a substring of existing address -> similar address
         ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
         Person existingPerson = new PersonBuilder(ALICE)
                 .withAddress(ADDRESS_MAIN_STREET_FULL).build();
@@ -232,7 +232,7 @@ public class AddCommandTest {
 
     @Test
     public void execute_similarPhone_warningShown() throws Exception {
-        // EP: phones share at least 3 consecutive digits → similar phone
+        // EP: phones share at least 3 consecutive digits -> similar phone
         ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
         Person existingPerson = new PersonBuilder(AMY)
                 .withPhone("91234567").build();
