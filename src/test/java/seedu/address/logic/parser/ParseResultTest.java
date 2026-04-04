@@ -37,48 +37,65 @@ public class ParseResultTest {
     }
 
     @Test
+    public void getWarning() {
+        // EP: no warning -> returns empty optional
+        ParseResult<String> parseResult = new ParseResult<>("value", Optional.empty());
+        assertEquals(Optional.empty(), parseResult.getWarning());
+
+        // EP: with warning -> returns warning
+        ParseResult<String> withWarning = new ParseResult<>("value", Optional.of("warn"));
+        assertEquals(Optional.of("warn"), withWarning.getWarning());
+    }
+
+    @Test
     public void equals() {
         ParseResult<String> parseResult = new ParseResult<>("value", Optional.empty());
 
-        // same values -> returns true
+        // EP: same values -> returns true
         assertTrue(parseResult.equals(new ParseResult<>("value", Optional.empty())));
 
-        // same object -> returns true
+        // EP: same object -> returns true
         assertTrue(parseResult.equals(parseResult));
 
-        // null -> returns false
+        // EP: null -> returns false
         assertFalse(parseResult.equals(null));
 
-        // different types -> returns false
+        // EP: different types -> returns false
         assertFalse(parseResult.equals(0.5f));
 
-        // different value -> returns false
+        // EP: different value, same warning -> returns false
         assertFalse(parseResult.equals(new ParseResult<>("different", Optional.empty())));
 
-        // different warning -> returns false
+        // EP: same value, different warning -> returns false
         assertFalse(parseResult.equals(new ParseResult<>("value", Optional.of("warning"))));
 
-        // same value and warning -> returns true
+        // EP: same value and warning -> returns true
         ParseResult<String> withWarning = new ParseResult<>("value", Optional.of("warn"));
         assertTrue(withWarning.equals(new ParseResult<>("value", Optional.of("warn"))));
+
+        // EP: different value and different warning -> returns false
+        assertFalse(parseResult.equals(new ParseResult<>("different", Optional.of("warning"))));
     }
 
     @Test
     public void hashcode() {
         ParseResult<String> parseResult = new ParseResult<>("value", Optional.empty());
 
-        // same values -> returns same hashcode
+        // EP: same values -> returns same hashcode
         assertEquals(parseResult.hashCode(), new ParseResult<>("value", Optional.empty()).hashCode());
 
-        // different value -> returns different hashcode
+        // EP: different value -> returns different hashcode
         assertNotEquals(parseResult.hashCode(), new ParseResult<>("different", Optional.empty()).hashCode());
 
-        // different warning -> returns different hashcode
+        // EP: different warning -> returns different hashcode
         assertNotEquals(parseResult.hashCode(), new ParseResult<>("value", Optional.of("warning")).hashCode());
 
-        // same value and warning -> returns same hashcode
+        // EP: same value and warning -> returns same hashcode
         ParseResult<String> withWarning = new ParseResult<>("value", Optional.of("warn"));
         assertEquals(withWarning.hashCode(), new ParseResult<>("value", Optional.of("warn")).hashCode());
+
+        // EP: different value and different warning -> returns different hashcode
+        assertNotEquals(parseResult.hashCode(), new ParseResult<>("different", Optional.of("warning")).hashCode());
     }
 
     @Test
