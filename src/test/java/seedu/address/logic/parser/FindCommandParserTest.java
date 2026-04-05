@@ -51,13 +51,39 @@ public class FindCommandParserTest {
     public void parse_tagModeWithoutKeywords_throwsParseException() {
         // BV: tag mode requires at least one keyword; exactly one token (-t) is invalid.
         assertParseFailure(parser, "-t", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+
+        // BV: all tokens are mode flags, so effective keyword set is empty.
+        assertParseFailure(parser, "-t -t", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                FindCommand.MESSAGE_USAGE));
     }
 
     @Test
-    public void parse_nonLeadingTagFlag_throwsParseException() {
-        // EP: -t appearing outside the first token is invalid.
-        assertParseFailure(parser, "Alice Bob -t", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                FindCommand.MESSAGE_USAGE));
+    public void parse_nonLeadingTagFlag_returnsFindCommand() {
+        // EP: -t can appear in non-leading position and still activates tag-search mode.
+        FindCommand expectedFindCommand =
+                new FindCommand(new PersonTagContainsKeywordsPredicate(Arrays.asList("vip", "priority")));
+        assertParseSuccess(parser, "vip -t priority", expectedFindCommand);
+
+        // EP: multiple occurrences of -t are treated as flags and ignored for keyword matching.
+        assertParseSuccess(parser, "vip -t -t priority", expectedFindCommand);
+    }
+
+    @Test
+    public void parse_escapedTagFlag_returnsFindCommandWithLiteralKeyword() {
+        // EP: /-t is treated as a literal keyword in name mode, not as a tag-mode flag.
+        FindCommand expectedNameModeCommand =
+                new FindCommand(new NameContainsKeywordsScoredPredicate(Arrays.asList("-t", "vip")));
+        assertParseSuccess(parser, "/-t vip", expectedNameModeCommand);
+
+        // EP: /-t remains a literal keyword even when tag mode is activated by an unescaped -t.
+        FindCommand expectedTagModeCommand =
+                new FindCommand(new PersonTagContainsKeywordsPredicate(Arrays.asList("-t", "vip")));
+        assertParseSuccess(parser, "-t /-t vip", expectedTagModeCommand);
+
+        // BV: escaped literal plus one real flag gives exactly one effective tag keyword ("-t").
+        FindCommand expectedSingleKeywordTagModeCommand =
+            new FindCommand(new PersonTagContainsKeywordsPredicate(Arrays.asList("-t")));
+        assertParseSuccess(parser, "/-t -t", expectedSingleKeywordTagModeCommand);
     }
 
 }
