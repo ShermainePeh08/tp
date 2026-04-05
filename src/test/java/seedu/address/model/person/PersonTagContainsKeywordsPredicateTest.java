@@ -17,6 +17,7 @@ public class PersonTagContainsKeywordsPredicateTest {
 
     @Test
     public void constructor_nullKeywords_throwsNullPointerException() {
+        // EP: null keyword list is an invalid input partition.
         assertThrows(NullPointerException.class, () -> new PersonTagContainsKeywordsPredicate(null));
     }
 
@@ -43,25 +44,31 @@ public class PersonTagContainsKeywordsPredicateTest {
 
     @Test
     public void test_tagsContainKeywords_returnsTrue() {
+        // EP: single exact tag keyword match.
         PersonTagContainsKeywordsPredicate predicate =
                 new PersonTagContainsKeywordsPredicate(Collections.singletonList("vip"));
         assertTrue(predicate.test(new PersonBuilder().withTags("vip", "lead").build()));
 
+        // EP: multiple keywords with OR semantics where one keyword matches.
         predicate = new PersonTagContainsKeywordsPredicate(Arrays.asList("partner", "lead"));
         assertTrue(predicate.test(new PersonBuilder().withTags("vip", "lead").build()));
 
+        // EP: case-insensitive matching for keywords.
         predicate = new PersonTagContainsKeywordsPredicate(Arrays.asList("ViP", "LeAd"));
         assertTrue(predicate.test(new PersonBuilder().withTags("vip", "lead").build()));
     }
 
     @Test
     public void test_tagsDoNotContainKeywords_returnsFalse() {
+        // BV: empty keyword list should match no tags.
         PersonTagContainsKeywordsPredicate predicate = new PersonTagContainsKeywordsPredicate(Collections.emptyList());
         assertFalse(predicate.test(new PersonBuilder().withTags("vip").build()));
 
+        // EP: non-overlapping keywords do not match.
         predicate = new PersonTagContainsKeywordsPredicate(Collections.singletonList("partner"));
         assertFalse(predicate.test(new PersonBuilder().withTags("vip", "lead").build()));
 
+        // BV: person with zero tags should not match any non-empty keyword list.
         predicate = new PersonTagContainsKeywordsPredicate(Collections.singletonList("vip"));
         assertFalse(predicate.test(new PersonBuilder().build()));
     }
