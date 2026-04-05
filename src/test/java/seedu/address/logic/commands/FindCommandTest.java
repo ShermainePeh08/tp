@@ -28,6 +28,7 @@ import seedu.address.model.UserPrefs;
 import seedu.address.model.VendorVault;
 import seedu.address.model.person.NameContainsKeywordsScoredPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonTagContainsKeywordsPredicate;
 import seedu.address.model.product.Product;
 import seedu.address.model.product.VendorEmailMatchesContactsPredicate;
 import seedu.address.testutil.PersonBuilder;
@@ -71,6 +72,7 @@ public class FindCommandTest {
 
     @Test
     public void execute_zeroKeywords_noPersonFound() {
+        // BV: empty keyword set should produce zero matched contacts and products.
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
         NameContainsKeywordsScoredPredicate predicate = preparePredicate(" ");
         FindCommand command = new FindCommand(predicate);
@@ -83,6 +85,7 @@ public class FindCommandTest {
 
     @Test
     public void execute_multipleKeywords_multiplePersonsFound() {
+        // EP: valid name-keyword partition with multiple matches.
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 3);
         NameContainsKeywordsScoredPredicate predicate = preparePredicate("Kurz Elle Kunz");
         FindCommand command = new FindCommand(predicate);
@@ -121,6 +124,7 @@ public class FindCommandTest {
 
     @Test
     public void execute_partialKeyword_ranksByRelevance() {
+        // EP: partial-name matching should rank exact > prefix > substring.
         Person exact = new PersonBuilder().withName("Ali").withPhone("11111")
                 .withEmail("exact@example.com").withAddress("Exact Street").build();
         Person prefix = new PersonBuilder().withName("Alice").withPhone("22222")
@@ -151,6 +155,7 @@ public class FindCommandTest {
 
     @Test
     public void execute_keywordMatchesArchivedContact_excludesArchivedAndLinkedProducts() {
+        // EP: archived contacts are excluded even when name keyword matches.
         Person archivedCarl = CARL.archive();
         Person activeOther = new PersonBuilder().withName("Active").withPhone("55555")
                 .withEmail("active@example.com").withAddress("Active Street").build();
@@ -179,6 +184,52 @@ public class FindCommandTest {
 
         assertCommandSuccess(command, localModel, expectedMessage, localExpectedModel);
         assertEquals(Collections.emptyList(), localModel.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_tagModeMultipleKeywords_filtersByTagAndExcludesArchived() {
+        // EP: tag-mode OR matching with multiple keywords returns only active matched contacts.
+        Person vipContact = new PersonBuilder().withName("Vip Contact").withPhone("11111")
+            .withEmail("vip@example.com").withAddress("Vip Street").withTags("vip").build();
+        Person leadContact = new PersonBuilder().withName("Lead Contact").withPhone("22222")
+            .withEmail("lead@example.com").withAddress("Lead Street").withTags("lead").build();
+        Person archivedVipContact = new PersonBuilder().withName("Archived Vip").withPhone("33333")
+            .withEmail("archivedvip@example.com").withAddress("Archived Street").withTags("vip").build()
+            .archive();
+
+        Product vipLinkedProduct = new ProductBuilder().withIdentifier("SKU-9001")
+            .withName("Vip Product").withVendorEmail(vipContact.getEmail().toString()).build();
+        Product leadLinkedProduct = new ProductBuilder().withIdentifier("SKU-9002")
+            .withName("Lead Product").withVendorEmail(leadContact.getEmail().toString()).build();
+        Product archivedVipLinkedProduct = new ProductBuilder().withIdentifier("SKU-9003")
+            .withName("Archived Vip Product").withVendorEmail(archivedVipContact.getEmail().toString()).build();
+
+        AddressBook addressBook = new AddressBook();
+        addressBook.addPerson(vipContact);
+        addressBook.addPerson(leadContact);
+        addressBook.addPerson(archivedVipContact);
+
+        Inventory inventory = new Inventory();
+        inventory.addProduct(vipLinkedProduct);
+        inventory.addProduct(leadLinkedProduct);
+        inventory.addProduct(archivedVipLinkedProduct);
+
+        Model localModel = new ModelManager(
+            new VendorVault(addressBook, inventory), new UserPrefs(), new Aliases());
+        Model localExpectedModel = new ModelManager(
+            new VendorVault(addressBook, inventory), new UserPrefs(), new Aliases());
+
+        PersonTagContainsKeywordsPredicate predicate =
+                new PersonTagContainsKeywordsPredicate(Arrays.asList("vip", "lead"));
+        FindCommand command = new FindCommand(predicate);
+
+        localExpectedModel.updateFilteredPersonList(person -> !person.isArchived() && predicate.test(person));
+        updateExpectedProductFilter(localExpectedModel);
+
+        assertCommandSuccess(command, localModel,
+                String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2), localExpectedModel);
+        assertEquals(Arrays.asList(vipContact, leadContact), localModel.getFilteredPersonList());
+        assertEquals(Arrays.asList(vipLinkedProduct, leadLinkedProduct), localModel.getFilteredProductList());
     }
 
     @Test
