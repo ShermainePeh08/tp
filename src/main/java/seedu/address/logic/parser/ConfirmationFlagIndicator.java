@@ -1,10 +1,8 @@
 package seedu.address.logic.parser;
 
-import seedu.address.logic.parser.exceptions.ParseException;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Collectors;
+
+import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
  * Utility class for detecting and handling confirmation flags in tokenized command inputs.

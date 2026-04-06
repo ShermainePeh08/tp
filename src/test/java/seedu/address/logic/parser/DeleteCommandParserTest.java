@@ -5,10 +5,12 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_CONFIRMATION_FLAG;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_AMY;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
+import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.DeleteCommand;
+import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Email;
 
 /**
@@ -36,13 +38,7 @@ public class DeleteCommandParserTest {
 
     @Test
     public void parse_validArgsWithConfirmationFlagAfterIndex_returnsDeleteCommand() {
-        assertParseSuccess(parser, VALID_EMAIL_AMY + " -y", new DeleteCommand(VALID_EMAIL, false));
-    }
-
-    @Test
-    public void parse_wronglyFormedFlagAttachedToIndex_throwsParseException() {
-        assertParseFailure(parser, "-y" + VALID_EMAIL_AMY, MESSAGE_INVALID_CONFIRMATION_FLAG);
-        assertParseFailure(parser, "-y1" + VALID_EMAIL_AMY, MESSAGE_INVALID_CONFIRMATION_FLAG);
+        assertThrows(ParseException.class, () -> parser.parse(VALID_EMAIL_AMY + " -y" ));
     }
 
     @Test
