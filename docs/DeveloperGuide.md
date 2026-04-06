@@ -71,7 +71,7 @@ The **API** of this component is specified in [`Ui.java`](https://github.com/AY2
 
 The UI consists of a `MainWindow` that is made up of parts e.g.`CommandBox`, `ResultDisplay`, `PersonListPanel`, `StatusBarFooter` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class which captures the commonalities between classes that represent parts of the visible GUI.
 
-The `UI` component uses the JavaFx UI framework. The layout of these UI parts are defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/AY2526S2-CS2103T-W08-2/tp/blob/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/AY2526S2-CS2103T-W08-2/tp/blob/master/src/main/resources/view/MainWindow.fxml)
+The `UI` component uses the JavaFx UI framework. The layout of these UI parts is defined in matching `.fxml` files that are in the `src/main/resources/view` folder. For example, the layout of the [`MainWindow`](https://github.com/AY2526S2-CS2103T-W08-2/tp/blob/master/src/main/java/seedu/address/ui/MainWindow.java) is specified in [`MainWindow.fxml`](https://github.com/AY2526S2-CS2103T-W08-2/tp/blob/master/src/main/resources/view/MainWindow.fxml)
 
 The `UI` component
 
@@ -625,7 +625,7 @@ This diagram shows the structure and dependency of Better Search classes:
 
 <puml src="diagrams/BetterSearchClass.puml" width="400"/>
 
-This diagram shows an example of scoring state when the given keyword is `"adafruit"`:
+This diagram shows an example of scoring state when the given keyword is "adafruit":
 
 <puml src="diagrams/BetterSearchObject.puml" width="900"/>
 
@@ -650,7 +650,7 @@ This diagram shows the interactions between `Logic` and `Model`:
 
 This diagram summarises the decision flow in `Model`:
 
-<puml src="diagrams/BetterSearchActivity.puml" width="400"/>
+<puml src="diagrams/BetterSearchActivity.puml" width="350"/>
 
 The usage scenario for `findproduct` is analogous.
 
@@ -702,13 +702,13 @@ Alternative 1 was chosen for consistency and maintainability.
 
 ### Product scope
 
-**Target user profile**:
+**Target user profile**
 
 Small business owners who:
 * Have many vendors' contacts and inventory to manage
 * Are tech-savvy and prefers CLI over GUI
 
-**Value proposition**:
+**Value proposition**
 
 VendorVault helps small business owners seamlessly manage vendor contacts and track inventory in one simple system.
 By flagging and sorting low-quantity products, owners instantly know what needs restocking and who to contact, enabling timely action without relying on complex or costly inventory tools.
@@ -717,34 +717,37 @@ By flagging and sorting low-quantity products, owners instantly know what needs 
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …      | I want to …                      | So that I can …                                                   |
-|----------|-------------|----------------------------------|-------------------------------------------------------------------|
-| `* *`    | new user    | see usage guide                  | recap and learn commands                                          |
-| `* * *`  | user        | add a new contact                | add new vendors I work with                                       |
-| `* *`    | user        | edit an existing contact         | keep vendor information up to date                                |
-| `* * *`  | user        | delete a contact                 | remove vendors I no longer work with                              |
-| `* * *`  | user        | view contacts                    |                                                                   |
-| `* *`    | user        | find a contact by name           | locate their details without having to go through the entire list |
-| `*`      | user        | sort contacts by name            | browse them easily                                                |
-| `* *`    | user        | clear all contacts               | reset my vendor list                                              |
-| `* *`    | user        | archive a contact                | hide vendors I no longer work with without permanently deleting them |
-| `* *`    | user        | restore an archived contact      | bring back a previously archived vendor                           |
-| `* * *`  | user        | add a product                    | add new products I sell                                           |
-| `* *`    | user        | edit an existing product         | keep product information up to date                               |
-| `* * *`  | user        | delete a product                 | remove products I no longer sell                                  |
-| `* * *`  | user        | view products                    |                                                                   |
-| `* *`    | user        | find a product by name           | locate their details without having to go through the entire list |
-| `*`      | user        | sort products by name/identifier | browse them easily                                                |
-| `* *`    | user        | clear all products               | reset my inventory                                                |
-| `* *`    | user        | view inventory statistics        | understand my product quantity levels at a glance                 |
-| `* *`    | user        | undo changes I made              | easily revert and correct mistake                                 |
-| `* *`    | user        | redo changes I made              | easily reapply changes I accidentally undid                       |
-| `* *`    | user        | navigate my previous commands    | reuse or correct recent commands without providing them again     |
-| `* *`    | user        | archive a product                | hide products I no longer sell without permanently deleting them  |
-| `* *`    | user        | restore an archived product      | bring back a previously archived product                          |
-| `* *`    | expert user | add alias for commands           | create alias for long commands according to my preferences        |
-| `* *`    | expert user | delete alias for commands        | remove alias for I no longer want to use                          |
-| `* *`    | expert user | view aliases for commands        | view all aliases that I have set                                  |
+| Priority | As a …      | I want to …                           | So that I can …                                                      |
+|----------|-------------|---------------------------------------|----------------------------------------------------------------------|
+| `* *`    | new user    | see usage guide                       | recap and learn commands                                             |
+| `* * *`  | user        | add a new contact                     | add new vendors I work with                                          |
+| `* *`    | user        | edit an existing contact              | keep vendor information up to date                                   |
+| `* * *`  | user        | delete a contact                      | remove vendors I no longer work with                                 |
+| `* * *`  | user        | view contacts                         |                                                                      |
+| `* *`    | user        | find a contact by name/tag            | locate their details without having to go through the entire list    |
+| `*`      | user        | sort contacts by name                 | browse them easily                                                   |
+| `* *`    | user        | clear all contacts                    | reset my vendor list                                                 |
+| `* *`    | user        | archive a contact                     | hide vendors I no longer work with without permanently deleting them |
+| `* *`    | user        | restore an archived contact           | bring back a previously archived vendor                              |
+| `* * *`  | user        | add a product                         | add new products that I sell                                         |
+| `* *`    | user        | edit an existing product              | keep product information up to date                                  |
+| `* * *`  | user        | delete a product                      | remove products I no longer sell                                     |
+| `* * *`  | user        | view products                         |                                                                      |
+| `* *`    | user        | find a product by name                | locate their details without having to go through the entire list    |
+| `* *`    | user        | find vendor associated with a product | know who to contact when restocking                                  |
+| `*`      | user        | sort products by name/identifier      | browse them easily                                                   |
+| `* *`    | user        | clear all products                    | reset my inventory                                                   |
+| `* *`    | user        | view inventory statistics             | understand my product quantity levels at a glance                    |
+| `* *`    | user        | undo changes I made                   | easily revert and correct mistake                                    |
+| `* *`    | user        | redo changes I made                   | easily reapply changes I accidentally undid                          |
+| `* *`    | user        | navigate my previous commands         | reuse or correct recent commands without providing them again        |
+| `* *`    | user        | archive a product                     | hide products I no longer sell without permanently deleting them     |
+| `* *`    | user        | restore an archived product           | bring back a previously archived product                             |
+| `* *`    | user        | set a threshold for stock level       | track when a product needs restocking                                |
+| `* *`    | expert user | add alias for commands                | create alias for long commands according to my preferences           |
+| `* *`    | expert user | delete alias for commands             | remove alias that I no longer want to use                            |
+| `* *`    | expert user | view aliases for commands             | view all aliases that I have set                                     |
+
 
 ### Use cases
 
