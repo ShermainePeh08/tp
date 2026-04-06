@@ -137,7 +137,7 @@ public class AddProductCommandTest {
     }
 
     @Test
-        public void execute_multipleNonSimilarProducts_noWarning() throws Exception {
+    public void execute_multipleNonSimilarProducts_noWarning() throws Exception {
         // EP: all existing products are non-similar -> success without warning.
         Product existingOne = product(SKU_DUPLICATE, NAME_OFFICE_CHAIR);
         Product existingTwo = product(SKU_DIFFERENT, NAME_RASPBERRY_PI);
