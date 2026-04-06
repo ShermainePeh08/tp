@@ -59,7 +59,7 @@ class NameContainsKeywordsScoredPredicateTest {
         assertDoesNotMatch(NAME_ALICE, Collections.emptyList());
         assertDoesNotMatch(NAME_ALICE_BOB, Collections.singletonList("Carol"));
 
-        NameContainsKeywordsScoredPredicate predicate = predicate("12345", "alice@email.com", "Main", "Street");
+        NameContainsKeywordsScoredPredicate predicate = createPredicate("12345", "alice@email.com", "Main", "Street");
         assertFalse(predicate.test(new PersonBuilder().withName(NAME_ALICE).withPhone("12345")
                 .withEmail("alice@email.com").withAddress("Main Street").build()));
     }
@@ -67,8 +67,8 @@ class NameContainsKeywordsScoredPredicateTest {
     @Test
     void computeScore_selectsBestMatchTierAndQuality() {
         // EP: best score should come from the strongest keyword-token pair.
-        NameContainsKeywordsScoredPredicate predicate = predicate("li", "alice");
-        Person person = personWithName(NAME_ALICE_BOB);
+        NameContainsKeywordsScoredPredicate predicate = createPredicate("li", "alice");
+        Person person = buildPersonWithName(NAME_ALICE_BOB);
 
         Score score = predicate.computeScore(person);
 
@@ -79,12 +79,12 @@ class NameContainsKeywordsScoredPredicateTest {
     @Test
     void createPersonComparator_ordersByRelevanceThenAlphabetical() {
         // EP: ties on relevance should be broken by alphabetical sort key, not insertion order.
-        NameContainsKeywordsScoredPredicate predicate = predicate("ali");
+        NameContainsKeywordsScoredPredicate predicate = createPredicate("ali");
 
-        Person exactAliAlpha = personWithName("Ali Alpha", "alpha@example.com");
-        Person exactAliBeta = personWithName("Ali Beta", "beta@example.com");
-        Person prefix = personWithName("Alice", "prefix@example.com");
-        Person substring = personWithName("Mali", "substring@example.com");
+        Person exactAliAlpha = buildPersonWithName("Ali Alpha", "alpha@example.com");
+        Person exactAliBeta = buildPersonWithName("Ali Beta", "beta@example.com");
+        Person prefix = buildPersonWithName("Alice", "prefix@example.com");
+        Person substring = buildPersonWithName("Mali", "substring@example.com");
 
         List<Person> persons = new ArrayList<>(Arrays.asList(substring, prefix, exactAliBeta, exactAliAlpha));
         persons.sort(predicate.createPersonComparator());
@@ -94,8 +94,8 @@ class NameContainsKeywordsScoredPredicateTest {
 
     @Test
     void computeScore_multipleKeywords_usesBestKeywordAcrossAllTokens() {
-        NameContainsKeywordsScoredPredicate predicate = predicate("li", "mali");
-        Person person = personWithName("Mali Tan");
+        NameContainsKeywordsScoredPredicate predicate = createPredicate("li", "mali");
+        Person person = buildPersonWithName("Mali Tan");
 
         Score score = predicate.computeScore(person);
 
@@ -104,11 +104,11 @@ class NameContainsKeywordsScoredPredicateTest {
 
     @Test
     void createPersonComparator_multiKeywordRanking_prefersHigherTierThenQuality() {
-        NameContainsKeywordsScoredPredicate predicate = predicate("ali", "tan");
+        NameContainsKeywordsScoredPredicate predicate = createPredicate("ali", "tan");
 
-        Person exact = personWithName("Tan Lee", "exact@example.com");
-        Person prefix = personWithName("Alice Wong", "prefix@example.com");
-        Person substring = personWithName("Mali Ong", "substring@example.com");
+        Person exact = buildPersonWithName("Tan Lee", "exact@example.com");
+        Person prefix = buildPersonWithName("Alice Wong", "prefix@example.com");
+        Person substring = buildPersonWithName("Mali Ong", "substring@example.com");
 
         List<Person> persons = new ArrayList<>(Arrays.asList(substring, prefix, exact));
         persons.sort(predicate.createPersonComparator());
@@ -126,24 +126,24 @@ class NameContainsKeywordsScoredPredicateTest {
         assertEquals(expected, predicate.toString());
     }
 
-    private NameContainsKeywordsScoredPredicate predicate(String... keywords) {
+    private NameContainsKeywordsScoredPredicate createPredicate(String... keywords) {
         return new NameContainsKeywordsScoredPredicate(Arrays.asList(keywords));
     }
 
-    private Person personWithName(String name) {
+    private Person buildPersonWithName(String name) {
         return new PersonBuilder().withName(name).build();
     }
 
-    private Person personWithName(String name, String email) {
+    private Person buildPersonWithName(String name, String email) {
         return new PersonBuilder().withName(name).withEmail(email).build();
     }
 
     private void assertMatches(String name, String... keywords) {
-        assertTrue(predicate(keywords).test(personWithName(name)));
+        assertTrue(createPredicate(keywords).test(buildPersonWithName(name)));
     }
 
     private void assertDoesNotMatch(String name, List<String> keywords) {
-        assertFalse(new NameContainsKeywordsScoredPredicate(keywords).test(personWithName(name)));
+        assertFalse(new NameContainsKeywordsScoredPredicate(keywords).test(buildPersonWithName(name)));
     }
 
     private void assertExactMatchScore(Score score) {
