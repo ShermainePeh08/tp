@@ -5,8 +5,6 @@ import static seedu.address.logic.parser.ConfirmationFlagIndicator.containsConfi
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
-import java.util.Arrays;
-
 /**
  * Parses input arguments and creates a new ClearCommand object.
  */
