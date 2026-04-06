@@ -15,6 +15,12 @@ public class ConfirmationFlagIndicator {
      */
     public static boolean containsConfirmationFlag(
             String[] tokens, String confirmationFlag, String exceptionMessage) throws ParseException {
+
+        System.out.println(tokens.length);
+
+        if (tokens.length <= 1) {
+            return false;
+        }
         boolean hasWronglyFormedFlag = Arrays.stream(tokens)
                 .anyMatch(token -> isMalformedConfirmationFlag(token, confirmationFlag));
         if (hasWronglyFormedFlag) {

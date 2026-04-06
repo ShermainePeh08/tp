@@ -9,6 +9,9 @@ import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Email;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
  * Parses input arguments and creates a new DeleteCommand object
  */
@@ -31,7 +34,13 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         String[] tokens = argsTrimmed.split("\\s+");
         boolean needsConfirmation = !containsConfirmationFlag(
                 tokens, CONFIRMATION_INDICATOR, MESSAGE_INVALID_CONFIRMATION_FLAG);
-        String emailBeforeParsed = removeConfirmationFlag(tokens, CONFIRMATION_INDICATOR);
+
+        String emailBeforeParsed;
+        if (!needsConfirmation) {
+            emailBeforeParsed = removeConfirmationFlag(tokens, CONFIRMATION_INDICATOR);
+        } else {
+            emailBeforeParsed = String.join(" ", tokens);
+        }
 
         if (emailBeforeParsed.isEmpty()) {
             throw new ParseException(
