@@ -764,38 +764,29 @@ Use case ends.
 **Extensions**
 
 * 1a. VV detects invalid command format
-    * 1a1. VV rejects the command and displays an error message indicating the correct format with an example.
-    * 1a2. User re-enters the corrected command.
+    * 1a1. VV rejects the command and displays an error message indicating invalid command format.
 
-    Steps 1a1–1a2 are repeated until the command format is valid.
-
-    Use case resumes from step 1.
+      Use case resumes from step 1.
 
 * 1b. VV detects error in fields provided
     * 1b1. VV rejects the command and displays validation error message.
-    * 1b2. User re-enters the corrected fields.
-
-      Steps 1b1–1b2 are repeated until the fields are valid.
-
+  
       Use case resumes from step 1.
 
 * 1c. VV detects duplicate contact
     * 1c1. VV rejects the command and displays a duplicate contact error message.
-    * 1c2. User re-enters the corrected fields.
-
-      Steps 1c1–1c2 are repeated until the fields are not a duplicate.
-
+  
       Use case resumes from step 1.
 
-* 1d. VV detects potential duplicate contact
-    * 1d1. VV accepts the command and displays a warning with details of the similar contact.
+* 2a. VV detects potential duplicate contact
+    * 2a1. VV accepts the command and displays a warning with details of the similar contact.
 
-      Use case resumes from step 2.
+      Use case ends.
 
-* 1e. VV detects potential input mistake
-    * 1e1. VV accepts the command displays a warning indicating the input may be unintended.
+* 2b. VV detects potential input mistake
+    * 2b1. VV accepts the command displays a warning indicating the input may be unintended.
 
-      Use case resumes from step 2.
+      Use case ends.
 
 **Use case: UC2 - Edit a Vendor Contact**
 
@@ -810,16 +801,16 @@ Use case ends.
 
 **Extensions**
 
-* *a. All extensions that apply to !!UC1: Add a Vendor Contact!! also apply here.
+All extensions that apply to !!UC1: Add a Vendor Contact!! also apply here.
 
-* 1f. VV detects that the operation removes all tags.
-    * 1f1. VV requests confirmation.
-    * 1f2. User confirms the deletion.
+* 1a. VV detects that the operation removes all tags.
+    * 1a1. VV requests confirmation.
+    * 1a2. User confirms the deletion.
 
       Use case resumes from step 2.
 
-    * 1f2a. User cancels the deletion instead.
-      * 1f2a1. VV aborts the edit operation and displays a cancellation message.
+    * 1a2a. User cancels the deletion instead.
+      * 1a2a1. VV aborts the edit operation and displays a cancellation message.
 
         Use case ends.
 
@@ -829,8 +820,8 @@ Use case ends.
 
 **MSS**
 
-1. User chooses to view all vendor contacts.
-2. VV shows all vendor contacts.
+1. User chooses to view all active vendor contacts.
+2. VV shows all active vendor contacts.
 
 Use case ends.
 
@@ -850,9 +841,9 @@ Use case ends.
 **Extensions**
 
 * 2a. User decides not to delete the contact, rejecting the deletion.
-  * 2a1. VV displays a list of current vendor contacts.
+    * 2a1. VV displays a list of current vendor contacts.
 
-  Use case ends.
+      Use case ends.
 
 **Use case: UC5 - Find Vendor Contact**
 
@@ -860,18 +851,17 @@ Use case ends.
 
 **MSS**
 
-1. User chooses to find a vendor contact by entering one or more keywords.
-2. VV searches vendor contacts using the provided keyword(s).
-3. VV displays the matching vendor contacts.
+1. User chooses to find a vendor contact by providing one or more keywords.
+2. VV displays matching vendor contacts and their associated products (if any).
 
 Use case ends.
 
 **Extensions**
 
-* 1a. User provides no keyword.
-  * 1a1. VV displays an error indicating missing keywords.
-
-  Use case ends.
+* 1a. VV detects invalid command format
+    * 1a1. VV rejects the command and displays an error message indicating invalid command format.
+    
+      Use case ends.
 
 **Use case: UC6 - Archive a Vendor Contact**
 
@@ -879,22 +869,32 @@ Use case ends.
 
 **MSS**
 
-1. User chooses to archive a vendor contact by providing their email.
+1. User chooses to archive a vendor contact and provides their email.
 2. VV validates the email and moves the contact from the active to the archived contact list.
 
 Use case ends.
 
 **Extensions**
 
-* 1a. VV detects that no contact with the given email exists.
-    * 1a1. VV displays an error indicating no vendor was found with that email.
+* 1a. VV detects no email provided.
+    * 1a1. VV rejects the command and displays an error message indicating invalid command format.
+    
+      Use case ends.
+  
+* 1b. VV detects invalid email provided.
+    * 1b1. VV rejects the command and displays an error message.
+  
+      Use case resumes from step 1.
+  
+* 1c. VV detects that no contact with the given email exists.
+    * 1c1. VV displays an error indicating no vendor was found with that email.
 
-    Use case ends.
+      Use case ends.
 
-* 1b. VV detects that the contact is already archived.
-    * 1b1. VV displays an error indicating the vendor is already archived and suggests using restore instead.
+* 1d. VV detects that the contact is already archived.
+    * 1d1. VV displays an error indicating the vendor is already archived and suggests using restore instead.
 
-    Use case ends.
+      Use case ends.
 
 **Use case: UC7 - Restore an Archived Vendor Contact**
 
@@ -902,27 +902,32 @@ Use case ends.
 
 **MSS**
 
-1. User runs `restore` without an argument to view all archived contacts.
-2. VV displays the list of archived contacts.
-3. User runs `restore EMAIL` to restore a specific contact.
+1. User chooses to view all archived contacts.
+2. VV displays the list of all archived contacts.
+3. User chooses to restore a specific contact.
 4. VV restores the contact, moving it from the archived list to the active contact list.
 
 Use case ends.
 
 **Extensions**
 
-* 1a. No archived contacts exist.
+* 1a. VV detects that no archived contacts exist.
     * 1a1. VV displays a message indicating there are no archived contacts.
 
-    Use case ends.
+      Use case ends.
 
 * 3a. VV detects that no archived contact with the given email exists.
     * 3a1. VV displays the archived contact list and an error indicating no archived vendor was found with that email.
 
-    Use case ends.
+      Use case ends.
+  
+* 3b. VV detects invalid email provided.
+    * 3b1. VV rejects the command and displays an error message.
+  
+      Use case resumes from step 3.
 
 **Use Case: UC8 - Add a Product**
-Analogous to !!UC1 - Add a Vendor Contact!!.
+TODO
 
 **Use case: UC9 - Edit a Product**
 
@@ -931,7 +936,7 @@ Analogous to !!UC1 - Add a Vendor Contact!!.
 **MSS**
 
 1. User chooses to edit a product and provides the identifier along with fields to update.
-2. VV validates the identifier and fields, updates the product, and displays the updated product list.
+2. VV validates the identifier and fields, edits the product, and displays the product list.
 
 Use case ends.
 
@@ -940,41 +945,35 @@ Use case ends.
 * 1a. VV detects that no product with the given identifier exists.
     * 1a1. VV displays an error indicating no product was found with the specified identifier.
 
-    Use case ends.
+      Use case ends.
 
 * 1b. VV detects that no fields to edit are provided.
     * 1b1. VV displays an error indicating that at least one field must be provided.
 
-    Use case ends.
+      Use case ends.
 
 * 1c. VV detects error in the fields provided (e.g. invalid data format).
     * 1c1. VV displays an appropriate error message indicating the invalid field.
-    * 1c2. User re-provides the corrected data.
 
-    Steps 1c1–1c2 are repeated until all fields are valid.
-
-    Use case resumes from step 2.
+      Use case resumes from step 1.
 
 * 1d. VV detects that the new identifier already belongs to another existing product.
     * 1d1. VV displays an error indicating the identifier is already in use.
-    * 1d2. User re-provides a different identifier.
 
-    Steps 1d1–1d2 are repeated until a unique identifier is provided.
-
-    Use case resumes from step 2.
+      Use case resumes from step 1.
 
 * 1e. VV detects that the provided vendor email does not match any existing contact.
     * 1e1. VV displays an error indicating no contact with the specified email was found.
 
-    Use case ends.
+      Use case ends.
 
 **Use Case: UC10 - View Products**
 
 **Preconditions: Application is running, user is on the main screen.**
 
 **MSS**
-1. User chooses to view all products.
-2. VV shows all products.
+1. User chooses to view all active products.
+2. VV shows all active products.
 
 Use case ends.
 
@@ -1004,39 +1003,39 @@ Analogous to !!UC5 - Find Vendor Contact!!.
 
 **Use case: UC13 - Archive a Product**
 
-Analogous to UC6, except the product's identifier is used instead of the vendor's email.
+Analogous to !!UC6 - Archive a Vendor Contact!!, except the product's identifier is used instead of the vendor's email.
 
 **Use case: UC14 - Restore an Archived Product**
 
-Analogous to UC7, except the product's identifier is used instead of the vendor's email.
+Analogous to !!UC7 - Restore an Archived Vendor Contact!!, except the product's identifier is used instead of the 
+vendor's email.
 
 **Use case: UC15 - Undo/Redo a Change**
 
-**Preconditions: Application is running, user is on the main screen, and at least one undoable action has been performed in the current session.**
+**Preconditions: Application is running, user is on the main screen.**
 
 **MSS**
 
 1. User chooses to undo the last change.
-2. VV reverts the last change and displays a success message indicating what was undone.
+2. VV reverts the last change and displays a success message.
 3. User chooses to redo the undone change.
-4. VV reapplies the change and displays a success message indicating what was redone.
+4. VV reapplies the change and displays a success message.
 
 Use case ends.
 
 **Extensions**
 
 * 1a. VV detects that no undoable actions exist in the current session.
-  * 1a1. VV displays an error message indicating there is nothing to undo.
+    * 1a1. VV displays an error message indicating there is nothing to undo.
+  
+      Use case ends.
 
-    Use case ends.
-
-* 2b. User performs a new undoable action after undoing a previous action.
-    * 2b1. VV clears the redo history.
-    * 2b2. The new action becomes the latest undoable action.
+* 2b. User performs a new undoable action.
+    * 2b1. VV updates the redo history, and the new action becomes the latest undoable action.
 
       Use case ends.
 
-* 3a. VV detects that no redoable actions exist (e.g. redo history was cleared, or no undo was performed).
+* 3a. VV detects that no redoable actions exist.
     * 3a1. VV displays an error message indicating there is nothing to redo.
 
       Use case ends.
@@ -1048,31 +1047,29 @@ Use case ends.
 
 **MSS**
 
-1. User has a partial unsent command and chooses to go to previous command.
+1. User has a draft command and chooses to go to previous command.
 2. VV saves the current input as a draft and displays the previous command.
 3. User chooses to go to next command.
-4. VV displays the next command.
-5. User navigates back to the most recent command.
-6. VV restores the saved draft.
+4. VV restores the saved draft.
 
 Use case ends.
 
 **Extensions**
 
-* *a. VV detects that no command history exists (no commands have been entered in this session).
+* *a. VV detects that no command history exists.
     * *a1. VV does nothing.
 
-        Use case ends.
+      Use case ends.
 
-* 1a. User is already at the oldest command in the history.
-  * 1a1. VV does nothing.
+* 1a. VV detects that the user is already at the oldest command in the history.
+    * 1a1. VV does nothing.
+  
+      Use case ends.
 
-    Use case resumes from step 2.
-
-* 3a. User is already at the most recent command in the history.
-  * 3a1. VV does nothing.
-
-    Use case resumes from step 4.
+* 3a. VV detects that the user is already at the most recent command in the history.
+    * 3a1. VV does nothing.
+  
+      Use case ends.
 
 
 ### Non-Functional Requirements
