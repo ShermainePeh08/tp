@@ -110,10 +110,10 @@ public class AddProductCommandTest {
     @Test
     public void execute_duplicateProductIdentifier_throwsCommandException() {
         // EP: exact same SKU -> reject
-        Product existingProduct = product(SKU_DUPLICATE, NAME_OFFICE_CHAIR);
-        Product duplicateProduct = product(SKU_DUPLICATE, NAME_GAMING_CHAIR);
+        Product existingProduct = buildProduct(SKU_DUPLICATE, NAME_OFFICE_CHAIR);
+        Product duplicateProduct = buildProduct(SKU_DUPLICATE, NAME_GAMING_CHAIR);
 
-        ModelStubAcceptingProductAdded modelStub = modelStubWithProducts(existingProduct);
+        ModelStubAcceptingProductAdded modelStub = seedModelStubWithProducts(existingProduct);
 
         AddProductCommand addProductCommand = new AddProductCommand(duplicateProduct);
 
@@ -125,9 +125,9 @@ public class AddProductCommandTest {
     @Test
     public void execute_similarProductName_warnAndAddSuccessful() throws Exception {
         // EP: one existing product with a shared name token -> soft warn, still added
-        Product existingProduct = product(SKU_DUPLICATE, NAME_OFFICE_CHAIR);
-        Product productToAdd = product(SKU_DIFFERENT, NAME_GAMING_CHAIR);
-        ModelStubAcceptingProductAdded modelStub = modelStubWithProducts(existingProduct);
+        Product existingProduct = buildProduct(SKU_DUPLICATE, NAME_OFFICE_CHAIR);
+        Product productToAdd = buildProduct(SKU_DIFFERENT, NAME_GAMING_CHAIR);
+        ModelStubAcceptingProductAdded modelStub = seedModelStubWithProducts(existingProduct);
 
         CommandResult result = new AddProductCommand(productToAdd).execute(modelStub);
 
@@ -139,10 +139,10 @@ public class AddProductCommandTest {
     @Test
     public void execute_multipleNonSimilarProducts_noWarning() throws Exception {
         // EP: all existing products are non-similar -> success without warning.
-        Product existingOne = product(SKU_DUPLICATE, NAME_OFFICE_CHAIR);
-        Product existingTwo = product(SKU_DIFFERENT, NAME_RASPBERRY_PI);
-        Product productToAdd = product(SKU_DIFFERENT_2, NAME_ARDUINO_UNO);
-        ModelStubAcceptingProductAdded modelStub = modelStubWithProducts(existingOne, existingTwo);
+        Product existingOne = buildProduct(SKU_DUPLICATE, NAME_OFFICE_CHAIR);
+        Product existingTwo = buildProduct(SKU_DIFFERENT, NAME_RASPBERRY_PI);
+        Product productToAdd = buildProduct(SKU_DIFFERENT_2, NAME_ARDUINO_UNO);
+        ModelStubAcceptingProductAdded modelStub = seedModelStubWithProducts(existingOne, existingTwo);
 
         CommandResult result = new AddProductCommand(productToAdd).execute(modelStub);
 
@@ -152,9 +152,9 @@ public class AddProductCommandTest {
     @Test
     public void execute_presetWarningAndSimilarName_warningsJoinedWithNewline() throws Exception {
         // BV: non-empty preset warning should be joined with similar-name warning via newline.
-        Product existingProduct = product(SKU_DUPLICATE, NAME_OFFICE_CHAIR);
-        Product productToAdd = product(SKU_DIFFERENT, NAME_GAMING_CHAIR);
-        ModelStubAcceptingProductAdded modelStub = modelStubWithProducts(existingProduct);
+        Product existingProduct = buildProduct(SKU_DUPLICATE, NAME_OFFICE_CHAIR);
+        Product productToAdd = buildProduct(SKU_DIFFERENT, NAME_GAMING_CHAIR);
+        ModelStubAcceptingProductAdded modelStub = seedModelStubWithProducts(existingProduct);
 
         CommandResult result = new AddProductCommand(productToAdd, PRESET_WARNING).execute(modelStub);
 
@@ -171,10 +171,10 @@ public class AddProductCommandTest {
     public void execute_multipleSimilarProducts_onlyFirstWarningAppended() throws Exception {
         // EP: two existing products both share a token with the new product ->
         //     exactly one warning emitted (deduplication / early-exit)
-        Product similar1 = product(SKU_DUPLICATE, NAME_OFFICE_CHAIR);
-        Product similar2 = product(SKU_DIFFERENT, NAME_GAMING_CHAIR);
-        Product productToAdd = product(SKU_DIFFERENT_2, NAME_HOME_CHAIR);
-        ModelStubAcceptingProductAdded modelStub = modelStubWithProducts(similar1, similar2);
+        Product similar1 = buildProduct(SKU_DUPLICATE, NAME_OFFICE_CHAIR);
+        Product similar2 = buildProduct(SKU_DIFFERENT, NAME_GAMING_CHAIR);
+        Product productToAdd = buildProduct(SKU_DIFFERENT_2, NAME_HOME_CHAIR);
+        ModelStubAcceptingProductAdded modelStub = seedModelStubWithProducts(similar1, similar2);
 
         CommandResult result = new AddProductCommand(productToAdd).execute(modelStub);
 
@@ -188,13 +188,13 @@ public class AddProductCommandTest {
     @Test
     public void execute_vendorEmailDoesNotExist_throwsCommandException() {
         // EP: product references non-existent vendor email -> reject.
-        Product productWithMissingVendor = product(SKU_MONITOR, NAME_MONITOR, EMAIL_VENDOR_MISSING);
+        Product productWithMissingVendor = buildProduct(SKU_MONITOR, NAME_MONITOR, EMAIL_VENDOR_MISSING);
         ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded();
 
         AddProductCommand addProductCommand = new AddProductCommand(productWithMissingVendor);
 
         assertThrows(CommandException.class,
-            String.format(AddProductCommand.MESSAGE_VENDOR_DOES_NOT_EXIST, EMAIL_VENDOR_MISSING), () ->
+                String.format(AddProductCommand.MESSAGE_VENDOR_DOES_NOT_EXIST, EMAIL_VENDOR_MISSING), () ->
                         addProductCommand.execute(modelStub));
     }
 
@@ -208,7 +208,7 @@ public class AddProductCommandTest {
                 .withEmail(existingVendorEmail.value)
                 .withAddress(VENDOR_ADDRESS)
                 .build();
-        Product productWithExistingVendor = product(SKU_MONITOR, NAME_MONITOR, existingVendorEmail.value);
+        Product productWithExistingVendor = buildProduct(SKU_MONITOR, NAME_MONITOR, existingVendorEmail.value);
 
         ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded() {
             @Override
@@ -271,15 +271,15 @@ public class AddProductCommandTest {
         assertEquals(expected, addProductCommand.toString());
     }
 
-    private Product product(String identifier, String name) {
+    private Product buildProduct(String identifier, String name) {
         return new ProductBuilder().withIdentifier(identifier).withName(name).build();
     }
 
-    private Product product(String identifier, String name, String vendorEmail) {
+    private Product buildProduct(String identifier, String name, String vendorEmail) {
         return new ProductBuilder().withIdentifier(identifier).withName(name).withVendorEmail(vendorEmail).build();
     }
 
-    private ModelStubAcceptingProductAdded modelStubWithProducts(Product... products) {
+    private ModelStubAcceptingProductAdded seedModelStubWithProducts(Product... products) {
         ModelStubAcceptingProductAdded modelStub = new ModelStubAcceptingProductAdded();
         for (Product product : products) {
             modelStub.seedExistingProduct(product);
