@@ -131,13 +131,13 @@ public class AddProductCommandParserTest {
     @Test
     public void parse_identifierPrefixMissing_failure() {
         assertParseFailure(parser, VALID_IDENTIFIER_IPAD + PRODUCT_NAME_DESC_IPAD,
-                missingPrefixMessage(PREFIX_IDENTIFIER, FIELD_IDENTIFIER));
+                getMissingPrefixMessage(PREFIX_IDENTIFIER, FIELD_IDENTIFIER));
     }
 
     @Test
     public void parse_namePrefixMissing_failure() {
         assertParseFailure(parser, IDENTIFIER_DESC_IPAD + VALID_PRODUCT_NAME_IPAD,
-                missingPrefixMessage(PREFIX_NAME, FIELD_PRODUCT_NAME));
+                getMissingPrefixMessage(PREFIX_NAME, FIELD_PRODUCT_NAME));
     }
 
     @Test
@@ -205,7 +205,7 @@ public class AddProductCommandParserTest {
         assertEquals(expectedWarnings, command.getWarnings());
     }
 
-    private static String missingPrefixMessage(Prefix prefix, String fieldName) {
+    private static String getMissingPrefixMessage(Prefix prefix, String fieldName) {
         return MESSAGE_MISSING_PREFIX + String.format(MESSAGE_MISSING_FIELD_FORMAT, prefix, fieldName);
     }
 
