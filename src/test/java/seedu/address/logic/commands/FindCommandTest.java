@@ -26,6 +26,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.VendorVault;
+import seedu.address.model.person.NameAndTagMatchesPredicate;
 import seedu.address.model.person.NameContainsKeywordsScoredPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonTagContainsKeywordsPredicate;
@@ -233,6 +234,34 @@ public class FindCommandTest {
     }
 
     @Test
+    public void execute_nameAndTagCombined_filtersByAnd() {
+        // EP: n/ and t/ combined requires both name and tag to match.
+        NameAndTagCombinedTestContext context = prepareNameAndTagCombinedContext();
+        FindCommand command = new FindCommand(context.combinedPredicate);
+
+        context.localExpectedModel.updateFilteredPersonList(context.combinedPredicate);
+        updateExpectedProductFilter(context.localExpectedModel);
+
+        assertCommandSuccess(command, context.localModel, String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1),
+                context.localExpectedModel);
+        assertEquals(Collections.singletonList(context.exactMatch), context.localModel.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_nameAndTagCombined_updatesLinkedProducts() {
+        NameAndTagCombinedTestContext context = prepareNameAndTagCombinedContext();
+        FindCommand command = new FindCommand(context.combinedPredicate);
+
+        context.localExpectedModel.updateFilteredPersonList(context.combinedPredicate);
+        updateExpectedProductFilter(context.localExpectedModel);
+
+        assertCommandSuccess(command, context.localModel, String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1),
+                context.localExpectedModel);
+        assertEquals(Collections.singletonList(context.exactLinkedProduct),
+                context.localModel.getFilteredProductList());
+    }
+
+    @Test
     public void getPendingConfirmation_returnsInactivePendingConfirmation() {
         NameContainsKeywordsScoredPredicate predicate = preparePredicate(" ");
         FindCommand command = new FindCommand(predicate);
@@ -254,6 +283,64 @@ public class FindCommandTest {
      */
     private NameContainsKeywordsScoredPredicate preparePredicate(String userInput) {
         return new NameContainsKeywordsScoredPredicate(Arrays.asList(userInput.split("\\s+")));
+    }
+
+    private NameAndTagCombinedTestContext prepareNameAndTagCombinedContext() {
+        Person exactMatch = new PersonBuilder().withName("Alice Chan").withPhone("11111")
+                .withEmail("alice.vip@example.com").withAddress("Alpha Road").withTags("vip").build();
+        Person nameOnlyMatch = new PersonBuilder().withName("Alice Tan").withPhone("22222")
+                .withEmail("alice.nontag@example.com").withAddress("Beta Road").withTags("lead").build();
+        Person tagOnlyMatch = new PersonBuilder().withName("Brenda Lim").withPhone("33333")
+                .withEmail("brenda.vip@example.com").withAddress("Gamma Road").withTags("vip").build();
+
+        Product exactLinkedProduct = new ProductBuilder().withIdentifier("SKU-9101")
+                .withName("Alice Vip Product").withVendorEmail(exactMatch.getEmail().toString()).build();
+        Product nameOnlyLinkedProduct = new ProductBuilder().withIdentifier("SKU-9102")
+                .withName("Alice Lead Product").withVendorEmail(nameOnlyMatch.getEmail().toString()).build();
+        Product tagOnlyLinkedProduct = new ProductBuilder().withIdentifier("SKU-9103")
+                .withName("Brenda Vip Product").withVendorEmail(tagOnlyMatch.getEmail().toString()).build();
+
+        AddressBook addressBook = new AddressBook();
+        addressBook.addPerson(exactMatch);
+        addressBook.addPerson(nameOnlyMatch);
+        addressBook.addPerson(tagOnlyMatch);
+
+        Inventory inventory = new Inventory();
+        inventory.addProduct(exactLinkedProduct);
+        inventory.addProduct(nameOnlyLinkedProduct);
+        inventory.addProduct(tagOnlyLinkedProduct);
+
+        Model localModel = new ModelManager(
+                new VendorVault(addressBook, inventory), new UserPrefs(), new Aliases());
+        Model localExpectedModel = new ModelManager(
+                new VendorVault(addressBook, inventory), new UserPrefs(), new Aliases());
+
+        NameContainsKeywordsScoredPredicate namePredicate =
+                new NameContainsKeywordsScoredPredicate(Collections.singletonList("Alice"));
+        PersonTagContainsKeywordsPredicate tagPredicate =
+                new PersonTagContainsKeywordsPredicate(Collections.singletonList("vip"));
+        NameAndTagMatchesPredicate combinedPredicate = new NameAndTagMatchesPredicate(namePredicate, tagPredicate);
+
+        return new NameAndTagCombinedTestContext(localModel, localExpectedModel,
+                exactMatch, exactLinkedProduct, combinedPredicate);
+    }
+
+    private static class NameAndTagCombinedTestContext {
+        private final Model localModel;
+        private final Model localExpectedModel;
+        private final Person exactMatch;
+        private final Product exactLinkedProduct;
+        private final NameAndTagMatchesPredicate combinedPredicate;
+
+        private NameAndTagCombinedTestContext(Model localModel, Model localExpectedModel,
+                                              Person exactMatch, Product exactLinkedProduct,
+                                              NameAndTagMatchesPredicate combinedPredicate) {
+            this.localModel = localModel;
+            this.localExpectedModel = localExpectedModel;
+            this.exactMatch = exactMatch;
+            this.exactLinkedProduct = exactLinkedProduct;
+            this.combinedPredicate = combinedPredicate;
+        }
     }
 
     private void updateExpectedProductFilter(Model model) {
