@@ -25,10 +25,10 @@ import seedu.address.testutil.ProductBuilder;
 public class VendorProductLinkUtilTest {
 
     private static final String NAME_LINKED_ACTIVE = "Linked Active";
-    public static final String NAME_LINKED_ARCHIVED = "Linked Archived";
-    public static final String NAME_UNLINKED = "Unlinked";
-    public static final String NAME_CLEAR_ACTIVE = "To Clear Active";
-    public static final String NAME_CLEAR_ARCHIVED = "To Clear Archived";
+    private static final String NAME_LINKED_ARCHIVED = "Linked Archived";
+    private static final String NAME_UNLINKED = "Unlinked";
+    private static final String NAME_CLEAR_ACTIVE = "To Clear Active";
+    private static final String NAME_CLEAR_ARCHIVED = "To Clear Archived";
     private static final String NAME_UPDATE_ACTIVE = "To Update Active";
 
     private static final String SKU_LINKED_ACTIVE = "SKU-801";
@@ -43,7 +43,6 @@ public class VendorProductLinkUtilTest {
     private static final String OTHER_EMAIL = "other@example.com";
     private static final Email UPDATED_EMAIL = new Email("updated.link@example.com");
     private static final Email REPLACEMENT_EMAIL = new Email("x@example.com");
-
 
     @Test
     public void collectLinkedProducts_noLinkedProducts_returnsEmptyList() {
