@@ -30,7 +30,13 @@ public class DeleteProductCommandParser implements Parser<DeleteProductCommand> 
         String[] tokens = argsTrimmed.split("\\s+");
         boolean needsConfirmation = !containsConfirmationFlag(
                 tokens, CONFIRMATION_INDICATOR, MESSAGE_INVALID_CONFIRMATION_FLAG);
-        String argsNoConfirmation = removeConfirmationFlag(tokens, CONFIRMATION_INDICATOR);
+
+        String argsNoConfirmation;
+        if (!needsConfirmation) {
+            argsNoConfirmation = removeConfirmationFlag(tokens, CONFIRMATION_INDICATOR);
+        } else {
+            argsNoConfirmation = String.join(" ", tokens);
+        }
 
         if (argsNoConfirmation.isEmpty()) {
             throw new ParseException(

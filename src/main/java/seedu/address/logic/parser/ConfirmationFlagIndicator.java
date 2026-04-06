@@ -16,11 +16,10 @@ public class ConfirmationFlagIndicator {
     public static boolean containsConfirmationFlag(
             String[] tokens, String confirmationFlag, String exceptionMessage) throws ParseException {
 
-        System.out.println(tokens.length);
-
         if (tokens.length <= 1) {
             return false;
         }
+
         boolean hasWronglyFormedFlag = Arrays.stream(tokens)
                 .anyMatch(token -> isMalformedConfirmationFlag(token, confirmationFlag));
         if (hasWronglyFormedFlag) {
@@ -38,8 +37,16 @@ public class ConfirmationFlagIndicator {
      * Returns a reconstructed command string with the confirmation flag removed.
      */
     public static String removeConfirmationFlag(String[] tokens, String confirmationFlag) {
-        return Arrays.stream(tokens)
-                .filter(t -> !t.equals(confirmationFlag))
-                .collect(Collectors.joining(" "));
+        boolean removed = false;
+        StringBuilder result = new StringBuilder();
+        for (String token : tokens) {
+            if (token.equals(confirmationFlag) && !removed) {
+                removed = true;
+            } else {
+                result.append(token)
+                        .append(" ");
+            }
+        }
+        return result.toString();
     }
 }
