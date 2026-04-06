@@ -39,16 +39,16 @@ public class SetThresholdCommandParserTest {
 
     @Test
     public void parse_validThreshold_returnsCommand() {
-        assertParseSuccess(parser, "5", command("5"));
+        assertParseSuccess(parser, "5", createCommand("5"));
 
         // BV: minimum allowed threshold is 0.
-        assertParseSuccess(parser, " 0 ", command("0"));
+        assertParseSuccess(parser, " 0 ", createCommand("0"));
 
         // BV: maximum integer threshold remains valid.
-        assertParseSuccess(parser, "2147483647", command("2147483647"));
+        assertParseSuccess(parser, "2147483647", createCommand("2147483647"));
     }
 
-    private SetThresholdCommand command(String threshold) {
+    private SetThresholdCommand createCommand(String threshold) {
         return new SetThresholdCommand(new RestockThreshold(threshold));
     }
 }
