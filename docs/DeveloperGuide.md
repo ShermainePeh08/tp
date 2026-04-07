@@ -1086,6 +1086,8 @@ Use case ends.
 1. User chooses to add a new alias by providing the alias name and the original command.
 2. VV validates the inputs, registers the alias, and displays a success message.
 
+Use case ends.
+
 **Extensions**
 
 * 1a. VV detect invalid command format
@@ -1113,6 +1115,8 @@ Use case ends.
 1. User chooses to delete an alias.
 2. VV validates the inputs, deletes the alias, and displays a success message.
 
+Use case ends.
+
 **Extensions**
 
 * 1a. VV detect invalid command format
@@ -1125,8 +1129,23 @@ Use case ends.
 
       Use case ends.
 
+**Use case: UC20 - View Aliases**
 
-**Use case: UC20 - Navigate Command History**
+**Preconditions: Application is running, user is on the main screen.**
+
+**MSS**
+1. User chooses to view all aliases.
+2. VV displays the list of configured aliases.
+
+Use case ends.
+
+**Extensions**
+* 1a. VV detects that no aliases exist.
+    * 1a1. VV displays a message indicating there are no aliases configured.
+
+      Use case ends.
+
+**Use case: UC21 - Navigate Command History**
 
 **Preconditions: Application is running, user is on the main screen.**
 
