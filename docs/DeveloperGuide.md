@@ -1096,15 +1096,37 @@ Use case ends.
 * 1b. VV detects that the original command is invalid or unrecognized.
     * 1b1. VV rejects the command and displays an error indicating the base command is not valid.
 
-      Use case resumes from step 1.
+      Use case ends.
 
 * 1c. VV detects that the alias already exists.
     * 1c1. VV rejects the command and displays an error indicating the alias is already in use.
 
+      Use case ends.
+
+
+**Use case: UC19 - Delete an alias**
+
+**Preconditions: Application is running, user is on the main screen.**
+
+**MSS**
+
+1. User chooses to delete an alias.
+2. VV validates the inputs, deletes the alias, and displays a success message.
+
+**Extensions**
+
+* 1a. VV detect invalid command format
+    * 1a1. VV rejects the command and displays an error message indicating invalid command format.
+
       Use case resumes from step 1.
 
+* 1b. VV detects that the alias does not exists.
+    * 1b1. VV rejects the command and displays an error indicating the alias does not exists.
 
-**Use case: UC19 - Navigate Command History**
+      Use case ends.
+
+
+**Use case: UC20 - Navigate Command History**
 
 **Preconditions: Application is running, user is on the main screen.**
 
