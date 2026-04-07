@@ -1029,7 +1029,7 @@ Use case ends.
 
 Analogous to !!UC4 - Delete Vendor Contact!!, except the product's identifier is used instead of the vendor's email.
 
-**Use case: UC13 - Clear Products**
+**Use case: UC13 - Clear All Products**
 
 Analogous to !!UC5 - Clearing All Vendor Contacts!!
 
@@ -1077,7 +1077,34 @@ Use case ends.
       Use case ends.
 
 
-**Use case: UC18 - Navigate Command History**
+**Use case: UC18 - Adds an alias**
+
+**Preconditions: Application is running, user is on the main screen.**
+
+**MSS**
+
+1. User chooses to add a new alias by providing the alias name and the original command.
+2. VV validates the inputs, registers the alias, and displays a success message.
+
+**Extensions**
+
+* 1a. VV detect invalid command format
+    * 1a1. VV rejects the command and displays an error message indicating invalid command format.
+
+      Use case resumes from step 1.
+
+* 1b. VV detects that the original command is invalid or unrecognized.
+    * 1b1. VV rejects the command and displays an error indicating the base command is not valid.
+
+      Use case resumes from step 1.
+
+* 1c. VV detects that the alias already exists.
+    * 1c1. VV rejects the command and displays an error indicating the alias is already in use.
+
+      Use case resumes from step 1.
+
+
+**Use case: UC19 - Navigate Command History**
 
 **Preconditions: Application is running, user is on the main screen.**
 
