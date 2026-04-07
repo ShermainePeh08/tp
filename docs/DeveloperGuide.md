@@ -1029,20 +1029,24 @@ Use case ends.
 
 Analogous to !!UC4 - Delete Vendor Contact!!, except the product's identifier is used instead of the vendor's email.
 
-**Use case: UC13 - Find Product**
+**Use case: UC13 - Clear Products**
+
+Analogous to !!UC5 - Clearing All Vendor Contacts!!
+
+**Use case: UC14 - Find Product**
 
 Analogous to !!UC5 - Find Vendor Contact!!.
 
-**Use case: UC14 - Archive a Product**
+**Use case: UC15 - Archive a Product**
 
 Analogous to !!UC6 - Archive a Vendor Contact!!, except the product's identifier is used instead of the vendor's email.
 
-**Use case: UC15 - Restore an Archived Product**
+**Use case: UC16 - Restore an Archived Product**
 
 Analogous to !!UC7 - Restore an Archived Vendor Contact!!, except the product's identifier is used instead of the 
 vendor's email.
 
-**Use case: UC16 - Undo/Redo a Change**
+**Use case: UC17 - Undo/Redo a Change**
 
 **Preconditions: Application is running, user is on the main screen.**
 
@@ -1073,7 +1077,7 @@ Use case ends.
       Use case ends.
 
 
-**Use case: UC17 - Navigate Command History**
+**Use case: UC18 - Navigate Command History**
 
 **Preconditions: Application is running, user is on the main screen.**
 
