@@ -177,47 +177,30 @@ public class FindCommandTest {
 
     @Test
     public void execute_tagModeMultipleKeywords_filtersByTagAndExcludesArchived() {
-        // This scenario verifies two things together for tag filtering:
-        // OR semantics across keywords and exclusion of archived contacts.
-        Person vipContact = new PersonBuilder().withName("Vip Contact").withPhone("11111")
-                .withEmail("vip@example.com").withAddress("Vip Street").withTags("vip").build();
-        Person leadContact = new PersonBuilder().withName("Lead Contact").withPhone("22222")
-                .withEmail("lead@example.com").withAddress("Lead Street").withTags("lead").build();
-        Person archivedVipContact = new PersonBuilder().withName("Archived Vip").withPhone("33333")
-                .withEmail("archivedvip@example.com").withAddress("Archived Street")
-                .withTags("vip").build().archive();
+        TagModeTestContext context = prepareTagModeContext();
+        FindCommand command = new FindCommand(context.predicate);
 
-        Product vipLinkedProduct = new ProductBuilder().withIdentifier("SKU-9001")
-                .withName("Vip Product").withVendorEmail(vipContact.getEmail().toString()).build();
-        Product leadLinkedProduct = new ProductBuilder().withIdentifier("SKU-9002")
-                .withName("Lead Product").withVendorEmail(leadContact.getEmail().toString()).build();
-        Product archivedVipLinkedProduct = new ProductBuilder().withIdentifier("SKU-9003")
-                .withName("Archived Vip Product")
-                .withVendorEmail(archivedVipContact.getEmail().toString()).build();
+        context.localExpectedModel.updateFilteredPersonList(
+                person -> !person.isArchived() && context.predicate.test(person));
+        updateExpectedProductFilter(context.localExpectedModel);
 
-        AddressBook addressBook = new AddressBook();
-        addressBook.addPerson(vipContact);
-        addressBook.addPerson(leadContact);
-        addressBook.addPerson(archivedVipContact);
+        assertCommandSuccess(command, context.localModel, messageForCount(2), context.localExpectedModel);
+        assertEquals(Arrays.asList(context.vipContact, context.leadContact),
+                context.localModel.getFilteredPersonList());
+    }
 
-        Inventory inventory = new Inventory();
-        inventory.addProduct(vipLinkedProduct);
-        inventory.addProduct(leadLinkedProduct);
-        inventory.addProduct(archivedVipLinkedProduct);
+    @Test
+    public void execute_tagModeMultipleKeywords_updatesLinkedProducts() {
+        TagModeTestContext context = prepareTagModeContext();
+        FindCommand command = new FindCommand(context.predicate);
 
-        Model localModel = modelFromData(addressBook, inventory);
-        Model localExpectedModel = modelFromData(addressBook, inventory);
+        context.localExpectedModel.updateFilteredPersonList(
+                person -> !person.isArchived() && context.predicate.test(person));
+        updateExpectedProductFilter(context.localExpectedModel);
 
-        PersonTagContainsKeywordsPredicate predicate =
-                new PersonTagContainsKeywordsPredicate(Arrays.asList("vip", "lead"));
-        FindCommand command = new FindCommand(predicate);
-
-        localExpectedModel.updateFilteredPersonList(person -> !person.isArchived() && predicate.test(person));
-        updateExpectedProductFilter(localExpectedModel);
-
-        assertCommandSuccess(command, localModel, messageForCount(2), localExpectedModel);
-        assertEquals(Arrays.asList(vipContact, leadContact), localModel.getFilteredPersonList());
-        assertEquals(Arrays.asList(vipLinkedProduct, leadLinkedProduct), localModel.getFilteredProductList());
+        assertCommandSuccess(command, context.localModel, messageForCount(2), context.localExpectedModel);
+        assertEquals(Arrays.asList(context.vipLinkedProduct, context.leadLinkedProduct),
+                context.localModel.getFilteredProductList());
     }
 
     @Test
@@ -304,6 +287,43 @@ public class FindCommandTest {
         return new ModelManager(vault, new UserPrefs(), new Aliases());
     }
 
+    private TagModeTestContext prepareTagModeContext() {
+        Person vipContact = new PersonBuilder().withName("Vip Contact").withPhone("11111")
+                .withEmail("vip@example.com").withAddress("Vip Street").withTags("vip").build();
+        Person leadContact = new PersonBuilder().withName("Lead Contact").withPhone("22222")
+                .withEmail("lead@example.com").withAddress("Lead Street").withTags("lead").build();
+        Person archivedVipContact = new PersonBuilder().withName("Archived Vip").withPhone("33333")
+                .withEmail("archivedvip@example.com").withAddress("Archived Street")
+                .withTags("vip").build().archive();
+
+        Product vipLinkedProduct = new ProductBuilder().withIdentifier("SKU-9001")
+                .withName("Vip Product").withVendorEmail(vipContact.getEmail().toString()).build();
+        Product leadLinkedProduct = new ProductBuilder().withIdentifier("SKU-9002")
+                .withName("Lead Product").withVendorEmail(leadContact.getEmail().toString()).build();
+        Product archivedVipLinkedProduct = new ProductBuilder().withIdentifier("SKU-9003")
+                .withName("Archived Vip Product")
+                .withVendorEmail(archivedVipContact.getEmail().toString()).build();
+
+        AddressBook addressBook = new AddressBook();
+        addressBook.addPerson(vipContact);
+        addressBook.addPerson(leadContact);
+        addressBook.addPerson(archivedVipContact);
+
+        Inventory inventory = new Inventory();
+        inventory.addProduct(vipLinkedProduct);
+        inventory.addProduct(leadLinkedProduct);
+        inventory.addProduct(archivedVipLinkedProduct);
+
+        Model localModel = modelFromData(addressBook, inventory);
+        Model localExpectedModel = modelFromData(addressBook, inventory);
+
+        PersonTagContainsKeywordsPredicate predicate =
+                new PersonTagContainsKeywordsPredicate(Arrays.asList("vip", "lead"));
+
+        return new TagModeTestContext(localModel, localExpectedModel, predicate,
+                vipContact, leadContact, vipLinkedProduct, leadLinkedProduct);
+    }
+
     private NameAndTagCombinedTestContext prepareNameAndTagCombinedContext() {
         Person exactMatch = new PersonBuilder().withName("Alice Chan").withPhone("11111")
                 .withEmail("alice.vip@example.com").withAddress("Alpha Road").withTags("vip").build();
@@ -357,6 +377,29 @@ public class FindCommandTest {
             this.exactMatch = exactMatch;
             this.exactLinkedProduct = exactLinkedProduct;
             this.combinedPredicate = combinedPredicate;
+        }
+    }
+
+    private static class TagModeTestContext {
+        private final Model localModel;
+        private final Model localExpectedModel;
+        private final PersonTagContainsKeywordsPredicate predicate;
+        private final Person vipContact;
+        private final Person leadContact;
+        private final Product vipLinkedProduct;
+        private final Product leadLinkedProduct;
+
+        private TagModeTestContext(Model localModel, Model localExpectedModel,
+                                                           PersonTagContainsKeywordsPredicate predicate,
+                                                           Person vipContact, Person leadContact,
+                                                           Product vipLinkedProduct, Product leadLinkedProduct) {
+            this.localModel = localModel;
+            this.localExpectedModel = localExpectedModel;
+            this.predicate = predicate;
+            this.vipContact = vipContact;
+            this.leadContact = leadContact;
+            this.vipLinkedProduct = vipLinkedProduct;
+            this.leadLinkedProduct = leadLinkedProduct;
         }
     }
 
