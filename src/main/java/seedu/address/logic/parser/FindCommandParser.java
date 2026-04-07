@@ -18,7 +18,6 @@ import seedu.address.model.person.PersonTagContainsKeywordsPredicate;
  * Parses input arguments and creates a new FindCommand object
  */
 public class FindCommandParser implements Parser<FindCommand> {
-    private static final String WHITESPACE_REGEX = "\\s+";
     private static final String MESSAGE_NAME_KEYWORD_BLANK = "Name keyword should not be blank.";
     private static final String MESSAGE_TAG_KEYWORD_BLANK = "Tag keyword should not be blank.";
 
@@ -34,12 +33,7 @@ public class FindCommandParser implements Parser<FindCommand> {
         List<String> rawTagValues = argMultimap.getAllValues(PREFIX_TAG);
         boolean hasAnyPrefix = !rawNameValues.isEmpty() || !rawTagValues.isEmpty();
 
-        if (!hasAnyPrefix) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-        }
-
-        if (!argMultimap.getPreamble().isEmpty()) {
+        if (hasAnyPrefix && !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(MESSAGE_NON_PREFIX_BEFORE_PREFIX + FindCommand.MESSAGE_USAGE);
         }
 
@@ -74,7 +68,7 @@ public class FindCommandParser implements Parser<FindCommand> {
 
     private List<String> flattenKeywordValues(List<String> rawValues) {
         return rawValues.stream()
-                .flatMap(value -> Stream.of(value.split(WHITESPACE_REGEX)))
+                .flatMap(value -> Stream.of(value.split("\\s")))
                 .map(String::trim)
                 .filter(token -> !token.isEmpty())
                 .toList();
