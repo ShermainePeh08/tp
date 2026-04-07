@@ -13,7 +13,11 @@
 
 ## **Acknowledgements**
 
-Le Hua: Used ChatGPT to increase the productivity of writing code, discuss and solve bugs
+Our team used AI-assisted coding tools during development:
+
+* **Tool:** GitHub Copilot, Claude, ChatGPT
+* **Who used it:** all team members
+* **Extent of use:** used widely as an auto-complete and drafting aid across some coding, tests, and documentation tasks, all generated suggestions were reviewed and adapted by the team before merging.
 
 --------------------------------------------------------------------------------------------------------------------
 
