@@ -626,7 +626,7 @@ is implemented through a match predicate and shared ranking contract:
 
 2. The same applies for `ProductNameContainsKeywordsScoredPredicate`.
 
-3. `RelevanceRank` defines the ranking contract.
+3. `FindRelevance` defines the ranking contract.
    * Keyword-token matches are tiered: `EXACT_TOKEN` > `PREFIX_TOKEN` > `SUBSTRING_TOKEN` > `NO_MATCH`.
    * `Score(MatchTier tier, int unmatchedCharCount, String sortKey)` represents how relevant a match is.
    * `SCORE_COMPARATOR` implements score comparison.
@@ -670,15 +670,19 @@ The usage scenario for `findproduct` is analogous.
 
 **Aspect: Matching strategy**
 
-* **Alternative 1 (current choice):** Partial matching
-  * Pros: Tolerant of incomplete keywords, hence more user-friendly.
+* **Alternative 1:** Partial matching
+  * Pros: Tolerant of incomplete keywords.
   * Cons: Broader set of results.
 
-* **Alternative 2:** Exact matching
+* **Alternative 2:** Full-word matching
   * Pros: Simpler design; Stricter set of results.
-  * Cons: Low usability as users have to remember exact words.
+  * Cons: Users have to remember exact words.
 
-Alternative 1 was chosen to ensure discoverability and improve user experience.
+Alternative 1 was chosen for searching by name. Users often remember only parts of a name, so partial matching helps with reducing failed searches.
+
+Alternative 2 was chosen for searching by tag. Tags represent categories, so users typically expect precise filtering.
+
+This split approach ensures usability by supporting both exploratory and precise search.
 
 **Aspect: Ranking implementation**
 
