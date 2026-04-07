@@ -853,12 +853,57 @@ Use case ends.
 
 **Extensions**
 
+* 1a. VV detects invalid command format
+    * 1a1. VV rejects the command and displays an error message indicating invalid command format.
+
+      Use case resumes from step 1.
+
+* 1b. VV detects invalid email provided.
+    * 1b1. VV rejects the command and displays an error message.
+
+      Use case resumes from step 1.
+
+* 1c. VV detects that no contact with the given email exists.
+    * 1c1. VV displays an error indicating no vendor was found with that email.
+
+      Use case ends.
+
+* 1d. VV detects confirmation flag in user prompt
+    * 1d1. VV validates the flag, skips the confirmation prompt, and proceeds to deletion.
+  
+      Use case resumes from step 4.
+
 * 2a. User decides not to delete the contact, rejecting the deletion.
     * 2a1. VV displays a list of current vendor contacts.
 
       Use case ends.
 
-**Use case: UC5 - Find Vendor Contact**
+**Use case: UC5 - Clearing All Vendor Contacts**
+
+**Preconditions: Application is running, user is on the main screen and has added a contact.**
+
+**MSS**
+
+1. User chooses to clear all vendor contacts.
+2. VV requests for confirmation for clearing all contacts.
+3. User confirms deletion.
+4. VV clears all contacts and displays an empty list of contacts.
+
+Use case ends.
+
+**Extensions**
+
+* 1a. VV detects confirmation flag in user prompt
+    * 1a1. VV validates the flag, skips the confirmation prompt, and proceeds to deletion.
+
+      Use case resumes from step 4.
+
+* 2a. User decides not to delete the contacts, rejecting the deletion.
+    * 2a1. VV displays a list of current vendor contacts.
+
+      Use case ends.
+
+**Use case: UC6 - Find Vendor Contact**
 
 **Preconditions: Application is running, user is on the main screen and has added a contact.**
 
@@ -876,7 +921,7 @@ Use case ends.
     
       Use case ends.
 
-**Use case: UC6 - Archive a Vendor Contact**
+**Use case: UC7 - Archive a Vendor Contact**
 
 **Preconditions: Application is running, user is on the main screen and has added a contact.**
 
@@ -909,7 +954,7 @@ Use case ends.
 
       Use case ends.
 
-**Use case: UC7 - Restore an Archived Vendor Contact**
+**Use case: UC8 - Restore an Archived Vendor Contact**
 
 **Preconditions: Application is running, user is on the main screen and has at least one archived contact.**
 
@@ -939,10 +984,10 @@ Use case ends.
   
       Use case resumes from step 3.
 
-**Use Case: UC8 - Add a Product**
+**Use Case: UC9 - Add a Product**
 TODO
 
-**Use case: UC9 - Edit a Product**
+**Use case: UC10 - Edit a Product**
 
 **Preconditions: Application is running, user is on the main screen and has added a product.**
 
@@ -980,7 +1025,7 @@ Use case ends.
 
       Use case ends.
 
-**Use Case: UC10 - View Products**
+**Use Case: UC11 - View Products**
 
 **Preconditions: Application is running, user is on the main screen.**
 
@@ -990,40 +1035,28 @@ Use case ends.
 
 Use case ends.
 
-**Use case: UC11 - Delete Product**
+**Use case: UC12 - Delete Product**
 
-**Preconditions: Application is running, user is on the main screen and has added a product.**
+Analogous to !!UC4 - Delete Vendor Contact!!, except the product's identifier is used instead of the vendor's email.
 
-**MSS**
+**Use case: UC13 - Clear All Products**
 
-1. User chooses to delete a product.
-2. VV requests for confirmation for deleting the product.
-3. User confirms deletion.
-4. VV deletes product and displays list of current product.
+Analogous to !!UC5 - Clearing All Vendor Contacts!!
 
-Use case ends.
-
-**Extensions**
-
-* 2a. User decides not to delete the product, rejecting deletion.
-  * 2a1. VV displays a list of current product.
-
-  Use case ends.
-
-**Use case: UC12 - Find Product**
+**Use case: UC14 - Find Product**
 
 Analogous to !!UC5 - Find Vendor Contact!!.
 
-**Use case: UC13 - Archive a Product**
+**Use case: UC15 - Archive a Product**
 
 Analogous to !!UC6 - Archive a Vendor Contact!!, except the product's identifier is used instead of the vendor's email.
 
-**Use case: UC14 - Restore an Archived Product**
+**Use case: UC16 - Restore an Archived Product**
 
 Analogous to !!UC7 - Restore an Archived Vendor Contact!!, except the product's identifier is used instead of the 
 vendor's email.
 
-**Use case: UC15 - Undo/Redo a Change**
+**Use case: UC17 - Undo/Redo a Change**
 
 **Preconditions: Application is running, user is on the main screen.**
 
@@ -1054,7 +1087,75 @@ Use case ends.
       Use case ends.
 
 
-**Use case: UC16 - Navigate Command History**
+**Use case: UC18 - Adds an alias**
+
+**Preconditions: Application is running, user is on the main screen.**
+
+**MSS**
+
+1. User chooses to add a new alias by providing the alias name and the original command.
+2. VV validates the inputs, registers the alias, and displays a success message.
+
+Use case ends.
+
+**Extensions**
+
+* 1a. VV detect invalid command format
+    * 1a1. VV rejects the command and displays an error message indicating invalid command format.
+
+      Use case resumes from step 1.
+
+* 1b. VV detects that the original command is invalid or unrecognized.
+    * 1b1. VV rejects the command and displays an error indicating the base command is not valid.
+
+      Use case ends.
+
+* 1c. VV detects that the alias already exists.
+    * 1c1. VV rejects the command and displays an error indicating the alias is already in use.
+
+      Use case ends.
+
+
+**Use case: UC19 - Delete an alias**
+
+**Preconditions: Application is running, user is on the main screen.**
+
+**MSS**
+
+1. User chooses to delete an alias.
+2. VV validates the inputs, deletes the alias, and displays a success message.
+
+Use case ends.
+
+**Extensions**
+
+* 1a. VV detect invalid command format
+    * 1a1. VV rejects the command and displays an error message indicating invalid command format.
+
+      Use case resumes from step 1.
+
+* 1b. VV detects that the alias does not exists.
+    * 1b1. VV rejects the command and displays an error indicating the alias does not exists.
+
+      Use case ends.
+
+**Use case: UC20 - View Aliases**
+
+**Preconditions: Application is running, user is on the main screen.**
+
+**MSS**
+1. User chooses to view all aliases.
+2. VV displays the list of configured aliases.
+
+Use case ends.
+
+**Extensions**
+* 1a. VV detects that no aliases exist.
+    * 1a1. VV displays a message indicating there are no aliases configured.
+
+      Use case ends.
+
+**Use case: UC21 - Navigate Command History**
 
 **Preconditions: Application is running, user is on the main screen.**
 
