@@ -295,16 +295,17 @@ The same rules for multiple phone numbers and duplicates that apply to `add` als
 
 #### Locating contacts: `find`
 
-Displays contacts whose name contain any of the given keyword(s).
+Displays contacts with name and/or tag matching the given keyword(s).
 
 Format:
 
 ```
-find KEYWORD [MORE_KEYWORDS]
+find [n/NAME_KEYWORD]... [t/TAG_KEYWORD]...
 ```
+(at least one prefix required)
 
 Examples:
-* `find syn`
+* `find n/TechSource t/electronics` matches name containing `TechSource` and tag `electronics`
 
 <box type="info" seamless>
 
@@ -527,7 +528,7 @@ The same rules for email that apply to add also apply to edit. For more details 
 
 #### Locating products : `findproduct`
 
-Displays products whose names contain any of the given keyword(s).
+Displays products with name matching any of the given keyword(s).
 
 Format:
 
@@ -802,16 +803,16 @@ exit
 
 ### Contact Commands
 
-| Action                | Command                                                                 | Example                                                                                                    | What it does                                                       |
-|-----------------------|-------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
-| **Add Contact**       | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`                 | `add n/TechSource Electronics p/61234567 e/sales@techsource.com a/15 Kallang Way, Singapore t/electronics` | Adds a contact                                                     |
-| **Edit Contact**      | `edit EMAIL [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`  | `edit sales@techsource.com n/TechSource p/61234568`                                                        | Edits a contact's details                                          |
-| **Delete Contact**    | `delete EMAIL`                                                          | `delete sales@techsource.com`                                                                              | Deletes a contact                                                  |
-| **List Contacts**     | `list`                                                                  | &nbsp;                                                                                                     | Lists active contacts                                              |
-| **Find Contacts**     | `find KEYWORD [MORE_KEYWORDS]`                                          | `find TechSource`                                                                                          | Displays contacts whose names contain any of the given keyword(s)  |
-| **Archive Contact**   | `archive EMAIL`                                                         | `archive sales@techsource.com`                                                                             | Archives a contact                                                 |
-| **Restore Contact**   | `restore [EMAIL]`                                                       | `restore sales@techsource.com`                                                                             | Restores an archived contact; lists all archived if no email given |
-| **Clear Contacts**    | `clear`                                                                 | &nbsp;                                                                                                     | Clears all contacts                                                |
+| Action              | Command                                                                | Example                                                                                                    | What it does                                                       |
+|---------------------|------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
+| **Add Contact**     | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`                | `add n/TechSource Electronics p/61234567 e/sales@techsource.com a/15 Kallang Way, Singapore t/electronics` | Adds a contact                                                     |
+| **Edit Contact**    | `edit EMAIL [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​` | `edit sales@techsource.com n/TechSource p/61234568`                                                        | Edits a contact's details                                          |
+| **Delete Contact**  | `delete EMAIL`                                                         | `delete sales@techsource.com`                                                                              | Deletes a contact                                                  |
+| **List Contacts**   | `list`                                                                 | &nbsp;                                                                                                     | Lists active contacts                                              |
+| **Find Contacts**   | `find [n/NAME]... [t/TAG]...`                                          | `find n/TechSource <br/>t/electronics`                                                                     | Displays contacts with matching name and/or tag                    |
+| **Archive Contact** | `archive EMAIL`                                                        | `archive sales@techsource.com`                                                                             | Archives a contact                                                 |
+| **Restore Contact** | `restore [EMAIL]`                                                      | `restore sales@techsource.com`                                                                             | Restores an archived contact; lists all archived if no email given |
+| **Clear Contacts**  | `clear`                                                                | &nbsp;                                                                                                     | Clears all contacts                                                |
 
 <div style="height: 30px;"></div>
 
@@ -823,7 +824,7 @@ exit
 | **Edit Product**    | `editproduct IDENTIFIER [id/NEW_IDENTIFIER] [n/NAME] [q/QUANTITY] [th/RESTOCK_THRESHOLD] [e/VENDOR_EMAIL]` | `editproduct SKU-1003 n/Arduino Mega q/35`                                  | Edits a product's details                                               |
 | **Delete Product**  | `deleteproduct PRODUCT_IDENTIFIER`                                                                         | `deleteproduct SKU-1003`                                                    | Deletes a product                                                       |
 | **List Products**   | `listproduct`                                                                                              | &nbsp;                                                                      | Lists active products                                                   |
-| **Find Products**   | `findproduct KEYWORD [MORE_KEYWORDS]`                                                                                             | `findproduct uno`                                                           | Displays products whose names contain any of the given keyword(s)       |
+| **Find Products**   | `findproduct KEYWORD [MORE_KEYWORDS]`                                                                      | `findproduct uno`                                                           | Displays products with matching name.                                   |
 | **Archive Product** | `archiveproduct IDENTIFIER`                                                                                | `archiveproduct SKU-1003`                                                   | Archives a product                                                      |
 | **Restore Product** | `restoreproduct [IDENTIFIER]`                                                                              | `restoreproduct SKU-1003`                                                   | Restores an archived product; lists all archived if no identifier given |
 | **Clear Products**  | `clearproduct`                                                                                             | &nbsp;                                                                      | Clears all products                                                     |
@@ -1039,9 +1040,12 @@ Most errors and warnings in `add` also occur in `edit`, except the first three e
 
 Use this section when `find` fails.
 
-| Scenario               | Message shown                 | How to fix          |
-|------------------------|-------------------------------|---------------------|
-| No keyword is provided | `Invalid command format! ...` | Provide keyword(s). |
+| Scenario                             | Message shown                                                | How to fix                              |
+|--------------------------------------|--------------------------------------------------------------|-----------------------------------------|
+| No prefixes at all                   | `Invalid Command format! ...`                                | Use the full prefixed format.           |
+| Text appears before the first prefix | `No non-prefix characters before prefix(es) is allowed, ...` | Remove any text before the prefix.      |
+| Name keyword is blank                | `Name keyword should not be blank.`                          | Provide a non-empty keyword after `n/`. |
+| Tag keyword is blank                 | `Tag keyword should not be blank.`                           | Provide a non-empty keyword after `t/`. |
 
 <div style="height: 30px;"></div>
 
@@ -1168,7 +1172,7 @@ Common `editproduct` warnings:
 
 #### Troubleshooting `findproduct`
 
-Use this section when `find` fails.
+Use this section when `findproduct` fails.
 
 | Scenario               | Message shown                 | How to fix          |
 |------------------------|-------------------------------|---------------------|
