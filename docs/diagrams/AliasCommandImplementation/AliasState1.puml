@@ -4,7 +4,7 @@ skinparam ClassBorderColor MODEL_COLOR
 skinparam ClassBackgroundColor MODEL_COLOR_T1
 skinparam ArrowColor MODEL_COLOR
 
-title After adding alias ls
+title After command "alias list ls"
 
 object "<u>aliasList:AliasList</u>" as list {
 }
