@@ -15,6 +15,8 @@ import seedu.address.model.person.NameContainsKeywordsScoredPredicate;
 import seedu.address.model.person.PersonTagContainsKeywordsPredicate;
 
 public class FindCommandParserTest {
+    private static final String MESSAGE_NAME_KEYWORD_BLANK = "Name keyword should not be blank.";
+    private static final String MESSAGE_TAG_KEYWORD_BLANK = "Tag keyword should not be blank.";
 
     private final FindCommandParser parser = new FindCommandParser();
 
@@ -67,17 +69,29 @@ public class FindCommandParserTest {
     }
 
     @Test
-    public void parse_emptyEffectiveKeywords_throwsParseException() {
-        // BV: both prefixes present but all values empty is invalid.
-        assertInvalidFormat("n/ t/");
+    public void parse_noPrefixes_throwsInvalidFormat() {
+        // EP: no prefixes at all should be treated as invalid command format.
+        assertInvalidFormat("Alice Bob");
+        assertInvalidFormat("syn");
+    }
 
-        // BV: unknown input without prefixes is invalid
-        assertNonPrefixFailure("Alice Bob");
+    @Test
+    public void parse_blankNameKeyword_throwsParseException() {
+        // BV: blank value after n/ should produce targeted name-keyword guidance.
+        assertParseFailure(parser, "n/", MESSAGE_NAME_KEYWORD_BLANK);
+        assertParseFailure(parser, "n/ t/vip", MESSAGE_NAME_KEYWORD_BLANK);
+    }
+
+    @Test
+    public void parse_blankTagKeyword_throwsParseException() {
+        // BV: blank value after t/ should produce targeted tag-keyword guidance.
+        assertParseFailure(parser, "t/", MESSAGE_TAG_KEYWORD_BLANK);
+        assertParseFailure(parser, "t/ n/Alice", MESSAGE_TAG_KEYWORD_BLANK);
     }
 
     @Test
     public void parse_caseSensitivePrefixes_throwsParseException() {
-        assertNonPrefixFailure("N/Alice T/vip");
+        assertInvalidFormat("N/Alice T/vip");
     }
 
     private void assertInvalidFormat(String userInput) {
