@@ -16,22 +16,20 @@ import seedu.address.model.person.PersonTagContainsKeywordsPredicate;
 
 public class FindCommandParserTest {
 
-    private FindCommandParser parser = new FindCommandParser();
+    private final FindCommandParser parser = new FindCommandParser();
 
     @Test
     public void parse_emptyArg_throwsParseException() {
         // BV: empty input should be rejected.
-        assertParseFailure(parser, "", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
-
         // EP: whitespace-only input belongs to the same invalid partition after trimming.
-        assertParseFailure(parser, "     ", String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        assertInvalidFormat("");
+        assertInvalidFormat("     ");
     }
 
     @Test
     public void parse_namePrefixOnly_returnsFindCommand() {
         // EP: n/-only input produces name-based search.
-        FindCommand expectedFindCommand =
-                new FindCommand(new NameContainsKeywordsScoredPredicate(Arrays.asList("Alice", "Bob")));
+        FindCommand expectedFindCommand = createNameCommand("Alice", "Bob");
         assertParseSuccess(parser, "n/Alice n/Bob", expectedFindCommand);
 
         // BV: whitespace splitting inside a value should produce multiple keywords.
@@ -41,8 +39,7 @@ public class FindCommandParserTest {
     @Test
     public void parse_tagPrefixOnly_returnsFindCommand() {
         // EP: t/-only input produces tag-based search.
-        FindCommand expectedFindCommand =
-                new FindCommand(new PersonTagContainsKeywordsPredicate(Arrays.asList("vip", "priority")));
+        FindCommand expectedFindCommand = createTagCommand("vip", "priority");
         assertParseSuccess(parser, "t/vip t/priority", expectedFindCommand);
 
         // BV: whitespace splitting inside a value should produce multiple keywords.
@@ -52,13 +49,8 @@ public class FindCommandParserTest {
     @Test
     public void parse_nameAndTagPrefixes_returnsFindCommand() {
         // EP: when both n/ and t/ are present, both predicates are combined with AND
-        NameContainsKeywordsScoredPredicate namePredicate =
-                new NameContainsKeywordsScoredPredicate(Arrays.asList("Alice", "Bob"));
-        PersonTagContainsKeywordsPredicate tagPredicate =
-                new PersonTagContainsKeywordsPredicate(Arrays.asList("vip", "lead"));
-
-        FindCommand expectedFindCommand =
-                new FindCommand(new NameAndTagMatchesPredicate(namePredicate, tagPredicate));
+        FindCommand expectedFindCommand = createCombinedCommand(
+            Arrays.asList("Alice", "Bob"), Arrays.asList("vip", "lead"));
         assertParseSuccess(parser, "n/Alice Bob t/vip lead", expectedFindCommand);
 
         // EP: repeated prefixes in mixed order remain cumulative.
@@ -68,26 +60,47 @@ public class FindCommandParserTest {
     @Test
     public void parse_nonPrefixPreamble_throwsParseException() {
         // EP: reject non-prefix preamble before valid prefixes.
-        assertParseFailure(parser, "Alice n/Bob", MESSAGE_NON_PREFIX_BEFORE_PREFIX + FindCommand.MESSAGE_USAGE);
+        assertNonPrefixFailure("Alice n/Bob");
 
         // BV: unknown prefix text is rejected.
-        assertParseFailure(parser, "x/Alice n/Bob", MESSAGE_NON_PREFIX_BEFORE_PREFIX + FindCommand.MESSAGE_USAGE);
+        assertNonPrefixFailure("x/Alice n/Bob");
     }
 
     @Test
     public void parse_emptyEffectiveKeywords_throwsParseException() {
         // BV: both prefixes present but all values empty is invalid.
-        assertParseFailure(parser, "n/ t/", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                FindCommand.MESSAGE_USAGE));
+        assertInvalidFormat("n/ t/");
 
         // BV: unknown input without prefixes is invalid
-        assertParseFailure(parser, "Alice Bob", MESSAGE_NON_PREFIX_BEFORE_PREFIX + FindCommand.MESSAGE_USAGE);
+        assertNonPrefixFailure("Alice Bob");
     }
 
     @Test
     public void parse_caseSensitivePrefixes_throwsParseException() {
-        // BV: uppercase prefix variants are not recognized.
-        assertParseFailure(parser, "N/Alice T/vip", MESSAGE_NON_PREFIX_BEFORE_PREFIX + FindCommand.MESSAGE_USAGE);
+        assertNonPrefixFailure("N/Alice T/vip");
+    }
+
+    private void assertInvalidFormat(String userInput) {
+        assertParseFailure(parser, userInput,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+    }
+
+    private void assertNonPrefixFailure(String userInput) {
+        assertParseFailure(parser, userInput, MESSAGE_NON_PREFIX_BEFORE_PREFIX + FindCommand.MESSAGE_USAGE);
+    }
+
+    private FindCommand createNameCommand(String... keywords) {
+        return new FindCommand(new NameContainsKeywordsScoredPredicate(Arrays.asList(keywords)));
+    }
+
+    private FindCommand createTagCommand(String... keywords) {
+        return new FindCommand(new PersonTagContainsKeywordsPredicate(Arrays.asList(keywords)));
+    }
+
+    private FindCommand createCombinedCommand(java.util.List<String> nameKeywords, java.util.List<String> tagKeywords) {
+        NameContainsKeywordsScoredPredicate namePredicate = new NameContainsKeywordsScoredPredicate(nameKeywords);
+        PersonTagContainsKeywordsPredicate tagPredicate = new PersonTagContainsKeywordsPredicate(tagKeywords);
+        return new FindCommand(new NameAndTagMatchesPredicate(namePredicate, tagPredicate));
     }
 
 }
