@@ -230,6 +230,34 @@ public class FindCommandTest {
     }
 
     @Test
+    public void execute_inlineNonRankedPredicate_usesArchivedFilteringLambdaPath() {
+        // This test intentionally uses an inline Predicate<Person> to hit the non-ranked branch in execute().
+        Person archivedActive = new PersonBuilder().withName("Active Archived").withPhone("11111")
+                .withEmail("active.archived@example.com").withAddress("Archive Street").build().archive();
+        Person activeMatch = new PersonBuilder().withName("Active Keep").withPhone("22222")
+                .withEmail("active.keep@example.com").withAddress("Keep Street").build();
+        Person activeMiss = new PersonBuilder().withName("Other Vendor").withPhone("33333")
+                .withEmail("other.vendor@example.com").withAddress("Other Street").build();
+
+        AddressBook addressBook = new AddressBook();
+        addressBook.addPerson(archivedActive);
+        addressBook.addPerson(activeMatch);
+        addressBook.addPerson(activeMiss);
+
+        Model localModel = modelFromData(addressBook, new Inventory());
+        Model localExpectedModel = modelFromData(addressBook, new Inventory());
+
+        FindCommand command = new FindCommand(person -> person.getName().toString().contains("Active"));
+
+        localExpectedModel.updateFilteredPersonList(
+                person -> !person.isArchived() && person.getName().toString().contains("Active"));
+        updateExpectedProductFilter(localExpectedModel);
+
+        assertCommandSuccess(command, localModel, messageForCount(1), localExpectedModel);
+        assertEquals(Collections.singletonList(activeMatch), localModel.getFilteredPersonList());
+    }
+
+    @Test
     public void execute_nameAndTagCombined_filtersByAnd() {
         NameAndTagCombinedTestContext context = prepareNameAndTagCombinedContext();
         FindCommand command = new FindCommand(context.combinedPredicate);
