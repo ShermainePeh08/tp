@@ -221,6 +221,32 @@ public class FindCommandTest {
     }
 
     @Test
+    public void execute_tagOnlyNonRankedPredicate_usesArchivedFiltering() {
+        Person archivedVip = new PersonBuilder().withName("Archived Vip Only").withPhone("11111")
+                .withEmail("archived.only@example.com").withAddress("Archive Street").withTags(TAG_VIP)
+                .build().archive();
+        Person activeVip = new PersonBuilder().withName("Active Vip Only").withPhone("22222")
+                .withEmail("active.only@example.com").withAddress("Active Street").withTags(TAG_VIP).build();
+
+        AddressBook addressBook = new AddressBook();
+        addressBook.addPerson(archivedVip);
+        addressBook.addPerson(activeVip);
+
+        Model localModel = modelFromData(addressBook, new Inventory());
+        Model localExpectedModel = modelFromData(addressBook, new Inventory());
+
+        PersonTagContainsKeywordsPredicate predicate =
+                new PersonTagContainsKeywordsPredicate(Collections.singletonList(TAG_VIP));
+        FindCommand command = new FindCommand(predicate);
+
+        localExpectedModel.updateFilteredPersonList(person -> !person.isArchived() && predicate.test(person));
+        updateExpectedProductFilter(localExpectedModel);
+
+        assertCommandSuccess(command, localModel, messageForCount(1), localExpectedModel);
+        assertEquals(Collections.singletonList(activeVip), localModel.getFilteredPersonList());
+    }
+
+    @Test
     public void execute_nameAndTagCombined_filtersByAnd() {
         NameAndTagCombinedTestContext context = prepareNameAndTagCombinedContext();
         FindCommand command = new FindCommand(context.combinedPredicate);
