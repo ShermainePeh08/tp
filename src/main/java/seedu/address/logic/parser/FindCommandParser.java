@@ -19,6 +19,8 @@ import seedu.address.model.person.PersonTagContainsKeywordsPredicate;
  */
 public class FindCommandParser implements Parser<FindCommand> {
     private static final String WHITESPACE_REGEX = "\\s+";
+    private static final String MESSAGE_NAME_KEYWORD_BLANK = "Name keyword should not be blank.";
+    private static final String MESSAGE_TAG_KEYWORD_BLANK = "Tag keyword should not be blank.";
 
     /**
      * Parses the given {@code String} of arguments in the context of the FindCommand
@@ -28,12 +30,29 @@ public class FindCommandParser implements Parser<FindCommand> {
     public FindCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + args, PREFIX_NAME, PREFIX_TAG);
 
+        List<String> rawNameValues = argMultimap.getAllValues(PREFIX_NAME);
+        List<String> rawTagValues = argMultimap.getAllValues(PREFIX_TAG);
+        boolean hasAnyPrefix = !rawNameValues.isEmpty() || !rawTagValues.isEmpty();
+
+        if (!hasAnyPrefix) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+        }
+
         if (!argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(MESSAGE_NON_PREFIX_BEFORE_PREFIX + FindCommand.MESSAGE_USAGE);
         }
 
-        List<String> nameKeywords = flattenKeywordValues(argMultimap.getAllValues(PREFIX_NAME));
-        List<String> tagKeywords = flattenKeywordValues(argMultimap.getAllValues(PREFIX_TAG));
+        if (containsBlankKeyword(rawNameValues)) {
+            throw new ParseException(MESSAGE_NAME_KEYWORD_BLANK);
+        }
+
+        if (containsBlankKeyword(rawTagValues)) {
+            throw new ParseException(MESSAGE_TAG_KEYWORD_BLANK);
+        }
+
+        List<String> nameKeywords = flattenKeywordValues(rawNameValues);
+        List<String> tagKeywords = flattenKeywordValues(rawTagValues);
 
         if (nameKeywords.isEmpty() && tagKeywords.isEmpty()) {
             throw new ParseException(
@@ -59,6 +78,10 @@ public class FindCommandParser implements Parser<FindCommand> {
                 .map(String::trim)
                 .filter(token -> !token.isEmpty())
                 .toList();
+    }
+
+    private boolean containsBlankKeyword(List<String> rawValues) {
+        return rawValues.stream().anyMatch(value -> value.trim().isEmpty());
     }
 
 }
