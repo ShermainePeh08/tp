@@ -39,6 +39,8 @@ public final class VendorVaultConsistencyUtil {
             "Unknown vendor email '%s' at %s.";
     private static final String IDENTIFIER_FIELD = "identifier";
     private static final String VENDOR_EMAIL_FIELD = "vendorEmail";
+    private static final String CAPTURED_FIELD_PATTERN_TEMPLATE = "\"%s\"\\s*:\\s*\"([^\"]+)\"";
+    private static final String EXACT_FIELD_PATTERN_TEMPLATE = "\"%s\"\\s*:\\s*\"%s\"";
 
     private VendorVaultConsistencyUtil() {}
 
@@ -173,12 +175,12 @@ public final class VendorVaultConsistencyUtil {
     }
 
     private static Pattern buildCapturedFieldPattern(String jsonField) {
-        return Pattern.compile("\\\"" + jsonField + "\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"");
+        return Pattern.compile(CAPTURED_FIELD_PATTERN_TEMPLATE.formatted(Pattern.quote(jsonField)));
     }
 
     private static Pattern buildExactFieldPattern(String jsonField, String fieldValue) {
-        return Pattern.compile("\\\"" + Pattern.quote(jsonField) + "\\\"\\s*:\\s*\\\""
-                + Pattern.quote(fieldValue) + "\\\"");
+        return Pattern.compile(EXACT_FIELD_PATTERN_TEMPLATE.formatted(
+                Pattern.quote(jsonField), Pattern.quote(fieldValue)));
     }
 
     private static List<String> readAllLines(Path filePath) throws IOException {
