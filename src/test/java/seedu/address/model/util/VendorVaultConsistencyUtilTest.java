@@ -1,6 +1,12 @@
 package seedu.address.model.util;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static seedu.address.model.util.VendorVaultConsistencyUtil.MESSAGE_DUPLICATE_PRODUCT_IDENTIFIER;
+import static seedu.address.model.util.VendorVaultConsistencyUtil.MESSAGE_UNKNOWN_VENDOR_LINK;
+import static seedu.address.model.util.VendorVaultConsistencyUtil.MESSAGE_UNKNOWN_VENDOR_LINK_WITH_LINES;
+import static seedu.address.model.util.VendorVaultConsistencyUtil.findUnknownVendorLinksFromJson;
+import static seedu.address.model.util.VendorVaultConsistencyUtil.validateOrThrow;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalProducts.getTypicalInventory;
@@ -26,22 +32,23 @@ public class VendorVaultConsistencyUtilTest {
             TEST_DATA_FOLDER.resolve("unknownVendorSingleProductInventory.json");
     private static final Path UNKNOWN_VENDOR_MIXED_FILE =
             TEST_DATA_FOLDER.resolve("unknownVendorMixedInventory.json");
+    private static final Path MISSING_FILE = TEST_DATA_FOLDER.resolve("missingInventoryFile.json");
 
     @Test
     public void validateOrThrow_nullAddressBook_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                VendorVaultConsistencyUtil.validateOrThrow(null, getTypicalInventory()));
+                validateOrThrow(null, getTypicalInventory()));
     }
 
     @Test
     public void validateOrThrow_nullInventory_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () ->
-                VendorVaultConsistencyUtil.validateOrThrow(getTypicalAddressBook(), null));
+                validateOrThrow(getTypicalAddressBook(), null));
     }
 
     @Test
     public void validateOrThrow_validInventory_success() {
-        assertDoesNotThrow(() -> VendorVaultConsistencyUtil.validateOrThrow(
+        assertDoesNotThrow(() -> validateOrThrow(
                 getTypicalAddressBook(),
                 getTypicalInventory()));
     }
@@ -58,9 +65,9 @@ public class VendorVaultConsistencyUtilTest {
 
         ReadOnlyInventory inventory = inventoryWithProducts(unlinkedProduct);
 
-        assertThrows(IllegalValueException.class, String.format(VendorVaultConsistencyUtil.MESSAGE_UNKNOWN_VENDOR_LINK,
+        assertThrows(IllegalValueException.class, String.format(MESSAGE_UNKNOWN_VENDOR_LINK,
                 "SKU-UNKNOWN", "missing@example.com"), () ->
-                VendorVaultConsistencyUtil.validateOrThrow(getTypicalAddressBook(), inventory));
+                validateOrThrow(getTypicalAddressBook(), inventory));
     }
 
     @Test
@@ -76,20 +83,25 @@ public class VendorVaultConsistencyUtilTest {
         ReadOnlyInventory inventory = inventoryWithProducts(unlinkedProduct);
 
         assertThrows(IllegalValueException.class,
-                String.format(VendorVaultConsistencyUtil.MESSAGE_UNKNOWN_VENDOR_LINK_WITH_LINES,
+                String.format(MESSAGE_UNKNOWN_VENDOR_LINK_WITH_LINES,
                         "missing@example.com", "line 6"), () ->
-                        VendorVaultConsistencyUtil.validateOrThrow(getTypicalAddressBook(), inventory,
+                        validateOrThrow(getTypicalAddressBook(), inventory,
                                 UNKNOWN_VENDOR_SINGLE_FILE));
     }
 
     @Test
     public void findUnknownVendorLinksFromJson_withUnknownEmail_returnsLineAwareIssue() {
-        List<String> issues = VendorVaultConsistencyUtil.findUnknownVendorLinksFromJson(
-                getTypicalAddressBook(),
-                UNKNOWN_VENDOR_MIXED_FILE);
+        List<String> issues = findUnknownVendorLinksFromJson(getTypicalAddressBook(), UNKNOWN_VENDOR_MIXED_FILE);
 
-        org.junit.jupiter.api.Assertions.assertEquals(1, issues.size());
-        org.junit.jupiter.api.Assertions.assertEquals("'missing@example.com' at line 13", issues.get(0));
+        assertEquals(1, issues.size());
+        assertEquals("'missing@example.com' at line 13", issues.get(0));
+    }
+
+    @Test
+    public void findUnknownVendorLinksFromJson_missingFile_returnsEmptyList() {
+        List<String> issues = findUnknownVendorLinksFromJson(getTypicalAddressBook(), MISSING_FILE);
+
+        assertEquals(0, issues.size());
     }
 
     @Test
@@ -110,8 +122,82 @@ public class VendorVaultConsistencyUtilTest {
         // EP: Use test double to bypass model-level uniqueness guards.
         ReadOnlyInventory inventory = inventoryWithProducts(first, second);
 
-        assertThrows(IllegalValueException.class, VendorVaultConsistencyUtil.MESSAGE_DUPLICATE_PRODUCT_IDENTIFIER, () ->
-                VendorVaultConsistencyUtil.validateOrThrow(getTypicalAddressBook(), inventory));
+        assertThrows(IllegalValueException.class, MESSAGE_DUPLICATE_PRODUCT_IDENTIFIER, () ->
+                validateOrThrow(getTypicalAddressBook(), inventory));
+    }
+
+    @Test
+    public void validateOrThrow_duplicateIdentifierWithPathButNoLineMatch_throwsGenericDuplicateMessage() {
+        Product first = new ProductBuilder()
+                .withIdentifier("SKU-DUP")
+                .withName("First")
+                .withQuantity("1")
+                .withThreshold("0")
+                .build();
+        Product second = new ProductBuilder()
+                .withIdentifier("SKU-DUP")
+                .withName("Second")
+                .withQuantity("2")
+                .withThreshold("0")
+                .build();
+
+        ReadOnlyInventory inventory = inventoryWithProducts(first, second);
+
+        assertThrows(IllegalValueException.class, MESSAGE_DUPLICATE_PRODUCT_IDENTIFIER, () ->
+                validateOrThrow(getTypicalAddressBook(), inventory, UNKNOWN_VENDOR_SINGLE_FILE));
+    }
+
+    @Test
+    public void validateOrThrow_duplicateIdentifierWithMissingPath_throwsGenericDuplicateMessage() {
+        Product first = new ProductBuilder()
+                .withIdentifier("SKU-DUP")
+                .withName("First")
+                .withQuantity("1")
+                .withThreshold("0")
+                .build();
+        Product second = new ProductBuilder()
+                .withIdentifier("SKU-DUP")
+                .withName("Second")
+                .withQuantity("2")
+                .withThreshold("0")
+                .build();
+
+        ReadOnlyInventory inventory = inventoryWithProducts(first, second);
+
+        assertThrows(IllegalValueException.class, MESSAGE_DUPLICATE_PRODUCT_IDENTIFIER, () ->
+                validateOrThrow(getTypicalAddressBook(), inventory, MISSING_FILE));
+    }
+
+    @Test
+    public void validateOrThrow_unknownVendorEmailWithPathButNoLineMatch_throwsIdentifierBasedMessage() {
+        Product unlinkedProduct = new ProductBuilder()
+                .withIdentifier("SKU-UNKNOWN")
+                .withName("Unlinked Product")
+                .withQuantity("1")
+                .withThreshold("0")
+                .withVendorEmail("not-in-file@example.com")
+                .build();
+
+        ReadOnlyInventory inventory = inventoryWithProducts(unlinkedProduct);
+
+        assertThrows(IllegalValueException.class, String.format(MESSAGE_UNKNOWN_VENDOR_LINK,
+                "SKU-UNKNOWN", "not-in-file@example.com"), () ->
+                validateOrThrow(getTypicalAddressBook(), inventory, UNKNOWN_VENDOR_SINGLE_FILE));
+    }
+
+    @Test
+    public void validateOrThrow_knownVendorEmailWithSourcePath_success() {
+        Product linkedProduct = new ProductBuilder()
+                .withIdentifier("SKU-KNOWN")
+                .withName("Known Vendor Product")
+                .withQuantity("1")
+                .withThreshold("0")
+                .withVendorEmail("alice@example.com")
+                .build();
+
+        ReadOnlyInventory inventory = inventoryWithProducts(linkedProduct);
+
+        assertDoesNotThrow(() -> validateOrThrow(getTypicalAddressBook(), inventory, UNKNOWN_VENDOR_SINGLE_FILE));
     }
 
     @Test
@@ -126,7 +212,7 @@ public class VendorVaultConsistencyUtilTest {
 
         ReadOnlyInventory inventory = inventoryWithProducts(productWithoutVendor);
 
-        assertDoesNotThrow(() -> VendorVaultConsistencyUtil.validateOrThrow(getTypicalAddressBook(), inventory));
+        assertDoesNotThrow(() -> validateOrThrow(getTypicalAddressBook(), inventory));
     }
 
     private ReadOnlyInventory inventoryWithProducts(Product... products) {
