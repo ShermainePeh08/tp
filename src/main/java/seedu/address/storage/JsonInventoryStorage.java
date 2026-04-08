@@ -27,7 +27,9 @@ import seedu.address.model.ReadOnlyInventory;
 public class JsonInventoryStorage implements InventoryStorage {
 
     public static final String MESSAGE_DUPLICATE_IDENTIFIER = "Duplicate product identifier '";
-    private Path filePath;
+    private static final String IDENTIFIER_FIELD = "identifier";
+    private static final String EXACT_FIELD_PATTERN_TEMPLATE = "\"%s\"\\s*:\\s*\"%s\"";
+    private final Path filePath;
 
     public JsonInventoryStorage(Path filePath) {
         this.filePath = filePath;
@@ -76,7 +78,7 @@ public class JsonInventoryStorage implements InventoryStorage {
 
         List<String> details = new ArrayList<>();
         for (String identifier : duplicateIdentifiers) {
-            List<Integer> lineNumbers = findFieldLineNumbers(filePath, "identifier", identifier);
+            List<Integer> lineNumbers = findFieldLineNumbers(filePath, IDENTIFIER_FIELD, identifier);
             if (lineNumbers.isEmpty()) {
                 details.add(MESSAGE_DUPLICATE_IDENTIFIER + identifier + "'");
             } else {
@@ -89,8 +91,7 @@ public class JsonInventoryStorage implements InventoryStorage {
     }
 
     private List<Integer> findFieldLineNumbers(Path filePath, String jsonField, String fieldValue) {
-        Pattern pattern = Pattern.compile("\\\"" + Pattern.quote(jsonField) + "\\\"\\s*:\\s*\\\""
-                + Pattern.quote(fieldValue) + "\\\"");
+        Pattern pattern = buildExactFieldPattern(jsonField, fieldValue);
         Set<Integer> matchedLineNumbers = new LinkedHashSet<>();
 
         try {
@@ -106,6 +107,11 @@ public class JsonInventoryStorage implements InventoryStorage {
         }
 
         return new ArrayList<>(matchedLineNumbers);
+    }
+
+    private Pattern buildExactFieldPattern(String jsonField, String fieldValue) {
+        return Pattern.compile(EXACT_FIELD_PATTERN_TEMPLATE.formatted(
+                Pattern.quote(jsonField), Pattern.quote(fieldValue)));
     }
 
     private String formatLineReference(List<Integer> lineNumbers) {
