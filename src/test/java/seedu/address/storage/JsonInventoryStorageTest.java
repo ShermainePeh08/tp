@@ -2,6 +2,7 @@ package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalProducts.AIRPODS;
 import static seedu.address.testutil.TypicalProducts.IPAD;
@@ -24,6 +25,7 @@ public class JsonInventoryStorageTest {
     private static final Path TEST_DATA_FOLDER = Paths.get("src", "test", "data", "JsonInventoryStorageTest");
 
     private static final String MISSING_FILE = "NonExistentFile.json";
+    private static final String DUPLICATE_IDENTIFIER_FILE = "duplicateProductIDInventory.json";
 
     @TempDir
     public Path testFolder;
@@ -80,6 +82,16 @@ public class JsonInventoryStorageTest {
     @Test
     public void read_invalidNameInventoryJson_exceptionThrown() {
         assertThrows(DataLoadingException.class, () -> readInventory("invalidNameInventory.json"));
+    }
+
+    @Test
+    public void read_duplicateIdentifierInventoryJson_exceptionThrown() {
+        DataLoadingException exception = org.junit.jupiter.api.Assertions.assertThrows(
+                DataLoadingException.class, () ->
+                        readInventory(DUPLICATE_IDENTIFIER_FILE));
+
+        assertTrue(exception.getCause().getMessage().contains("Duplicate product identifier 'SKU-1001'"));
+        assertTrue(exception.getCause().getMessage().contains("lines 7, 13"));
     }
 
     @Test
