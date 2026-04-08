@@ -3,6 +3,7 @@ package seedu.address.storage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.storage.JsonSerializableInventory.MESSAGE_DUPLICATE_PRODUCT;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalProducts.AIRPODS;
 import static seedu.address.testutil.TypicalProducts.IPAD;
@@ -11,6 +12,7 @@ import static seedu.address.testutil.TypicalProducts.getTypicalInventory;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,6 @@ import org.junit.jupiter.api.io.TempDir;
 import seedu.address.commons.exceptions.DataLoadingException;
 import seedu.address.model.Inventory;
 import seedu.address.model.ReadOnlyInventory;
-
 
 public class JsonInventoryStorageTest {
     private static final Path TEST_DATA_FOLDER = Paths.get("src", "test", "data", "JsonInventoryStorageTest");
@@ -92,6 +93,50 @@ public class JsonInventoryStorageTest {
 
         assertTrue(exception.getCause().getMessage().contains("Duplicate product identifier 'SKU-1001'"));
         assertTrue(exception.getCause().getMessage().contains("lines 7, 13"));
+    }
+
+    @Test
+    public void buildDuplicateIdentifierError_noDuplicateIdentifiers_returnsDefaultMessage() throws Exception {
+        JsonInventoryStorage storage = new JsonInventoryStorage(TEST_DATA_FOLDER.resolve(DUPLICATE_IDENTIFIER_FILE));
+
+        String message = invokeBuildDuplicateIdentifierErrorMessage(storage,
+                TEST_DATA_FOLDER.resolve(DUPLICATE_IDENTIFIER_FILE), List.of());
+
+        assertEquals(MESSAGE_DUPLICATE_PRODUCT, message);
+    }
+
+    @Test
+    public void buildDuplicateIdentifierError_missingFilePath_returnsMessageWithoutLineNumbers() throws Exception {
+        JsonInventoryStorage storage = new JsonInventoryStorage(TEST_DATA_FOLDER.resolve(DUPLICATE_IDENTIFIER_FILE));
+
+        String message = invokeBuildDuplicateIdentifierErrorMessage(storage,
+                TEST_DATA_FOLDER.resolve(MISSING_FILE), List.of("SKU-404"));
+
+        assertEquals("Duplicate product identifier 'SKU-404'.", message);
+    }
+
+    @Test
+    public void formatLineReference_singleLineNumber_returnsSingularPrefix() throws Exception {
+        JsonInventoryStorage storage = new JsonInventoryStorage(TEST_DATA_FOLDER.resolve(DUPLICATE_IDENTIFIER_FILE));
+
+        String lineReference = invokeFormatLineReference(storage, List.of(5));
+
+        assertEquals("line 5", lineReference);
+    }
+
+    private String invokeBuildDuplicateIdentifierErrorMessage(JsonInventoryStorage storage, Path filePath,
+                                                              List<String> duplicateIdentifiers) throws Exception {
+        java.lang.reflect.Method method = JsonInventoryStorage.class
+                .getDeclaredMethod("buildDuplicateIdentifierErrorMessage", Path.class, List.class);
+        method.setAccessible(true);
+        return (String) method.invoke(storage, filePath, duplicateIdentifiers);
+    }
+
+    private String invokeFormatLineReference(JsonInventoryStorage storage, List<Integer> lineNumbers) throws Exception {
+        java.lang.reflect.Method method = JsonInventoryStorage.class
+                .getDeclaredMethod("formatLineReference", List.class);
+        method.setAccessible(true);
+        return (String) method.invoke(storage, lineNumbers);
     }
 
     @Test
