@@ -1,13 +1,16 @@
 package seedu.address.storage;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.storage.JsonLineReferenceUtil.findFieldLineNumbers;
+import static seedu.address.storage.JsonLineReferenceUtil.formatLineReference;
+import static seedu.address.storage.JsonSerializableAddressBook.MESSAGE_DUPLICATE_PERSON;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
-import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.exceptions.DataLoadingException;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.commons.util.FileUtil;
@@ -19,9 +22,12 @@ import seedu.address.model.ReadOnlyAddressBook;
  */
 public class JsonAddressBookStorage implements AddressBookStorage {
 
-    private static final Logger logger = LogsCenter.getLogger(JsonAddressBookStorage.class);
+    private static final String EMAIL_FIELD = "email";
+    private static final String MESSAGE_DUPLICATE_CONTACT_EMAIL = "Duplicate contact email '";
+    private static final String MESSAGE_QUOTE_SUFFIX = "'";
+    private static final String MESSAGE_QUOTE_AT = "' at ";
 
-    private Path filePath;
+    private final Path filePath;
 
     public JsonAddressBookStorage(Path filePath) {
         this.filePath = filePath;
@@ -54,9 +60,35 @@ public class JsonAddressBookStorage implements AddressBookStorage {
         try {
             return Optional.of(jsonAddressBook.get().toModelType());
         } catch (IllegalValueException ive) {
-            logger.info("Illegal values found in " + filePath + ": " + ive.getMessage());
+            if (MESSAGE_DUPLICATE_PERSON.equals(ive.getMessage())) {
+                List<String> duplicateEmails = jsonAddressBook.get().findDuplicateEmails();
+                String detailedMessage = buildDuplicateEmailErrorMessage(filePath, duplicateEmails);
+
+                throw new DataLoadingException(new IllegalValueException(detailedMessage, ive));
+            }
+
             throw new DataLoadingException(ive);
         }
+    }
+
+    private String buildDuplicateEmailErrorMessage(Path filePath, List<String> duplicateEmails) {
+        if (duplicateEmails.isEmpty()) {
+            return MESSAGE_DUPLICATE_PERSON;
+        }
+
+        List<String> details = new ArrayList<>();
+        for (String email : duplicateEmails) {
+            List<Integer> lineNumbers = findFieldLineNumbers(filePath, EMAIL_FIELD, email);
+
+            if (lineNumbers.isEmpty()) {
+                details.add(MESSAGE_DUPLICATE_CONTACT_EMAIL + email + MESSAGE_QUOTE_SUFFIX);
+            } else {
+                details.add(MESSAGE_DUPLICATE_CONTACT_EMAIL + email + MESSAGE_QUOTE_AT
+                        + formatLineReference(lineNumbers));
+            }
+        }
+
+        return String.join("; ", details) + ".";
     }
 
     @Override
