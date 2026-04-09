@@ -19,7 +19,6 @@ import static seedu.address.ui.Messages.NEWLINE;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -114,121 +113,108 @@ public class MainApp extends Application {
         ReadOnlyAliases initialAliases = loadInitialAliases(storage);
 
         VendorVault initialVV = new VendorVault(initialData, initialInventory);
-
-        ModelManager modelManager = new ModelManager(initialVV, userPrefs, initialAliases);
-
-        return modelManager;
+        return new ModelManager(initialVV, userPrefs, initialAliases);
     }
 
     private ReadOnlyAddressBook loadInitialAddressBook(Storage storage) {
+        Path addressBookFilePath = storage.getAddressBookFilePath();
+
         try {
             Optional<ReadOnlyAddressBook> addressBookOptional = storage.readAddressBook();
-            if (!addressBookOptional.isPresent()) {
-                logger.info(MESSAGE_CREATING_NEW_DATA_FILE + storage.getAddressBookFilePath()
-                        + MESSAGE_POPULATED_SAMPLE_ADDRESS_BOOK);
-            }
+            logDataFileInitializationIfMissing(addressBookOptional, addressBookFilePath,
+                    MESSAGE_POPULATED_SAMPLE_ADDRESS_BOOK);
+
             return addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
         } catch (DataLoadingException e) {
-            logAddressBookLoadingIssue(storage.getAddressBookFilePath(), e);
-            logger.warning(MESSAGE_DATA_FILE_AT + storage.getAddressBookFilePath()
-                    + MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ADDRESS_BOOK);
+            logAndWarnLoadingFailure(addressBookFilePath, e, MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ADDRESS_BOOK);
 
             return new AddressBook();
         }
     }
 
-    private void logAddressBookLoadingIssue(Path filePath, DataLoadingException exception) {
-        Optional<String> illegalValueDetails = getIllegalValueDetails(exception);
-        if (!illegalValueDetails.isPresent()) {
-            return;
-        }
-
-        logIllegalValueIssue(filePath, illegalValueDetails.get());
-    }
-
     private ReadOnlyInventory loadInitialInventory(Storage storage, ReadOnlyAddressBook initialData) {
+        Path inventoryFilePath = storage.getInventoryFilePath();
+
         try {
             Optional<ReadOnlyInventory> inventoryOptional = storage.readInventory();
-            if (!inventoryOptional.isPresent()) {
-                logger.info(MESSAGE_CREATING_NEW_DATA_FILE + storage.getInventoryFilePath()
-                        + MESSAGE_POPULATED_SAMPLE_INVENTORY);
-            }
+            logDataFileInitializationIfMissing(inventoryOptional, inventoryFilePath,
+                    MESSAGE_POPULATED_SAMPLE_INVENTORY);
 
             ReadOnlyInventory initialInventory = inventoryOptional.orElseGet(SampleDataUtil::getSampleInventory);
-            return validateInitialInventory(storage, initialData, initialInventory);
-        } catch (DataLoadingException e) {
-            logInventoryLoadingIssue(storage.getInventoryFilePath(), e, initialData);
-            logger.warning(MESSAGE_DATA_FILE_AT + storage.getInventoryFilePath()
-                    + MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_INVENTORY);
-
-            return new Inventory();
-        }
-    }
-
-    private ReadOnlyInventory validateInitialInventory(Storage storage, ReadOnlyAddressBook initialData,
-                                                       ReadOnlyInventory initialInventory) {
-        try {
-            validateOrThrow(initialData, initialInventory, storage.getInventoryFilePath());
-            return initialInventory;
+            return validateInitialInventory(inventoryFilePath, initialData, initialInventory);
         } catch (IllegalValueException e) {
-            logger.warning(MESSAGE_ILLEGAL_VALUES_FOUND_IN + storage.getInventoryFilePath() + MESSAGE_LOG_SEPARATOR
-                + e.getMessage().replace(NEWLINE, " "));
-            logger.warning(MESSAGE_DATA_FILE_AT + storage.getInventoryFilePath()
-                + MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_INVENTORY);
-
-            return new Inventory();
+            return handleInventoryLoadingFailure(inventoryFilePath, new DataLoadingException(e), initialData);
+        } catch (DataLoadingException e) {
+            return handleInventoryLoadingFailure(inventoryFilePath, e, initialData);
         }
     }
 
-    private ReadOnlyAliases loadInitialAliases(Storage storage) {
-        try {
-            Optional<ReadOnlyAliases> aliasesOptional = storage.readAliases();
-            if (!aliasesOptional.isPresent()) {
-                logger.info(MESSAGE_CREATING_NEW_DATA_FILE + storage.getAliasFilePath()
-                        + MESSAGE_POPULATED_EMPTY_ALIAS_FILE);
-            }
-            return aliasesOptional.orElseGet(Aliases::new);
-        } catch (DataLoadingException e) {
-            logAliasLoadingIssue(storage.getAliasFilePath(), e);
-            logger.warning(MESSAGE_DATA_FILE_AT + storage.getAliasFilePath()
-                    + MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ALIAS);
+    private ReadOnlyInventory validateInitialInventory(Path inventoryFilePath, ReadOnlyAddressBook initialData,
+                                                       ReadOnlyInventory initialInventory)
+            throws IllegalValueException {
+        validateOrThrow(initialData, initialInventory, inventoryFilePath);
+        return initialInventory;
+    }
 
-            return new Aliases();
-        }
+    private ReadOnlyInventory handleInventoryLoadingFailure(Path inventoryFilePath, DataLoadingException exception,
+                                                            ReadOnlyAddressBook initialData) {
+        logInventoryLoadingIssue(inventoryFilePath, exception, initialData);
+        logger.warning(MESSAGE_DATA_FILE_AT + inventoryFilePath
+                + MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_INVENTORY);
+        return new Inventory();
     }
 
     private void logInventoryLoadingIssue(Path inventoryFilePath, DataLoadingException exception,
                                           ReadOnlyAddressBook initialData) {
-        Optional<String> illegalValueDetails = getIllegalValueDetails(exception);
+        Optional<String> illegalValueDetails = logLoadingIssue(inventoryFilePath, exception);
         if (!illegalValueDetails.isPresent()) {
             return;
         }
 
         String details = illegalValueDetails.get();
-        logIllegalValueIssue(inventoryFilePath, details);
         logUnknownVendorIssuesIfDuplicateIdentifier(inventoryFilePath, initialData, details);
     }
 
-    private void logAliasLoadingIssue(Path filePath, DataLoadingException exception) {
-        Optional<String> illegalValueDetails = getIllegalValueDetails(exception);
-        if (!illegalValueDetails.isPresent()) {
-            return;
-        }
+    private ReadOnlyAliases loadInitialAliases(Storage storage) {
+        Path aliasFilePath = storage.getAliasFilePath();
 
-        logIllegalValueIssue(filePath, illegalValueDetails.get());
+        try {
+            Optional<ReadOnlyAliases> aliasesOptional = storage.readAliases();
+            logDataFileInitializationIfMissing(aliasesOptional, aliasFilePath, MESSAGE_POPULATED_EMPTY_ALIAS_FILE);
+            return aliasesOptional.orElseGet(Aliases::new);
+        } catch (DataLoadingException e) {
+            logAndWarnLoadingFailure(aliasFilePath, e, MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ALIAS);
+
+            return new Aliases();
+        }
+    }
+
+    private void logDataFileInitializationIfMissing(Optional<?> dataOptional, Path filePath, String populationMessage) {
+        if (!dataOptional.isPresent()) {
+            logger.info(MESSAGE_CREATING_NEW_DATA_FILE + filePath + populationMessage);
+        }
+    }
+
+    private void logAndWarnLoadingFailure(Path filePath, DataLoadingException exception, String fallbackMessage) {
+        logLoadingIssue(filePath, exception);
+        logger.warning(MESSAGE_DATA_FILE_AT + filePath + fallbackMessage);
+    }
+
+    private Optional<String> logLoadingIssue(Path filePath, DataLoadingException exception) {
+        Optional<String> illegalValueDetails = getIllegalValueDetails(exception);
+        illegalValueDetails.ifPresent(details -> logIllegalValueIssue(filePath, details));
+        return illegalValueDetails;
     }
 
     private Optional<String> getIllegalValueDetails(DataLoadingException exception) {
         Throwable cause = exception.getCause();
 
-        String details;
-        details = Objects.requireNonNullElse(cause, exception).getMessage();
-
-        if (!(cause instanceof IllegalValueException) || details == null) {
+        if (!(cause instanceof IllegalValueException)) {
             return Optional.empty();
         }
 
-        return Optional.of(details);
+        String details = cause.getMessage();
+        return details == null ? Optional.empty() : Optional.of(details);
     }
 
     private void logUnknownVendorIssuesIfDuplicateIdentifier(Path inventoryFilePath, ReadOnlyAddressBook initialData,
