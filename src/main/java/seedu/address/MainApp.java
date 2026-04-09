@@ -126,7 +126,9 @@ public class MainApp extends Application {
 
             return addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
         } catch (DataLoadingException e) {
-            logAndWarnLoadingFailure(addressBookFilePath, e, MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ADDRESS_BOOK);
+            logLoadingIssue(addressBookFilePath, e);
+            logger.warning(buildCouldNotLoadWarning(addressBookFilePath,
+                    MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ADDRESS_BOOK));
 
             return new AddressBook();
         }
@@ -143,25 +145,24 @@ public class MainApp extends Application {
             ReadOnlyInventory initialInventory = inventoryOptional.orElseGet(SampleDataUtil::getSampleInventory);
             return validateInitialInventory(inventoryFilePath, initialData, initialInventory);
         } catch (IllegalValueException e) {
-            return handleInventoryLoadingFailure(inventoryFilePath, new DataLoadingException(e), initialData);
+            logIllegalValueIssue(inventoryFilePath, e.getMessage());
+            logger.warning(buildCouldNotLoadWarning(inventoryFilePath,
+                    MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_INVENTORY));
+
+            return new Inventory();
         } catch (DataLoadingException e) {
-            return handleInventoryLoadingFailure(inventoryFilePath, e, initialData);
+            logInventoryLoadingIssue(inventoryFilePath, e, initialData);
+            logger.warning(buildCouldNotLoadWarning(inventoryFilePath,
+                    MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_INVENTORY));
+
+            return new Inventory();
         }
     }
 
     private ReadOnlyInventory validateInitialInventory(Path inventoryFilePath, ReadOnlyAddressBook initialData,
-                                                       ReadOnlyInventory initialInventory)
-            throws IllegalValueException {
+                                                       ReadOnlyInventory initialInventory) throws IllegalValueException {
         validateOrThrow(initialData, initialInventory, inventoryFilePath);
         return initialInventory;
-    }
-
-    private ReadOnlyInventory handleInventoryLoadingFailure(Path inventoryFilePath, DataLoadingException exception,
-                                                            ReadOnlyAddressBook initialData) {
-        logInventoryLoadingIssue(inventoryFilePath, exception, initialData);
-        logger.warning(MESSAGE_DATA_FILE_AT + inventoryFilePath
-                + MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_INVENTORY);
-        return new Inventory();
     }
 
     private void logInventoryLoadingIssue(Path inventoryFilePath, DataLoadingException exception,
@@ -181,9 +182,12 @@ public class MainApp extends Application {
         try {
             Optional<ReadOnlyAliases> aliasesOptional = storage.readAliases();
             logDataFileInitializationIfMissing(aliasesOptional, aliasFilePath, MESSAGE_POPULATED_EMPTY_ALIAS_FILE);
+
             return aliasesOptional.orElseGet(Aliases::new);
         } catch (DataLoadingException e) {
-            logAndWarnLoadingFailure(aliasFilePath, e, MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ALIAS);
+            logLoadingIssue(aliasFilePath, e);
+            logger.warning(buildCouldNotLoadWarning(aliasFilePath,
+                    MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ALIAS));
 
             return new Aliases();
         }
@@ -195,9 +199,8 @@ public class MainApp extends Application {
         }
     }
 
-    private void logAndWarnLoadingFailure(Path filePath, DataLoadingException exception, String fallbackMessage) {
-        logLoadingIssue(filePath, exception);
-        logger.warning(MESSAGE_DATA_FILE_AT + filePath + fallbackMessage);
+    private String buildCouldNotLoadWarning(Path filePath, String fallbackMessage) {
+        return MESSAGE_DATA_FILE_AT + filePath + fallbackMessage;
     }
 
     private Optional<String> logLoadingIssue(Path filePath, DataLoadingException exception) {
