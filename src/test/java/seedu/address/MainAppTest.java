@@ -11,13 +11,19 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import seedu.address.commons.core.Config;
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.exceptions.DataLoadingException;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.commons.util.ConfigUtil;
@@ -51,6 +57,8 @@ public class MainAppTest {
     private static final String SAVE_FAILURE_MESSAGE = "save failed";
     private static final String READ_FAILURE_MESSAGE = "read failed";
     private static final String ILLEGAL_VALUE_MESSAGE = "illegal value";
+    private static final String DUPLICATE_EMAIL_DETAILS =
+        "Duplicate contact email 'alice@example.com' at lines 5, 11.";
     private static final String UNKNOWN_VENDOR_PRODUCT_IDENTIFIER = "SKU-UNKNOWN";
     private static final String UNKNOWN_VENDOR_EMAIL = "missing@example.com";
     private static final String METHOD_LOAD_INITIAL_ADDRESS_BOOK = "loadInitialAddressBook";
@@ -196,6 +204,27 @@ public class MainAppTest {
         ReadOnlyAddressBook initialData = invokeLoadInitialAddressBook(app, storageStub);
 
         assertEquals(new AddressBook(), new AddressBook(initialData));
+    }
+
+    @Test
+    public void loadInitialAddressBook_duplicateEmailDetails_logsAndReturnsEmptyAddressBook() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+        ReadableStorageStub storageStub = new ReadableStorageStub();
+        storageStub.addressBookReadException = new DataLoadingException(new IllegalValueException(
+                DUPLICATE_EMAIL_DETAILS));
+
+        Logger mainAppLogger = LogsCenter.getLogger(MainApp.class);
+        CapturingLogHandler handler = new CapturingLogHandler();
+        mainAppLogger.addHandler(handler);
+
+        try {
+            ReadOnlyAddressBook initialData = invokeLoadInitialAddressBook(app, storageStub);
+
+            assertEquals(new AddressBook(), new AddressBook(initialData));
+            assertTrue(handler.contains(DUPLICATE_EMAIL_DETAILS));
+        } finally {
+            mainAppLogger.removeHandler(handler);
+        }
     }
 
     @Test
@@ -379,8 +408,7 @@ public class MainAppTest {
     }
 
     private void invokeLogInventoryLoadingIssue(MainApp app, Path inventoryFilePath, DataLoadingException exception,
-                                                ReadOnlyAddressBook initialData)
-            throws Exception {
+                                                ReadOnlyAddressBook initialData) throws Exception {
         invokePrivateMethod(
                 app,
                 METHOD_LOG_INVENTORY_LOADING_ISSUE,
@@ -686,6 +714,27 @@ public class MainAppTest {
         @Override
         public Optional<ReadOnlyAliases> readAliases(Path filePath) throws DataLoadingException {
             return readAliases();
+        }
+    }
+
+    private static class CapturingLogHandler extends Handler {
+        private final List<String> messages = new ArrayList<>();
+
+        @Override
+        public void publish(LogRecord record) {
+            if (record != null && record.getMessage() != null) {
+                messages.add(record.getMessage());
+            }
+        }
+
+        @Override
+        public void flush() {}
+
+        @Override
+        public void close() throws SecurityException {}
+
+        boolean contains(String snippet) {
+            return messages.stream().anyMatch(message -> message.contains(snippet));
         }
     }
 }
