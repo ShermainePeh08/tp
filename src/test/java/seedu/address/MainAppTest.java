@@ -63,7 +63,6 @@ public class MainAppTest {
     private static final String UNKNOWN_VENDOR_EMAIL = "missing@example.com";
     private static final String METHOD_LOAD_INITIAL_ADDRESS_BOOK = "loadInitialAddressBook";
     private static final String METHOD_LOAD_INITIAL_INVENTORY = "loadInitialInventory";
-    private static final String METHOD_VALIDATE_INITIAL_INVENTORY = "validateInitialInventory";
     private static final String METHOD_LOAD_INITIAL_ALIASES = "loadInitialAliases";
     private static final String METHOD_GET_ILLEGAL_VALUE_DETAILS = "getIllegalValueDetails";
     private static final String METHOD_INIT_MODEL_MANAGER = "initModelManager";
@@ -251,7 +250,7 @@ public class MainAppTest {
     }
 
     @Test
-    public void validateInitialInventory_illegalValue_returnsEmptyInventory() throws Exception {
+    public void loadInitialInventory_illegalValue_returnsEmptyInventory() throws Exception {
         TestableMainApp app = new TestableMainApp();
         ReadableStorageStub storageStub = new ReadableStorageStub();
 
@@ -261,9 +260,9 @@ public class MainAppTest {
                 .build();
         Inventory inventory = new Inventory();
         inventory.addProduct(unknownVendorProduct);
+        storageStub.inventoryReadResult = Optional.of(inventory);
 
-        ReadOnlyInventory validatedInventory = invokeValidateInitialInventory(
-                app, storageStub, new AddressBook(), inventory);
+        ReadOnlyInventory validatedInventory = invokeLoadInitialInventory(app, storageStub, new AddressBook());
 
         assertEquals(new Inventory(), new Inventory(validatedInventory));
     }
@@ -461,19 +460,6 @@ public class MainAppTest {
                 new Class<?>[]{Storage.class, ReadOnlyAddressBook.class},
                 storage,
                 initialData);
-    }
-
-    private ReadOnlyInventory invokeValidateInitialInventory(MainApp app,
-                                                             Storage storage,
-                                                             ReadOnlyAddressBook initialData,
-                                                             ReadOnlyInventory initialInventory) throws Exception {
-        return (ReadOnlyInventory) invokePrivateMethod(
-                app,
-                METHOD_VALIDATE_INITIAL_INVENTORY,
-                new Class<?>[]{Storage.class, ReadOnlyAddressBook.class, ReadOnlyInventory.class},
-                storage,
-                initialData,
-                initialInventory);
     }
 
     private ReadOnlyAliases invokeLoadInitialAliases(MainApp app, Storage storage) throws Exception {
