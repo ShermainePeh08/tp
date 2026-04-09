@@ -22,6 +22,16 @@ public class JsonSerializableAddressBookTest {
     private static final Path INVALID_PERSON_FILE = TEST_DATA_FOLDER.resolve("invalidPersonAddressBook.json");
     private static final Path DUPLICATE_PERSON_FILE = TEST_DATA_FOLDER.resolve("duplicatePersonAddressBook.json");
     private static final String DUPLICATE_EMAIL_IN_TYPICAL_DATA = ALICE.getEmail().value;
+    private static final String PERSON_ONE_NAME = "One";
+    private static final String PERSON_TWO_NAME = "Two";
+    private static final String PERSON_THREE_NAME = "Three";
+    private static final String PERSON_ONE_PHONE = "91234567";
+    private static final String PERSON_TWO_PHONE = "91234568";
+    private static final String PERSON_THREE_PHONE = "91234569";
+    private static final String PERSON_ONE_ADDRESS = "Address One";
+    private static final String PERSON_TWO_ADDRESS = "Address Two";
+    private static final String PERSON_THREE_ADDRESS = "Address Three";
+    private static final String UNIQUE_EMAIL_IN_UNIQUE_EMAILS_TEST = "one@example.com";
     private static final String DUPLICATE_EMAIL_IN_NULL_EMAIL_TEST = "two@example.com";
 
     @Test
@@ -59,15 +69,30 @@ public class JsonSerializableAddressBookTest {
     @Test
     public void findDuplicateEmails_nullEmail_ignoresNullEmail() {
         List<JsonAdaptedPerson> personList = List.of(
-                new JsonAdaptedPerson("One", "91234567", null, "Address One", List.of()),
-                new JsonAdaptedPerson("Two", "91234568", DUPLICATE_EMAIL_IN_NULL_EMAIL_TEST,
-                        "Address Two", List.of()),
-                new JsonAdaptedPerson("Three", "91234569", DUPLICATE_EMAIL_IN_NULL_EMAIL_TEST,
-                        "Address Three", List.of()));
+                new JsonAdaptedPerson(PERSON_ONE_NAME, PERSON_ONE_PHONE, null, PERSON_ONE_ADDRESS, List.of()),
+                new JsonAdaptedPerson(PERSON_TWO_NAME, PERSON_TWO_PHONE, DUPLICATE_EMAIL_IN_NULL_EMAIL_TEST,
+                        PERSON_TWO_ADDRESS, List.of()),
+                new JsonAdaptedPerson(PERSON_THREE_NAME, PERSON_THREE_PHONE, DUPLICATE_EMAIL_IN_NULL_EMAIL_TEST,
+                        PERSON_THREE_ADDRESS, List.of()));
 
         JsonSerializableAddressBook data = new JsonSerializableAddressBook(personList);
 
         assertEquals(List.of(DUPLICATE_EMAIL_IN_NULL_EMAIL_TEST), data.findDuplicateEmails());
+    }
+
+    @Test
+    public void findDuplicateEmails_uniqueEmails_returnsEmptyList() {
+        List<JsonAdaptedPerson> personList = List.of(
+                new JsonAdaptedPerson(PERSON_ONE_NAME, PERSON_ONE_PHONE, UNIQUE_EMAIL_IN_UNIQUE_EMAILS_TEST,
+                        PERSON_ONE_ADDRESS, List.of()),
+                new JsonAdaptedPerson(PERSON_TWO_NAME, PERSON_TWO_PHONE, DUPLICATE_EMAIL_IN_NULL_EMAIL_TEST,
+                        PERSON_TWO_ADDRESS, List.of()),
+                new JsonAdaptedPerson(PERSON_THREE_NAME, PERSON_THREE_PHONE, null, PERSON_THREE_ADDRESS,
+                        List.of()));
+
+        JsonSerializableAddressBook data = new JsonSerializableAddressBook(personList);
+
+        assertEquals(List.of(), data.findDuplicateEmails());
     }
 
 }
