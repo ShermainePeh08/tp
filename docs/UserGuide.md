@@ -490,8 +490,6 @@ For more details on possible warnings and errors, refer to the [troubleshooting 
 
 <div style="height: 30px;"></div>
 
-<div style="page-break-after: always;"></div>
-
 #### Listing all products : `listproduct`
 
 Shows a list of all **active** products in the inventory.
@@ -862,6 +860,8 @@ exit
 --------------------------------------------------------------------------------------------------------------------
 
 <br>
+
+<div style="page-break-after: always;"></div>
 
 ## FAQ
 
@@ -1266,8 +1266,6 @@ Use this section when `threshold` fails.
 | Threshold is invalid  | `Restock threshold should be a non-negative valid integer.` | Ensure threshold is a whole number between 0 and 2,147,483,647. |
 
 <div style="height: 30px;"></div>
-
-<div style="page-break-after: always;"></div>
 
 ### Why am I seeing warnings?
 
