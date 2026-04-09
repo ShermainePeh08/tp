@@ -616,7 +616,7 @@ This diagram shows the interactions between `Logic` and `Model`:
 
 This diagram summarises the decision flow in `Model`:
 
-<puml src="diagrams/BetterSearchActivity.puml" width="350"/>
+<puml src="diagrams/BetterSearchActivity.puml" width="250"/>
 
 The usage scenario for `findproduct` is analogous.
 
