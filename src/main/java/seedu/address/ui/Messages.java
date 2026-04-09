@@ -11,7 +11,7 @@ public final class Messages {
     public static final String MESSAGE_ILLEGAL_VALUES_FOUND_IN = "Illegal value(s) found in ";
     public static final String MESSAGE_LOG_SEPARATOR = ": ";
     public static final String MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ADDRESS_BOOK =
-            " could not be loaded. Will be starting with an empty AddressBook.";
+            " could not be loaded. Starting with an empty AddressBook.";
     public static final String MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_INVENTORY =
             " could not be loaded. Starting with empty inventory.";
     public static final String MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ALIAS =
