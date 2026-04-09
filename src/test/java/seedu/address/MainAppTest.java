@@ -3,7 +3,9 @@ package seedu.address;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalProducts.RICE;
+import static seedu.address.ui.Messages.DUPLICATE_IDENTIFIER_PREFIX;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -56,6 +58,16 @@ public class MainAppTest {
     private static final String METHOD_VALIDATE_INITIAL_INVENTORY = "validateInitialInventory";
     private static final String METHOD_LOAD_INITIAL_ALIASES = "loadInitialAliases";
     private static final String METHOD_GET_ILLEGAL_VALUE_DETAILS = "getIllegalValueDetails";
+    private static final String METHOD_INIT_MODEL_MANAGER = "initModelManager";
+    private static final String METHOD_LOG_INVENTORY_LOADING_ISSUE = "logInventoryLoadingIssue";
+    private static final String METHOD_LOG_UNKNOWN_VENDOR_ISSUES = "logUnknownVendorIssuesIfDuplicateIdentifier";
+    private static final String METHOD_LOG_ILLEGAL_VALUE_ISSUE = "logIllegalValueIssue";
+    private static final String METHOD_INIT_LOGGING = "initLogging";
+    private static final String NON_DUPLICATE_DETAILS = "Some non-duplicate error";
+    private static final String DUPLICATE_DETAILS = DUPLICATE_IDENTIFIER_PREFIX + " 'SKU-1001' at line 7.";
+    private static final String DETAILS_WITH_NEWLINE = "line one\nline two";
+    private static final Path UNKNOWN_VENDOR_MIXED_FILE = Path.of("src", "test", "data",
+            "VendorVaultConsistencyUtilTest", "unknownVendorMixedInventory.json");
 
     @TempDir
     public Path testFolder;
@@ -267,6 +279,144 @@ public class MainAppTest {
         Optional<String> details = invokeGetIllegalValueDetails(app, exception);
 
         assertEquals(Optional.empty(), details);
+    }
+
+    @Test
+    public void getIllegalValueDetails_illegalValueCauseWithNullMessage_returnsEmpty() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+        DataLoadingException exception = new DataLoadingException(new IllegalValueException((String) null));
+
+        Optional<String> details = invokeGetIllegalValueDetails(app, exception);
+
+        assertEquals(Optional.empty(), details);
+    }
+
+    @Test
+    public void initModelManager_emptyStorageData_returnsModelWithSampleData() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+        ReadableStorageStub storageStub = new ReadableStorageStub();
+        storageStub.addressBookReadResult = Optional.empty();
+        storageStub.inventoryReadResult = Optional.empty();
+        storageStub.aliasesReadResult = Optional.empty();
+
+        Model model = invokeInitModelManager(app, storageStub, new UserPrefs());
+
+        int samplePersonListSize = SampleDataUtil.getSampleAddressBook().getPersonList().size();
+        int modelPersonListSize = model.getAddressBook().getPersonList().size();
+        int sampleProductListSize = SampleDataUtil.getSampleInventory().getProductList().size();
+        int modelProductListSize = model.getInventory().getProductList().size();
+
+        assertEquals(samplePersonListSize, modelPersonListSize);
+        assertEquals(sampleProductListSize, modelProductListSize);
+        assertEquals(new Aliases(), new Aliases(model.getAliases()));
+    }
+
+    @Test
+    public void logInventoryLoadingIssue_nonIllegalCause_returnsEarly() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+
+        assertDoesNotThrow(() -> invokeLogInventoryLoadingIssue(
+                app,
+                UNKNOWN_VENDOR_MIXED_FILE,
+                new DataLoadingException(new IOException(READ_FAILURE_MESSAGE)),
+                getTypicalAddressBook()));
+    }
+
+    @Test
+    public void logInventoryLoadingIssue_illegalValueCause_logsIllegalValueIssuePath() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+
+        assertDoesNotThrow(() -> invokeLogInventoryLoadingIssue(
+                app,
+                UNKNOWN_VENDOR_MIXED_FILE,
+                new DataLoadingException(new IllegalValueException(NON_DUPLICATE_DETAILS)),
+                getTypicalAddressBook()));
+    }
+
+    @Test
+    public void logUnknownVendorIssuesIfDuplicateIdentifier_nonDuplicatePrefix_returnsEarly() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+
+        assertDoesNotThrow(() -> invokeLogUnknownVendorIssuesIfDuplicateIdentifier(
+                app,
+                UNKNOWN_VENDOR_MIXED_FILE,
+                getTypicalAddressBook(),
+                NON_DUPLICATE_DETAILS));
+    }
+
+    @Test
+    public void logUnknownVendorIssuesIfDuplicateIdentifier_duplicatePrefix_logsUnknownVendorIssues() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+
+        assertDoesNotThrow(() -> invokeLogUnknownVendorIssuesIfDuplicateIdentifier(
+                app,
+                UNKNOWN_VENDOR_MIXED_FILE,
+                getTypicalAddressBook(),
+                DUPLICATE_DETAILS));
+    }
+
+    @Test
+    public void logIllegalValueIssue_withNewLineInDetails_noException() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+
+        assertDoesNotThrow(() -> invokeLogIllegalValueIssue(app, UNKNOWN_VENDOR_MIXED_FILE, DETAILS_WITH_NEWLINE));
+    }
+
+    @Test
+    public void initLogging_withConfig_noException() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+
+        assertDoesNotThrow(() -> invokeInitLogging(app, new Config()));
+    }
+
+    private Model invokeInitModelManager(MainApp app, Storage storage, ReadOnlyUserPrefs userPrefs) throws Exception {
+        return (Model) invokePrivateMethod(
+                app,
+                METHOD_INIT_MODEL_MANAGER,
+                new Class<?>[]{Storage.class, ReadOnlyUserPrefs.class},
+                storage,
+                userPrefs);
+    }
+
+    private void invokeLogInventoryLoadingIssue(MainApp app, Path inventoryFilePath, DataLoadingException exception,
+                                                ReadOnlyAddressBook initialData)
+            throws Exception {
+        invokePrivateMethod(
+                app,
+                METHOD_LOG_INVENTORY_LOADING_ISSUE,
+                new Class<?>[]{Path.class, DataLoadingException.class, ReadOnlyAddressBook.class},
+                inventoryFilePath,
+                exception,
+                initialData);
+    }
+
+    private void invokeLogUnknownVendorIssuesIfDuplicateIdentifier(MainApp app, Path inventoryFilePath,
+                                                                   ReadOnlyAddressBook initialData,
+                                                                   String details) throws Exception {
+        invokePrivateMethod(
+                app,
+                METHOD_LOG_UNKNOWN_VENDOR_ISSUES,
+                new Class<?>[]{Path.class, ReadOnlyAddressBook.class, String.class},
+                inventoryFilePath,
+                initialData,
+                details);
+    }
+
+    private void invokeLogIllegalValueIssue(MainApp app, Path filePath, String details) throws Exception {
+        invokePrivateMethod(
+                app,
+                METHOD_LOG_ILLEGAL_VALUE_ISSUE,
+                new Class<?>[]{Path.class, String.class},
+                filePath,
+                details);
+    }
+
+    private void invokeInitLogging(MainApp app, Config config) throws Exception {
+        invokePrivateMethod(
+                app,
+                METHOD_INIT_LOGGING,
+                new Class<?>[]{Config.class},
+                config);
     }
 
     private ReadOnlyAddressBook invokeLoadInitialAddressBook(MainApp app, Storage storage) throws Exception {
