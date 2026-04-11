@@ -191,7 +191,8 @@ public class FindProductCommandTest {
         localModel.addProduct(lowStockPrefixMatch);
         localModel.addProduct(nonLowStockExactMatch);
 
-        FindProductCommand command = new FindProductCommand(preparePredicate("desk"));
+        ProductNameContainsKeywordsScoredPredicate predicate = preparePredicate("desk");
+        FindProductCommand command = new FindProductCommand(predicate);
         command.execute(localModel);
 
         assertEquals(List.of(nonLowStockExactMatch, lowStockPrefixMatch), localModel.getFilteredProductList());
