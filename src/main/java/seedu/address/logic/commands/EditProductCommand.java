@@ -61,7 +61,7 @@ public class EditProductCommand extends Command {
     public static final String MESSAGE_WARN_SIMILAR_NAME =
             "⚠ Warning: There's a product with a similar name (id: %s, name: %s), is this intentional?";
     public static final String MESSAGE_WARN_BELOW_THRESHOLD =
-            "⚠ Warning: Product stock is below threshold.";
+            "⚠ Warning: Product stock is at or below threshold.";
 
     public static final String MESSAGE_ACTION_SUMMARY = "edit of product: %1$s";
 
