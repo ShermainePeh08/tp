@@ -18,6 +18,8 @@ public class Phone {
     public static final String MESSAGE_BLANK = "Phone number should not be blank";
     public static final String MESSAGE_WARN =
             "⚠ Warning: Phone number contains unusual symbols, is this intentional?";
+    public static final String MESSAGE_MULTIPLE_NUMBERS_WARN =
+            "⚠ Warning: Phone number may contain multiple numbers. Use \",\" to separate them if intended.";
     public static final String WARNING_VALIDATION_REGEX =
             "^(?=(?:.*\\d){3,})[\\d+\\- ]+$";
     public static final String VALIDATION_REGEX = "^(?=(?:.*\\d){3,}).*$";
@@ -85,6 +87,24 @@ public class Phone {
 
     private static boolean isValidPhoneEntryWarn(String phoneEntry) {
         return phoneEntry.trim().matches(WARNING_VALIDATION_REGEX);
+    }
+
+    /**
+     * Returns true if the phone number falls under WARNING_VALIDATION_REGEX or has spaces without any commas.
+     * To detect potential multiple numbers that should be separated by commas.
+     *
+     * @param test the string to test.
+     * @return true if phone does not match warning regex OR contains spaces, and no commas.
+     */
+    public static boolean hasMultipleNumbersWithoutComma(String test) {
+        requireNonNull(test);
+
+        if (test.contains(PHONE_SEPARATOR)) {
+            return false;
+        }
+
+        String trimmed = test.trim();
+        return !trimmed.matches(WARNING_VALIDATION_REGEX) || trimmed.matches(".*\\s.*");
     }
 
     private static List<String> splitPhoneEntries(String test) {
