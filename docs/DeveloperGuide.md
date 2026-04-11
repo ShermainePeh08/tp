@@ -831,7 +831,7 @@ Use case ends.
 1. User chooses to delete a contact.
 2. VV requests for confirmation for deleting the contact.
 3. User confirms deletion.
-4. VV deletes contact, disassociates its products, and displays a list of current contacts.
+4. VV deletes contact, and removes its associations with all linked products, and displays a list of current contacts.
 
 Use case ends.
 
