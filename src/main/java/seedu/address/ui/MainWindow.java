@@ -228,10 +228,11 @@ public class MainWindow extends UiPart<Stage> {
             logger.info("Result: " + commandResult.getFeedbackToUser());
 
             String trimmed = commandText.trim().toLowerCase();
+            String commandString = logic.getOriginalCommand(trimmed.split(" ")[0]);
 
-            boolean isFindProduct = trimmed.startsWith(FindProductCommand.COMMAND_WORD);
+            boolean isFindProduct = commandString.startsWith(FindProductCommand.COMMAND_WORD);
             inventoryListPanel.setFiltered(isFindProduct);
-            boolean isFind = isFindProduct || trimmed.startsWith(FindCommand.COMMAND_WORD);
+            boolean isFind = isFindProduct || commandString.startsWith(FindCommand.COMMAND_WORD);
             personListPanel.setFiltered(isFind);
 
             handleCommandResultEffects(commandResult);

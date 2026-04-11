@@ -19,6 +19,8 @@ import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyInventory;
 import seedu.address.model.ReadOnlyVendorVault;
+import seedu.address.model.alias.Alias;
+import seedu.address.model.alias.exceptions.NoAliasFoundInAliasListException;
 import seedu.address.model.person.Person;
 import seedu.address.model.product.Product;
 import seedu.address.storage.Storage;
@@ -91,6 +93,16 @@ public class LogicManager implements Logic {
 
 
         return commandResult;
+    }
+
+    @Override
+    public String getOriginalCommand(String commandText) {
+        try {
+            Alias alias = model.findAlias(commandText);
+            return alias.getOriginalCommand();
+        } catch (NoAliasFoundInAliasListException e) {
+            return commandText;
+        }
     }
 
     @Override
