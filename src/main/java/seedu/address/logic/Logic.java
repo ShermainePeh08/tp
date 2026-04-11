@@ -27,6 +27,13 @@ public interface Logic {
     CommandResult execute(String commandText) throws CommandException, ParseException;
 
     /**
+     * Retrieves the original command associated with the given alias text.
+     * If the provided command text is a recognized alias, the corresponding original command is returned.
+     * Otherwise, the input text is return as it is.
+     */
+    String getOriginalCommand(String commandText);
+
+    /**
      * Returns the AddressBook.
      *
      * @see seedu.address.model.Model#getAddressBook()
