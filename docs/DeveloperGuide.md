@@ -1129,8 +1129,13 @@ Use case ends.
 
       Use case ends.
 
-* 1c. VV detects that the alias already exists.
-    * 1c1. VV rejects the command and displays an error indicating the alias is already in use.
+* 1c. VV detects that the alias is a predefined command.
+  * 1c1. VV rejects the command and displays an error indicating the alias is a predefined command.
+
+    Use case ends.
+
+* 1d. VV detects that the alias already exists.
+    * 1d1. VV rejects the command and displays an error indicating the alias is already in use.
 
       Use case ends.
 
