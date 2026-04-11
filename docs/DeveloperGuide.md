@@ -831,7 +831,7 @@ Use case ends.
 1. User chooses to delete a contact.
 2. VV requests for confirmation for deleting the contact.
 3. User confirms deletion.
-4. VV deletes contact, disassociates its products, and displays a list of current contacts.
+4. VV deletes contact, and removes its associations with all linked products, and displays a list of current contacts.
 
 Use case ends.
 
@@ -1064,15 +1064,15 @@ Analogous to !!UC5 - Clearing All Vendor Contacts!!
 
 **Use case: UC14 - Find Product**
 
-Analogous to !!UC5 - Find Vendor Contact!!.
+Analogous to !!UC6 - Find Vendor Contact!!.
 
 **Use case: UC15 - Archive a Product**
 
-Analogous to !!UC6 - Archive a Vendor Contact!!, except the product's identifier is used instead of the vendor's email.
+Analogous to !!UC7 - Archive a Vendor Contact!!, except the product's identifier is used instead of the vendor's email.
 
 **Use case: UC16 - Restore an Archived Product**
 
-Analogous to !!UC7 - Restore an Archived Vendor Contact!!, except the product's identifier is used instead of the
+Analogous to !!UC8 - Restore an Archived Vendor Contact!!, except the product's identifier is used instead of the
 vendor's email.
 
 **Use case: UC17 - Undo/Redo a Change**
@@ -1129,8 +1129,13 @@ Use case ends.
 
       Use case ends.
 
-* 1c. VV detects that the alias already exists.
-    * 1c1. VV rejects the command and displays an error indicating the alias is already in use.
+* 1c. VV detects that the alias is a predefined command.
+  * 1c1. VV rejects the command and displays an error indicating the alias is a predefined command.
+
+    Use case ends.
+
+* 1d. VV detects that the alias already exists.
+    * 1d1. VV rejects the command and displays an error indicating the alias is already in use.
 
       Use case ends.
 
@@ -1154,7 +1159,7 @@ Use case ends.
       Use case resumes from step 1.
 
 * 1b. VV detects that the alias does not exists.
-    * 1b1. VV rejects the command and displays an error indicating the alias does not exists.
+    * 1b1. VV rejects the command and displays an error indicating the alias does not exist.
 
       Use case ends.
 
