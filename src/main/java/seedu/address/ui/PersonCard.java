@@ -76,6 +76,7 @@ public class PersonCard extends UiPart<Region> {
         }
 
         person.getTags().stream()
+                .filter(tag -> !tag.tagName.equalsIgnoreCase("archived"))
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
     }
