@@ -908,7 +908,7 @@ Please follow this format carefully. Files that do not adhere to the required fo
     "identifier" : IDENTIFIER(string),
     "name" : NAME(string),
     "quantity" : QUANTITY(integer),
-    "threshold" : THRESHOLD(interger),
+    "threshold" : THRESHOLD(integer),
     "vendorEmail" : VENDOR_EMAIL(email),
     "isArchived" : BOOLEAN(true/false)
   } ]
