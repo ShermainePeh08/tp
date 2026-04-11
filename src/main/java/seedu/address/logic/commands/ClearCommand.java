@@ -2,10 +2,14 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import seedu.address.model.AddressBook;
+import javafx.collections.ObservableList;
 import seedu.address.model.Model;
+import seedu.address.model.person.Person;
+import seedu.address.model.product.Product;
 
 /**
  * Clears the address book.
@@ -57,7 +61,16 @@ public class ClearCommand extends Command {
      * Performs the actual clear operation.
      */
     private CommandResult doClear(Model model) {
-        model.setAddressBook(new AddressBook());
+        ObservableList<Person> personObservableList = model.getAddressBook().getPersonList();
+        ArrayList<Person> persons = new ArrayList<>(personObservableList);
+
+        for (Person person : persons) {
+            List<Product> linkedProducts = VendorProductLinkUtil.collectLinkedProducts(
+                    model, person.getEmail());
+            VendorProductLinkUtil.clearVendorEmail(model, linkedProducts);
+            model.deletePerson(person);
+        }
+
         model.commitVendorVault(MESSAGE_ACTION_SUMMARY);
         return new CommandResult(MESSAGE_SUCCESS);
     }
