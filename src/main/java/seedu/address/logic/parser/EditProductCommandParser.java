@@ -112,9 +112,11 @@ public class EditProductCommandParser implements Parser<EditProductCommand> {
         }
         if (argMultimap.getValue(PREFIX_EMAIL).isPresent()) {
             String emailValue = argMultimap.getValue(PREFIX_EMAIL).get();
-            descriptor.setVendorEmail(emailValue.isBlank()
-                    ? null
-                    : ParserUtil.parseEmail(emailValue).getValue());
+            if (emailValue.isBlank()) {
+                descriptor.setVendorEmail(null);
+            } else {
+                descriptor.setVendorEmail(ParserUtil.parseEmail(emailValue).getValue());
+            }
         }
 
         return descriptor;
