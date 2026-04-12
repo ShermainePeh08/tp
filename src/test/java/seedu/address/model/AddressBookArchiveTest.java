@@ -99,4 +99,50 @@ public class AddressBookArchiveTest {
         assertFalse(restored.getTags().stream()
                 .anyMatch(t -> t.tagName.equalsIgnoreCase("archived")));
     }
+
+    @Test
+    public void person_equals_isArchivedPartOfEquality() {
+        // EP: two persons identical in all fields except isArchived must NOT be equal
+        Person active = new PersonBuilder().build();
+        Person archived = new PersonBuilder().withArchived(true).build();
+
+        assertFalse(active.equals(archived));
+        assertFalse(archived.equals(active));
+    }
+
+    @Test
+    public void person_equals_sameIsArchivedFalse_returnsTrue() {
+        // EP: two active persons with same fields must be equal
+        Person a = new PersonBuilder().build();
+        Person b = new PersonBuilder().build();
+
+        assertTrue(a.equals(b));
+    }
+
+    @Test
+    public void person_equals_sameIsArchivedTrue_returnsTrue() {
+        // EP: two archived persons with same fields must be equal
+        Person a = new PersonBuilder().withArchived(true).build();
+        Person b = new PersonBuilder().withArchived(true).build();
+
+        assertTrue(a.equals(b));
+    }
+
+    @Test
+    public void person_equals_archiveAndRestoreRoundTrip_matchesOriginal() {
+        // EP: archive then restore should produce a person equal to the original
+        Person original = new PersonBuilder().withTags("vip").build();
+        Person roundTripped = original.archive().restore();
+
+        assertTrue(original.equals(roundTripped));
+    }
+
+    @Test
+    public void person_hashCode_differsWhenIsArchivedDiffers() {
+        // EP: hashCode must differ between active and archived copies
+        Person active = new PersonBuilder().build();
+        Person archived = new PersonBuilder().withArchived(true).build();
+
+        assertFalse(active.hashCode() == archived.hashCode());
+    }
 }
