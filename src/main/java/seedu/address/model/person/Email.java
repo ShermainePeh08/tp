@@ -83,8 +83,8 @@ public class Email {
         boolean hasNoDomainSeparator = atIndex < 0;
         boolean hasNoDomainPart = atIndex == test.length() - 1;
 
-        // Not a valid email structure so no domain format warning
         if (hasNoDomainSeparator || hasNoDomainPart) {
+            // No valid domain exists to evaluate, so treat as no warning.
             return false;
         }
 
