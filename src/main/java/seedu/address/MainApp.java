@@ -393,7 +393,7 @@ public class MainApp extends Application {
         } catch (DataLoadingException e) {
             logNamedSourceLoadingIssue(MESSAGE_CONFIG_FILE_AT, configFilePathUsed, e);
             logger.warning(buildNamedCouldNotLoadWarning(MESSAGE_CONFIG_FILE_AT,
-                configFilePathUsed, MESSAGE_USING_DEFAULT_CONFIG_PROPERTIES));
+                    configFilePathUsed, MESSAGE_USING_DEFAULT_CONFIG_PROPERTIES));
             initializedConfig = new Config();
         }
 
@@ -425,7 +425,7 @@ public class MainApp extends Application {
         } catch (DataLoadingException e) {
             logNamedSourceLoadingIssue(MESSAGE_PREFERENCE_FILE_AT, prefsFilePath, e);
             logger.warning(buildNamedCouldNotLoadWarning(MESSAGE_PREFERENCE_FILE_AT,
-                prefsFilePath, MESSAGE_USING_DEFAULT_PREFERENCES));
+                    prefsFilePath, MESSAGE_USING_DEFAULT_PREFERENCES));
             initializedPrefs = new UserPrefs();
         }
 
