@@ -3,7 +3,6 @@ package seedu.address;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalProducts.RICE;
 
 import java.io.IOException;
@@ -26,6 +25,7 @@ import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.exceptions.DataLoadingException;
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.commons.util.ConfigUtil;
+import seedu.address.commons.util.JsonUtil;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Aliases;
 import seedu.address.model.Inventory;
@@ -63,14 +63,21 @@ public class MainAppTest {
     private static final String METHOD_LOAD_INITIAL_ADDRESS_BOOK = "loadInitialAddressBook";
     private static final String METHOD_LOAD_INITIAL_INVENTORY = "loadInitialInventory";
     private static final String METHOD_LOAD_INITIAL_ALIASES = "loadInitialAliases";
-    private static final String METHOD_GET_ILLEGAL_VALUE_DETAILS = "getIllegalValueDetails";
+    private static final String METHOD_EXTRACT_VALIDATION_OR_PARSING_DETAILS =
+            "extractValidationOrParsingDetails";
     private static final String METHOD_INIT_MODEL_MANAGER = "initModelManager";
-    private static final String METHOD_LOG_INVENTORY_LOADING_ISSUE = "logInventoryLoadingIssue";
-    private static final String METHOD_LOG_ILLEGAL_VALUE_ISSUE = "logIllegalValueIssue";
+    private static final String METHOD_LOG_DATA_VALIDATION_ISSUE = "logDataValidationIssue";
     private static final String METHOD_INIT_LOGGING = "initLogging";
-    private static final String NON_DUPLICATE_DETAILS = "Some non-duplicate error";
+    private static final String IO_EXCEPTION_DETAILS = "IOException: " + READ_FAILURE_MESSAGE;
     private static final String DETAILS_WITH_NEWLINE = "line one\nline two";
-    private static final Path UNKNOWN_VENDOR_MIXED_FILE = Path.of("src", "test", "data",
+    private static final String INVALID_JSON_WITH_UNQUOTED_TOKEN = "{\"vendorEmail\": hello@synapse.sg}";
+    private static final String INVALID_JSON_GENERIC_PREFIX = "Invalid JSON format";
+    private static final String INVALID_JSON_TOKEN_DETAILS = "Unrecognized token 'hello'.";
+    private static final String INVALID_JSON_LINE_PREFIX = "Invalid JSON format at line 1: ";
+    private static final String CONFIG_FILE_PREFIX = "Config file at ";
+    private static final String PREFS_FILE_PREFIX = "Preference file at ";
+    private static final String READ_DATA_PREFIX = "Could not read data in ";
+    private static final Path LOG_TEST_FILE = Path.of("src", "test", "data",
             "VendorVaultConsistencyUtilTest", "unknownVendorMixedInventory.json");
 
     @TempDir
@@ -115,6 +122,18 @@ public class MainAppTest {
     }
 
     @Test
+    public void initConfig_invalidCustomFile_logsFriendlyJsonParseDetails() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+        Path configPath = testFolder.resolve(CONFIG_FILE);
+        Files.writeString(configPath, INVALID_CONFIG_CONTENT);
+
+        withMainAppLogger(handler -> {
+            app.callInitConfig(configPath);
+            assertTrue(handler.contains(CONFIG_FILE_PREFIX + configPath + ": " + INVALID_JSON_GENERIC_PREFIX));
+        });
+    }
+
+    @Test
     public void initPrefs_readReturnsEmpty_returnsDefaultAndSaves() {
         TestableMainApp app = new TestableMainApp();
         UserPrefsStorageStub storageStub = new UserPrefsStorageStub(testFolder.resolve(PREFS_FILE));
@@ -136,6 +155,23 @@ public class MainAppTest {
 
         assertEquals(new UserPrefs(), prefs);
         assertEquals(expectedCallCount, storageStub.saveUserPrefsCallCount);
+    }
+
+    @Test
+    public void initPrefs_jsonParseFailure_logsFriendlyJsonParseDetailsAndReturnsDefault() {
+        TestableMainApp app = new TestableMainApp();
+        UserPrefsStorageStub storageStub = new UserPrefsStorageStub(testFolder.resolve(PREFS_FILE));
+        storageStub.readException = new DataLoadingException(createMalformedJsonIoException());
+
+        withMainAppLogger(handler -> {
+            UserPrefs prefs = app.callInitPrefs(storageStub);
+
+            assertEquals(new UserPrefs(), prefs);
+            assertEquals(expectedCallCount, storageStub.saveUserPrefsCallCount);
+            assertTrue(handler.contains(PREFS_FILE_PREFIX + storageStub.getUserPrefsFilePath() + ": "
+                    + INVALID_JSON_LINE_PREFIX));
+            assertTrue(handler.contains(INVALID_JSON_TOKEN_DETAILS));
+        });
     }
 
     @Test
@@ -203,24 +239,31 @@ public class MainAppTest {
     }
 
     @Test
+    public void loadInitialAddressBook_dataLoadingException_logsConciseCause() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+        ReadableStorageStub storageStub = new ReadableStorageStub();
+        storageStub.addressBookReadException = new DataLoadingException(new IOException(READ_FAILURE_MESSAGE));
+
+        withMainAppLogger(handler -> {
+            invokeLoadInitialAddressBook(app, storageStub);
+            assertTrue(handler.contains(READ_DATA_PREFIX + storageStub.getAddressBookFilePath()
+                    + ": " + IO_EXCEPTION_DETAILS));
+        });
+    }
+
+    @Test
     public void loadInitialAddressBook_duplicateEmailDetails_logsAndReturnsEmptyAddressBook() throws Exception {
         TestableMainApp app = new TestableMainApp();
         ReadableStorageStub storageStub = new ReadableStorageStub();
         storageStub.addressBookReadException = new DataLoadingException(new IllegalValueException(
                 DUPLICATE_EMAIL_DETAILS));
 
-        Logger mainAppLogger = LogsCenter.getLogger(MainApp.class);
-        CapturingLogHandler handler = new CapturingLogHandler();
-        mainAppLogger.addHandler(handler);
-
-        try {
+        withMainAppLogger(handler -> {
             ReadOnlyAddressBook initialData = invokeLoadInitialAddressBook(app, storageStub);
 
             assertEquals(new AddressBook(), new AddressBook(initialData));
             assertTrue(handler.contains(DUPLICATE_EMAIL_DETAILS));
-        } finally {
-            mainAppLogger.removeHandler(handler);
-        }
+        });
     }
 
     @Test
@@ -287,33 +330,58 @@ public class MainAppTest {
     }
 
     @Test
-    public void getIllegalValueDetails_illegalValueCause_returnsDetails() throws Exception {
+    public void extractValidationOrParsingDetails_illegalValueCause_returnsDetails() throws Exception {
         TestableMainApp app = new TestableMainApp();
         DataLoadingException exception = new DataLoadingException(new IllegalValueException(ILLEGAL_VALUE_MESSAGE));
 
-        Optional<String> details = invokeGetIllegalValueDetails(app, exception);
+        Optional<String> details = invokeExtractValidationOrParsingDetails(app, exception);
 
         assertEquals(Optional.of(ILLEGAL_VALUE_MESSAGE), details);
     }
 
     @Test
-    public void getIllegalValueDetails_nonIllegalCause_returnsEmpty() throws Exception {
+    public void extractValidationOrParsingDetails_nonIllegalCause_returnsEmpty() throws Exception {
         TestableMainApp app = new TestableMainApp();
         DataLoadingException exception = new DataLoadingException(new IOException(READ_FAILURE_MESSAGE));
 
-        Optional<String> details = invokeGetIllegalValueDetails(app, exception);
+        Optional<String> details = invokeExtractValidationOrParsingDetails(app, exception);
 
         assertEquals(Optional.empty(), details);
     }
 
     @Test
-    public void getIllegalValueDetails_illegalValueCauseWithNullMessage_returnsEmpty() throws Exception {
+    public void extractValidationOrParsingDetails_illegalValueCauseWithNullMessage_returnsEmpty() throws Exception {
         TestableMainApp app = new TestableMainApp();
         DataLoadingException exception = new DataLoadingException(new IllegalValueException((String) null));
 
-        Optional<String> details = invokeGetIllegalValueDetails(app, exception);
+        Optional<String> details = invokeExtractValidationOrParsingDetails(app, exception);
 
         assertEquals(Optional.empty(), details);
+    }
+
+    @Test
+    public void extractValidationOrParsingDetails_jsonParseCause_returnsFriendlyLineMessage() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+        DataLoadingException exception = new DataLoadingException(createMalformedJsonIoException());
+
+        Optional<String> details = invokeExtractValidationOrParsingDetails(app, exception);
+
+        assertTrue(details.isPresent());
+        assertTrue(details.get().startsWith(INVALID_JSON_LINE_PREFIX));
+        assertTrue(details.get().contains(INVALID_JSON_TOKEN_DETAILS));
+    }
+
+    @Test
+    public void extractValidationOrParsingDetails_nestedJsonParseCause_returnsFriendlyLineMessage() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+        DataLoadingException exception = new DataLoadingException(
+                new IOException(READ_FAILURE_MESSAGE, createMalformedJsonIoException()));
+
+        Optional<String> details = invokeExtractValidationOrParsingDetails(app, exception);
+
+        assertTrue(details.isPresent());
+        assertTrue(details.get().startsWith(INVALID_JSON_LINE_PREFIX));
+        assertTrue(details.get().contains(INVALID_JSON_TOKEN_DETAILS));
     }
 
     @Test
@@ -337,32 +405,10 @@ public class MainAppTest {
     }
 
     @Test
-    public void logInventoryLoadingIssue_nonIllegalCause_returnsEarly() {
+    public void logDataValidationIssue_withNewLineInDetails_noException() {
         TestableMainApp app = new TestableMainApp();
 
-        assertDoesNotThrow(() -> invokeLogInventoryLoadingIssue(
-                app,
-                UNKNOWN_VENDOR_MIXED_FILE,
-                new DataLoadingException(new IOException(READ_FAILURE_MESSAGE)),
-                getTypicalAddressBook()));
-    }
-
-    @Test
-    public void logInventoryLoadingIssue_illegalValueCause_logsIllegalValueIssuePath() {
-        TestableMainApp app = new TestableMainApp();
-
-        assertDoesNotThrow(() -> invokeLogInventoryLoadingIssue(
-                app,
-                UNKNOWN_VENDOR_MIXED_FILE,
-                new DataLoadingException(new IllegalValueException(NON_DUPLICATE_DETAILS)),
-                getTypicalAddressBook()));
-    }
-
-    @Test
-    public void logIllegalValueIssue_withNewLineInDetails_noException() {
-        TestableMainApp app = new TestableMainApp();
-
-        assertDoesNotThrow(() -> invokeLogIllegalValueIssue(app, UNKNOWN_VENDOR_MIXED_FILE, DETAILS_WITH_NEWLINE));
+        assertDoesNotThrow(() -> invokeLogDataValidationIssue(app, LOG_TEST_FILE, DETAILS_WITH_NEWLINE));
     }
 
     @Test
@@ -382,21 +428,10 @@ public class MainAppTest {
                 userPrefs);
     }
 
-    private void invokeLogInventoryLoadingIssue(MainApp app, Path inventoryFilePath, DataLoadingException exception,
-                                                ReadOnlyAddressBook initialData) throws Exception {
+    private void invokeLogDataValidationIssue(MainApp app, Path filePath, String details) throws Exception {
         invokePrivateMethod(
                 app,
-                METHOD_LOG_INVENTORY_LOADING_ISSUE,
-                new Class<?>[]{Path.class, DataLoadingException.class, ReadOnlyAddressBook.class},
-                inventoryFilePath,
-                exception,
-                initialData);
-    }
-
-    private void invokeLogIllegalValueIssue(MainApp app, Path filePath, String details) throws Exception {
-        invokePrivateMethod(
-                app,
-                METHOD_LOG_ILLEGAL_VALUE_ISSUE,
+                METHOD_LOG_DATA_VALIDATION_ISSUE,
                 new Class<?>[]{Path.class, String.class},
                 filePath,
                 details);
@@ -432,11 +467,11 @@ public class MainAppTest {
     }
 
     @SuppressWarnings("unchecked")
-    private Optional<String> invokeGetIllegalValueDetails(MainApp app, DataLoadingException exception)
+    private Optional<String> invokeExtractValidationOrParsingDetails(MainApp app, DataLoadingException exception)
             throws Exception {
         return (Optional<String>) invokePrivateMethod(
                 app,
-                METHOD_GET_ILLEGAL_VALUE_DETAILS,
+                METHOD_EXTRACT_VALIDATION_OR_PARSING_DETAILS,
                 new Class<?>[]{DataLoadingException.class},
                 exception);
     }
@@ -446,6 +481,34 @@ public class MainAppTest {
         Method method = MainApp.class.getDeclaredMethod(methodName, parameterTypes);
         method.setAccessible(true);
         return method.invoke(app, args);
+    }
+
+    private IOException createMalformedJsonIoException() {
+        try {
+            JsonUtil.fromJsonString(INVALID_JSON_WITH_UNQUOTED_TOKEN, Object.class);
+            throw new AssertionError("Expected malformed JSON to throw IOException");
+        } catch (IOException ioe) {
+            return ioe;
+        }
+    }
+
+    private void withMainAppLogger(ThrowingConsumer<CapturingLogHandler> assertion) {
+        Logger mainAppLogger = LogsCenter.getLogger(MainApp.class);
+        CapturingLogHandler handler = new CapturingLogHandler();
+        mainAppLogger.addHandler(handler);
+
+        try {
+            assertion.accept(handler);
+        } catch (Exception e) {
+            throw new AssertionError("Unexpected exception during log assertion", e);
+        } finally {
+            mainAppLogger.removeHandler(handler);
+        }
+    }
+
+    @FunctionalInterface
+    private interface ThrowingConsumer<T> {
+        void accept(T value) throws Exception;
     }
 
     private static class TestableMainApp extends MainApp {
