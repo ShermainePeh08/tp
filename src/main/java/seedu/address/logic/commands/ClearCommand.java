@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.model.Model.PREDICATE_SHOW_ACTIVE_PERSONS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,7 @@ public class ClearCommand extends Command {
      * Cancels the clear operation.
      */
     private Optional<CommandResult> onCancel(Model model) {
+        model.updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
         return Optional.of(new CommandResult(MESSAGE_CLEAR_FAILURE));
     }
 
