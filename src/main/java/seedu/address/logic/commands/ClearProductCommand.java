@@ -111,6 +111,7 @@ public class ClearProductCommand extends Command {
      * @return the command result wrapped in an {@link Optional}
      */
     private Optional<CommandResult> onCancel(Model model) {
+        model.updateFilteredProductList(PREDICATE_SHOW_ACTIVE_PRODUCTS);
         return Optional.of(new CommandResult(MESSAGE_CANCELLED));
     }
 
