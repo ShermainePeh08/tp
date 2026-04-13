@@ -20,6 +20,9 @@ import java.util.logging.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import com.fasterxml.jackson.core.JsonLocation;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import seedu.address.commons.core.Config;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.exceptions.DataLoadingException;
@@ -65,6 +68,9 @@ public class MainAppTest {
     private static final String METHOD_LOAD_INITIAL_ALIASES = "loadInitialAliases";
     private static final String METHOD_EXTRACT_VALIDATION_OR_PARSING_DETAILS =
             "extractValidationOrParsingDetails";
+    private static final String METHOD_FORMAT_JSON_PARSING_DETAILS = "formatJsonParsingDetails";
+    private static final String METHOD_NORMALIZE_JSON_PARSING_MESSAGE = "normalizeJsonParsingMessage";
+    private static final String METHOD_EXTRACT_FIRST_LINE = "extractFirstLine";
     private static final String METHOD_INIT_MODEL_MANAGER = "initModelManager";
     private static final String METHOD_LOG_DATA_VALIDATION_ISSUE = "logDataValidationIssue";
     private static final String METHOD_INIT_LOGGING = "initLogging";
@@ -74,6 +80,9 @@ public class MainAppTest {
     private static final String INVALID_JSON_GENERIC_PREFIX = "Invalid JSON format";
     private static final String INVALID_JSON_TOKEN_DETAILS = "Unrecognized token 'hello'.";
     private static final String INVALID_JSON_LINE_PREFIX = "Invalid JSON format at line 1: ";
+    private static final String JSON_PARSE_FALLBACK_MESSAGE = "Malformed JSON.";
+    private static final String GENERIC_JSON_PARSE_MESSAGE = "Unexpected close marker";
+    private static final JsonLocation UNKNOWN_LOCATION = new JsonLocation("source", -1L, -1L, 0, 1);
     private static final String CONFIG_FILE_PREFIX = "Config file at ";
     private static final String PREFS_FILE_PREFIX = "Preference file at ";
     private static final String READ_DATA_PREFIX = "Could not read data in ";
@@ -385,6 +394,35 @@ public class MainAppTest {
     }
 
     @Test
+    public void formatJsonParsingDetails_locationLineNotPositive_returnsGenericFormatMessage() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+        JsonProcessingException exception = createJsonProcessingException(GENERIC_JSON_PARSE_MESSAGE, UNKNOWN_LOCATION);
+
+        String details = invokeFormatJsonParsingDetails(app, exception);
+
+        assertEquals(INVALID_JSON_GENERIC_PREFIX + ": " + GENERIC_JSON_PARSE_MESSAGE, details);
+    }
+
+    @Test
+    public void normalizeJsonParsingMessage_emptyOriginalMessage_returnsFallback() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+        JsonProcessingException exception = createJsonProcessingException("", null);
+
+        String message = invokeNormalizeJsonParsingMessage(app, exception);
+
+        assertEquals(JSON_PARSE_FALLBACK_MESSAGE, message);
+    }
+
+    @Test
+    public void extractFirstLine_nullMessage_returnsEmptyString() throws Exception {
+        TestableMainApp app = new TestableMainApp();
+
+        String firstLine = invokeExtractFirstLine(app, null);
+
+        assertEquals("", firstLine);
+    }
+
+    @Test
     public void initModelManager_emptyStorageData_returnsModelWithSampleData() throws Exception {
         TestableMainApp app = new TestableMainApp();
         ReadableStorageStub storageStub = new ReadableStorageStub();
@@ -476,6 +514,30 @@ public class MainAppTest {
                 exception);
     }
 
+    private String invokeFormatJsonParsingDetails(MainApp app, JsonProcessingException exception) throws Exception {
+        return (String) invokePrivateMethod(
+                app,
+                METHOD_FORMAT_JSON_PARSING_DETAILS,
+                new Class<?>[]{JsonProcessingException.class},
+                exception);
+    }
+
+    private String invokeNormalizeJsonParsingMessage(MainApp app, JsonProcessingException exception) throws Exception {
+        return (String) invokePrivateMethod(
+                app,
+                METHOD_NORMALIZE_JSON_PARSING_MESSAGE,
+                new Class<?>[]{JsonProcessingException.class},
+                exception);
+    }
+
+    private String invokeExtractFirstLine(MainApp app, String message) throws Exception {
+        return (String) invokePrivateMethod(
+                app,
+                METHOD_EXTRACT_FIRST_LINE,
+                new Class<?>[]{String.class},
+                message);
+    }
+
     private Object invokePrivateMethod(MainApp app, String methodName, Class<?>[] parameterTypes, Object... args)
             throws Exception {
         Method method = MainApp.class.getDeclaredMethod(methodName, parameterTypes);
@@ -490,6 +552,12 @@ public class MainAppTest {
         } catch (IOException ioe) {
             return ioe;
         }
+    }
+
+    private JsonProcessingException createJsonProcessingException(String message, JsonLocation location) {
+        return new JsonProcessingException(message, location) {
+            private static final long serialVersionUID = 1L;
+        };
     }
 
     private void withMainAppLogger(ThrowingConsumer<CapturingLogHandler> assertion) {
