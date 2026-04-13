@@ -4,9 +4,12 @@ import static seedu.address.model.util.VendorVaultConsistencyUtil.validateOrThro
 import static seedu.address.ui.Messages.MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ADDRESS_BOOK;
 import static seedu.address.ui.Messages.MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ALIAS;
 import static seedu.address.ui.Messages.MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_INVENTORY;
+import static seedu.address.ui.Messages.MESSAGE_COULD_NOT_READ_DATA_IN;
 import static seedu.address.ui.Messages.MESSAGE_CREATING_NEW_DATA_FILE;
 import static seedu.address.ui.Messages.MESSAGE_DATA_FILE_AT;
 import static seedu.address.ui.Messages.MESSAGE_ILLEGAL_VALUES_FOUND_IN;
+import static seedu.address.ui.Messages.MESSAGE_INVALID_JSON_FORMAT;
+import static seedu.address.ui.Messages.MESSAGE_INVALID_JSON_FORMAT_AT_LINE;
 import static seedu.address.ui.Messages.MESSAGE_LOG_SEPARATOR;
 import static seedu.address.ui.Messages.MESSAGE_POPULATED_EMPTY_ALIAS_FILE;
 import static seedu.address.ui.Messages.MESSAGE_POPULATED_SAMPLE_ADDRESS_BOOK;
@@ -17,6 +20,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.core.JsonLocation;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -64,6 +72,17 @@ public class MainApp extends Application {
             "=============================[ Initializing VendorVault ]===========================";
     public static final String LOG_FOOTER =
             "============================ [ Stopping VendorVault ] =============================";
+    private static final Pattern UNRECOGNIZED_TOKEN_PATTERN =
+        Pattern.compile("^Unrecognized token '([^']+)':.*");
+    private static final String MESSAGE_UNRECOGNIZED_TOKEN = "Unrecognized token '";
+    private static final String MESSAGE_PARSE_FALLBACK = "Malformed JSON.";
+    private static final String MESSAGE_CONFIG_FILE_AT = "Config file at ";
+    private static final String MESSAGE_PREFERENCE_FILE_AT = "Preference file at ";
+    private static final String MESSAGE_COULD_NOT_BE_LOADED = " could not be loaded.";
+    private static final String MESSAGE_USING_DEFAULT_CONFIG_PROPERTIES = " Using default config properties.";
+    private static final String MESSAGE_USING_DEFAULT_PREFERENCES = " Using default preferences.";
+    private static final String MESSAGE_FAILED_TO_SAVE_CONFIG_FILE = "Failed to save config file : ";
+    private static final String MESSAGE_FAILED_TO_SAVE_PREFERENCE_FILE = "Failed to save preference file : ";
 
     private static final Logger logger = LogsCenter.getLogger(MainApp.class);
 
@@ -122,7 +141,7 @@ public class MainApp extends Application {
 
             return addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
         } catch (DataLoadingException e) {
-            logLoadingIssue(addressBookFilePath, e);
+            logDataFileLoadingIssue(addressBookFilePath, e);
             logger.warning(buildCouldNotLoadWarning(addressBookFilePath,
                     MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ADDRESS_BOOK));
 
@@ -141,13 +160,13 @@ public class MainApp extends Application {
             ReadOnlyInventory initialInventory = inventoryOptional.orElseGet(SampleDataUtil::getSampleInventory);
             return validateInitialInventory(inventoryFilePath, initialData, initialInventory);
         } catch (IllegalValueException e) {
-            logIllegalValueIssue(inventoryFilePath, e.getMessage());
+            logDataValidationIssue(inventoryFilePath, e.getMessage());
             logger.warning(buildCouldNotLoadWarning(inventoryFilePath,
                     MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_INVENTORY));
 
             return new Inventory();
         } catch (DataLoadingException e) {
-            logInventoryLoadingIssue(inventoryFilePath, e, initialData);
+            logDataFileLoadingIssue(inventoryFilePath, e);
             logger.warning(buildCouldNotLoadWarning(inventoryFilePath,
                     MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_INVENTORY));
 
@@ -163,16 +182,6 @@ public class MainApp extends Application {
         return initialInventory;
     }
 
-    private void logInventoryLoadingIssue(Path inventoryFilePath, DataLoadingException exception,
-                                          ReadOnlyAddressBook initialData) {
-        Optional<String> illegalValueDetails = logLoadingIssue(inventoryFilePath, exception);
-        if (!illegalValueDetails.isPresent()) {
-            return;
-        }
-
-        String details = illegalValueDetails.get();
-    }
-
     private ReadOnlyAliases loadInitialAliases(Storage storage) {
         Path aliasFilePath = storage.getAliasFilePath();
 
@@ -182,7 +191,7 @@ public class MainApp extends Application {
 
             return aliasesOptional.orElseGet(Aliases::new);
         } catch (DataLoadingException e) {
-            logLoadingIssue(aliasFilePath, e);
+            logDataFileLoadingIssue(aliasFilePath, e);
             logger.warning(buildCouldNotLoadWarning(aliasFilePath,
                     MESSAGE_COULD_NOT_LOAD_STARTING_EMPTY_ALIAS));
 
@@ -200,26 +209,157 @@ public class MainApp extends Application {
         return MESSAGE_DATA_FILE_AT + filePath + fallbackMessage;
     }
 
-    private Optional<String> logLoadingIssue(Path filePath, DataLoadingException exception) {
-        Optional<String> illegalValueDetails = getIllegalValueDetails(exception);
-        illegalValueDetails.ifPresent(details -> logIllegalValueIssue(filePath, details));
-        return illegalValueDetails;
+    /**
+     * Logs the most useful available loading issue detail for data files.
+     *
+     * <p>Preference order:
+     * 1) Illegal value / JSON parse details if available.
+     * 2) Concise root-cause summary otherwise.
+     */
+    private Optional<String> logDataFileLoadingIssue(Path filePath, DataLoadingException exception) {
+        Optional<String> details = extractValidationOrParsingDetails(exception);
+        if (details.isPresent()) {
+            logDataValidationIssue(filePath, details.get());
+            return details;
+        }
+
+        Optional<String> rootCauseSummary = extractRootCauseSummary(exception.getCause());
+        rootCauseSummary.ifPresent(cause -> logDataReadCauseIssue(filePath, cause));
+        return rootCauseSummary;
     }
 
-    private Optional<String> getIllegalValueDetails(DataLoadingException exception) {
+    /**
+     * Extracts detailed startup diagnostics from IllegalValue and JSON processing exceptions.
+     */
+    private Optional<String> extractValidationOrParsingDetails(DataLoadingException exception) {
         Throwable cause = exception.getCause();
+        if (cause instanceof IllegalValueException) {
+            String details = cause.getMessage();
+            if (details == null) {
+                return Optional.empty();
+            }
+            return Optional.of(details);
+        }
 
-        if (!(cause instanceof IllegalValueException)) {
+        return extractJsonParsingDetails(cause);
+    }
+
+    /**
+     * Produces a concise one-line summary for non-JSON root causes.
+     */
+    private Optional<String> extractRootCauseSummary(Throwable cause) {
+        if (cause == null) {
             return Optional.empty();
         }
 
-        String details = cause.getMessage();
-        return details == null ? Optional.empty() : Optional.of(details);
+        Throwable root = cause;
+        while (root.getCause() != null) {
+            root = root.getCause();
+        }
+
+        String className = root.getClass().getSimpleName();
+        String message = root.getMessage();
+        if (message == null || message.trim().isEmpty()) {
+            return Optional.of(className);
+        }
+
+        String firstLine = extractFirstLine(message);
+        return Optional.of(className + MESSAGE_LOG_SEPARATOR + firstLine);
     }
 
-    private void logIllegalValueIssue(Path filePath, String details) {
+    /**
+     * Searches the exception chain for Jackson processing exceptions and formats them for logs.
+     */
+    private Optional<String> extractJsonParsingDetails(Throwable cause) {
+        Throwable current = cause;
+        while (current != null) {
+            if (current instanceof JsonProcessingException) {
+                String details = formatJsonParsingDetails((JsonProcessingException) current);
+                return Optional.of(details);
+            }
+            current = current.getCause();
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Builds a user-facing JSON parse diagnostic with line number when available.
+     */
+    private String formatJsonParsingDetails(JsonProcessingException exception) {
+        String message = normalizeJsonParsingMessage(exception);
+        JsonLocation location = exception.getLocation();
+
+        boolean isValidLocation = (location != null) && (location.getLineNr() > 0);
+        if (isValidLocation) {
+            return MESSAGE_INVALID_JSON_FORMAT_AT_LINE + location.getLineNr() + MESSAGE_LOG_SEPARATOR + message;
+        }
+
+        return MESSAGE_INVALID_JSON_FORMAT + MESSAGE_LOG_SEPARATOR + message;
+    }
+
+    /**
+     * Normalizes Jackson parse messages.
+     */
+    private String normalizeJsonParsingMessage(JsonProcessingException exception) {
+        String originalMessage = exception.getOriginalMessage();
+        String firstLine = extractFirstLine(originalMessage);
+
+        Matcher matcher = UNRECOGNIZED_TOKEN_PATTERN.matcher(firstLine);
+        if (matcher.matches()) {
+            return MESSAGE_UNRECOGNIZED_TOKEN + matcher.group(1) + "'.";
+        }
+
+        if (firstLine.isEmpty()) {
+            return MESSAGE_PARSE_FALLBACK;
+        }
+        return firstLine;
+    }
+
+    /**
+     * Returns the first trimmed line of a possibly multi-line message.
+     */
+    private String extractFirstLine(String message) {
+        if (message == null) {
+            return "";
+        }
+        return message.replace("\r\n", NEWLINE).split(NEWLINE, 2)[0].trim();
+    }
+
+    private String flattenForLog(String details) {
+        return details.replace(NEWLINE, " ");
+    }
+
+    private void logDataValidationIssue(Path filePath, String details) {
         logger.warning(MESSAGE_ILLEGAL_VALUES_FOUND_IN + filePath + MESSAGE_LOG_SEPARATOR
-                + details.replace(NEWLINE, " "));
+                + flattenForLog(details));
+    }
+
+    private void logDataReadCauseIssue(Path filePath, String details) {
+        logger.warning(MESSAGE_COULD_NOT_READ_DATA_IN + filePath + MESSAGE_LOG_SEPARATOR
+                + flattenForLog(details));
+    }
+
+    private String buildNamedLoadingIssueMessage(String sourcePrefix, Path filePath, String details) {
+        return sourcePrefix + filePath + MESSAGE_LOG_SEPARATOR + flattenForLog(details);
+    }
+
+    private String buildNamedCouldNotLoadWarning(String sourcePrefix, Path filePath, String fallbackMessage) {
+        return sourcePrefix + filePath + MESSAGE_COULD_NOT_BE_LOADED + fallbackMessage;
+    }
+
+    /**
+     * Logs config/prefs load failures.
+     */
+    private void logNamedSourceLoadingIssue(String sourcePrefix, Path filePath, DataLoadingException exception) {
+        Optional<String> details = extractValidationOrParsingDetails(exception);
+        if (details.isPresent()) {
+            logger.warning(buildNamedLoadingIssueMessage(sourcePrefix, filePath, details.get()));
+            return;
+        }
+
+        extractRootCauseSummary(exception.getCause()).ifPresent(
+                cause -> logger.warning(buildNamedLoadingIssueMessage(sourcePrefix, filePath, cause))
+        );
     }
 
     private void initLogging(Config config) {
@@ -251,8 +391,9 @@ public class MainApp extends Application {
             }
             initializedConfig = configOptional.orElse(new Config());
         } catch (DataLoadingException e) {
-            logger.warning("Config file at " + configFilePathUsed + " could not be loaded."
-                    + " Using default config properties.");
+            logNamedSourceLoadingIssue(MESSAGE_CONFIG_FILE_AT, configFilePathUsed, e);
+            logger.warning(buildNamedCouldNotLoadWarning(MESSAGE_CONFIG_FILE_AT,
+                    configFilePathUsed, MESSAGE_USING_DEFAULT_CONFIG_PROPERTIES));
             initializedConfig = new Config();
         }
 
@@ -260,7 +401,7 @@ public class MainApp extends Application {
         try {
             ConfigUtil.saveConfig(initializedConfig, configFilePathUsed);
         } catch (IOException e) {
-            logger.warning("Failed to save config file : " + StringUtil.getDetails(e));
+            logger.warning(MESSAGE_FAILED_TO_SAVE_CONFIG_FILE + StringUtil.getDetails(e));
         }
         return initializedConfig;
     }
@@ -282,8 +423,9 @@ public class MainApp extends Application {
             }
             initializedPrefs = prefsOptional.orElse(new UserPrefs());
         } catch (DataLoadingException e) {
-            logger.warning("Preference file at " + prefsFilePath + " could not be loaded."
-                    + " Using default preferences.");
+            logNamedSourceLoadingIssue(MESSAGE_PREFERENCE_FILE_AT, prefsFilePath, e);
+            logger.warning(buildNamedCouldNotLoadWarning(MESSAGE_PREFERENCE_FILE_AT,
+                    prefsFilePath, MESSAGE_USING_DEFAULT_PREFERENCES));
             initializedPrefs = new UserPrefs();
         }
 
@@ -291,7 +433,7 @@ public class MainApp extends Application {
         try {
             storage.saveUserPrefs(initializedPrefs);
         } catch (IOException e) {
-            logger.warning("Failed to save config file : " + StringUtil.getDetails(e));
+            logger.warning(MESSAGE_FAILED_TO_SAVE_PREFERENCE_FILE + StringUtil.getDetails(e));
         }
 
         return initializedPrefs;
