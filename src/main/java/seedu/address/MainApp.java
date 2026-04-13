@@ -78,6 +78,11 @@ public class MainApp extends Application {
     private static final String MESSAGE_PARSE_FALLBACK = "Malformed JSON.";
     private static final String MESSAGE_CONFIG_FILE_AT = "Config file at ";
     private static final String MESSAGE_PREFERENCE_FILE_AT = "Preference file at ";
+    private static final String MESSAGE_COULD_NOT_BE_LOADED = " could not be loaded.";
+    private static final String MESSAGE_USING_DEFAULT_CONFIG_PROPERTIES = " Using default config properties.";
+    private static final String MESSAGE_USING_DEFAULT_PREFERENCES = " Using default preferences.";
+    private static final String MESSAGE_FAILED_TO_SAVE_CONFIG_FILE = "Failed to save config file : ";
+    private static final String MESSAGE_FAILED_TO_SAVE_PREFERENCE_FILE = "Failed to save preference file : ";
 
     private static final Logger logger = LogsCenter.getLogger(MainApp.class);
 
@@ -338,6 +343,10 @@ public class MainApp extends Application {
         return sourcePrefix + filePath + MESSAGE_LOG_SEPARATOR + flattenForLog(details);
     }
 
+    private String buildNamedCouldNotLoadWarning(String sourcePrefix, Path filePath, String fallbackMessage) {
+        return sourcePrefix + filePath + MESSAGE_COULD_NOT_BE_LOADED + fallbackMessage;
+    }
+
     /**
      * Logs config/prefs load failures.
      */
@@ -383,8 +392,8 @@ public class MainApp extends Application {
             initializedConfig = configOptional.orElse(new Config());
         } catch (DataLoadingException e) {
             logNamedSourceLoadingIssue(MESSAGE_CONFIG_FILE_AT, configFilePathUsed, e);
-            logger.warning(MESSAGE_CONFIG_FILE_AT + configFilePathUsed + " could not be loaded."
-                    + " Using default config properties.");
+            logger.warning(buildNamedCouldNotLoadWarning(MESSAGE_CONFIG_FILE_AT,
+                configFilePathUsed, MESSAGE_USING_DEFAULT_CONFIG_PROPERTIES));
             initializedConfig = new Config();
         }
 
@@ -392,7 +401,7 @@ public class MainApp extends Application {
         try {
             ConfigUtil.saveConfig(initializedConfig, configFilePathUsed);
         } catch (IOException e) {
-            logger.warning("Failed to save config file : " + StringUtil.getDetails(e));
+            logger.warning(MESSAGE_FAILED_TO_SAVE_CONFIG_FILE + StringUtil.getDetails(e));
         }
         return initializedConfig;
     }
@@ -415,8 +424,8 @@ public class MainApp extends Application {
             initializedPrefs = prefsOptional.orElse(new UserPrefs());
         } catch (DataLoadingException e) {
             logNamedSourceLoadingIssue(MESSAGE_PREFERENCE_FILE_AT, prefsFilePath, e);
-            logger.warning(MESSAGE_PREFERENCE_FILE_AT + prefsFilePath + " could not be loaded."
-                    + " Using default preferences.");
+            logger.warning(buildNamedCouldNotLoadWarning(MESSAGE_PREFERENCE_FILE_AT,
+                prefsFilePath, MESSAGE_USING_DEFAULT_PREFERENCES));
             initializedPrefs = new UserPrefs();
         }
 
@@ -424,7 +433,7 @@ public class MainApp extends Application {
         try {
             storage.saveUserPrefs(initializedPrefs);
         } catch (IOException e) {
-            logger.warning("Failed to save config file : " + StringUtil.getDetails(e));
+            logger.warning(MESSAGE_FAILED_TO_SAVE_PREFERENCE_FILE + StringUtil.getDetails(e));
         }
 
         return initializedPrefs;
